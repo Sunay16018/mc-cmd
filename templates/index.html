@@ -357,6 +357,7 @@ footer a{color:var(--acc);text-decoration:none}
   <p>MC Command Generator · <a href="#">OpenRouter × Gemini 2.0 Flash Lite</a> · 1.8 — 1.21.11</p>
 </footer>
 <script>
+  let clickCount = 0; // Tıklamaları sayacak değişken
 /* ── Versiyon Bilgisi ve Açıklamalar ── */
 const verInfos = {
   "1.8":    "Legacy syntax · /give ile hasar değerleri · Eski NBT",
@@ -422,10 +423,16 @@ function setEx(btn, text){
 }
 
 /* ── Komut Üretme (Generate) ── */
-let lastResult = null;
-async function generate(){
-
+let lastResult = null;async function generate(){
   if(!inp) return;
+  
+  // Reklam Sayacı Mantığı
+  clickCount++;
+  if(clickCount % 3 === 0) {
+    // Her 3 tıklamada bir SmartLink'i yeni sekmede açar
+    window.open("https://www.profitablecpmratenetwork.com/j6uybqniym?key=9d0844e67c078c270eb06d0ccfd3bfae", "_blank");
+  }
+
   const idea = inp.value.trim();
 
   const version = document.getElementById('versionSelect').value;
@@ -580,10 +587,12 @@ function delHistory(e, i){
   e.stopPropagation();
   history.splice(i,1);
   localStorage.setItem('mc_cmd_history', JSON.stringify(history));
-  renderHistory();
-}
 
-renderHistory();
+    renderHistory();
 </script>
+
+<script src="https://pl28993059.profitablecpmratenetwork.com/18/91/e8/1891e81eb3ed08ab161b64f0fb5be3de.js"></script>
+
+<script src="https://pl28992732.profitablecpmratenetwork.com/94/6a/28/946a28d2167ad3c7dfeafbe850f5db4c.js"></script>
 </body>
 </html>
