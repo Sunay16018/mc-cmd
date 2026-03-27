@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html "tr">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -353,7 +353,7 @@ footer a{color:var(--acc);text-decoration:none}
 </footer>
 
 <script>
-/* ── Version Info ── */
+/* ── Versiyon Bilgisi ve Açıklamalar ── */
 const verInfos = {
   "1.8":    "Legacy syntax · /give ile hasar değerleri · Eski NBT",
   "1.9":    "Legacy syntax · Combat update · Eski NBT",
@@ -369,13 +369,20 @@ const verInfos = {
   "1.21.8": "Components syntax · Latest Stable",
   "1.21.11":"Components syntax · Latest"
 };
+
 function updateVerInfo(){
   const v = document.getElementById('versionSelect').value;
-  document.getElementById('viVer').textContent = v;
+  const viVer = document.getElementById('viVer');
+  const viDesc = document.getElementById('viDesc');
+  if(viVer) viVer.textContent = v;
   let desc = "Modern syntax";
   for(const [key,val] of Object.entries(verInfos)){
     if(v.startsWith(key.split('.').slice(0,2).join('.'))) desc = val;
   }
+  if(verInfos[v]) desc = verInfos[v];
+  if(viDesc) viDesc.textContent = desc;
+}
+
 function updateCount() {
     const input = document.getElementById('ideaInput');
     const count = document.getElementById('charCount');
@@ -383,70 +390,51 @@ function updateCount() {
         count.textContent = input.value.length;
     }
 }
-  // exact match overrides
-  if(verInfos[v]) desc = verInfos[v];
-  document.getElementById('viDesc').textContent = desc;
-}
-updateVerInfo();
 
-/* ── Karakter Sayacı ve Tuş Kontrolü ── */
-// Sayfa tamamen yüklendiğinde çalışması için 'DOMContentLoaded' içine aldık
+/* ── DOM Yüklendiğinde Başlat ── */
+let inp;
 document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('ideaInput');
-  const countDisp = document.getElementById('charCount');
+  inp = document.getElementById('ideaInput');
+  updateVerInfo();
+  updateCount();
 
-  if (inp && countDisp) {
-    // Yazdıkça sayacı güncelle
-    inp.addEventListener('input', () => {
-      countDisp.textContent = inp.value.length;
-    });
-
-    // Ctrl + Enter ile komut üret
+  if (inp) {
+    inp.addEventListener('input', updateCount);
     inp.addEventListener('keydown', e => {
-      if (e.ctrlKey && e.key === 'Enter') {
-        // Fonksiyon isminin 'generateCommand' olduğundan emin ol!
-        if (typeof generateCommand === "function") {
-          generateCommand();
-        } else if (typeof generate === "function") {
-          generate();
-        }
-      }
+      if (e.ctrlKey && e.key === 'Enter') generate();
     });
-    
-    console.log("Karakter sayacı ve kontroller başarıyla bağlandı.");
-  } else {
-    console.error("Hata: ideaInput veya charCount bulunamadı!");
   }
+  renderHistory();
 });
 
-/* ── Examples ── */
+/* ── Örnekler ── */
 function setEx(btn, text){
+  if(!inp) return;
   inp.value = text;
-  document.getElementById('charCount').textContent = text.length;
+  updateCount();
   document.querySelectorAll('.ex-chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
   inp.focus();
 }
 
-/* ── Generate ── */
+/* ── Komut Üretme (Generate) ── */
 let lastResult = null;
 async function generate(){
+  if(!inp) return;
   const idea = inp.value.trim();
   if(idea.length < 3){ showError('Daha uzun bir istek yaz!'); return; }
+  
   const version = document.getElementById('versionSelect').value;
-  const cmdType = document.getElementById('cmdType').value;
+  const cmdType = document.getElementById('typeSelect') ? document.getElementById('typeSelect').value : 'All';
 
   setLoading(true);
   document.getElementById('resultCard').style.display = 'none';
-  document.getElementById('errorCard').style.display = 'none';
+  if(document.getElementById('errorCard')) document.getElementById('errorCard').style.display = 'none';
 
   try {
-        // Vercel'de rotanın tam çözülmesi için window.location.origin eklendi
     const res = await fetch(`${window.location.origin}/generate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idea: idea, 
         version: version, 
@@ -454,28 +442,23 @@ async function generate(){
       })
     });
 
-    // Sunucu yanıtını güvenli bir şekilde al
-    const d = await res.json().catch(() => ({ success: false, error: "Sunucudan geçersiz yanıt (JSON değil) geldi." }));
+    const d = await res.json().catch(() => ({ success: false, error: "Sunucu hatası!" }));
 
     if (!res.ok || d.success === false) {
-      showError(d.error || `Hata oluştu (Kod: ${res.status})`);
+      showError(d.error || `Hata oluştu: ${res.status}`);
       return;
     }
 
     lastResult = d;
     showResult(d);
     
-    // BAŞARI EFEKTİ: Sonuç kartını yeşil neon ile parlat
-    const resultCard = document.getElementById('resultCard');
-    if(resultCard) {
-      resultCard.style.boxShadow = "0 0 30px var(--acc2)";
-      resultCard.style.transition = "0.4s ease";
-      setTimeout(() => resultCard.style.boxShadow = "none", 1500);
+    const rc = document.getElementById('resultCard');
+    if(rc) {
+      rc.style.boxShadow = "0 0 30px var(--acc2)";
+      setTimeout(() => rc.style.boxShadow = "none", 1500);
     }
-
     saveHistory(version, idea, d.commands);
   } catch(e) {
-    console.error("İstek hatası:", e);
     showError('Sunucuya ulaşılamadı: ' + e.message);
   } finally {
     setLoading(false);
@@ -483,18 +466,20 @@ async function generate(){
 }
 
 function setLoading(on){
-  document.getElementById('genBtn').disabled = on;
-  document.getElementById('btnTxt').style.display = on ? 'none' : 'flex';
-  document.getElementById('btnLoad').style.display = on ? 'flex' : 'none';
+  const btn = document.getElementById('genBtn');
+  if(!btn) return;
+  btn.disabled = on;
+  if(document.getElementById('btnTxt')) document.getElementById('btnTxt').style.display = on ? 'none' : 'flex';
+  if(document.getElementById('btnLoad')) document.getElementById('btnLoad').style.display = on ? 'flex' : 'none';
 }
 
 function showResult(d){
   const cmds = d.commands || [];
-  document.getElementById('resSub').textContent = `${cmds.length} komut üretildi · ${d.command_type}`;
-  document.getElementById('resBadge').textContent = `MC ${d.version}`;
-
-  // Commands
+  const resSub = document.getElementById('resSub');
+  if(resSub) resSub.textContent = `${cmds.length} komut üretildi · MC ${d.version}`;
+  
   const box = document.getElementById('cmdBlocks');
+  if(!box) return;
   box.innerHTML = '';
   cmds.forEach((c, i) => {
     const div = document.createElement('div');
@@ -504,59 +489,29 @@ function showResult(d){
       <div class="cmd-box">
         <div class="cmd-num">${i+1}</div>
         <div class="cmd-text" id="cmd_${i}">${escapeHtml(c.command)}</div>
-        <button class="copy-btn" id="copy_${i}" onclick="copyCmd(${i})">📋 Kopyala</button>
+        <button class="copy-btn" onclick="copyCmd(${i}, this)">📋 Kopyala</button>
       </div>
       ${c.notes ? `<div class="cmd-notes">⚠️ ${escapeHtml(c.notes)}</div>` : ''}
     `;
     box.appendChild(div);
   });
 
-  // Explanation
-  if(d.explanation){
+  if(d.explanation && document.getElementById('expText')){
     document.getElementById('expText').textContent = d.explanation;
     document.getElementById('expBox').style.display = 'block';
-  } else { document.getElementById('expBox').style.display = 'none'; }
-
-  // Tips
-  const tips = d.tips || [];
-  if(tips.length){
-    const tl = document.getElementById('tipsList');
-    tl.innerHTML = tips.map(t=>`<div class="tip-item">${escapeHtml(t)}</div>`).join('');
-    document.getElementById('tipsBox').style.display = 'block';
-  } else { document.getElementById('tipsBox').style.display = 'none'; }
-
-  document.getElementById('dpWarn').style.display = d.requires_datapack ? 'flex' : 'none';
-
+  }
+  
   const rc = document.getElementById('resultCard');
   rc.style.display = 'block';
   rc.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
-function copyCmd(text, btn){
-  navigator.clipboard.writeText(text);
-  const original = btn.textContent;
-  btn.textContent = 'KOPYALANDI!';
-  btn.classList.add('active');
-
-  // Neon Parlama Efekti
-  const card = btn.closest('.result-card');
-  if(card) {
-    card.style.boxShadow = "0 0 30px var(--acc2)";
-    card.style.transition = "0.4s ease";
-    setTimeout(() => card.style.boxShadow = "none", 1000);
-  }
-
-  setTimeout(()=>{
-    btn.textContent = original;
-    btn.classList.remove('active');
-  }, 2000);
-}
+function copyCmd(i, btn){
   const txt = document.getElementById('cmd_'+i).textContent;
   navigator.clipboard.writeText(txt).then(()=>{
-    const btn = document.getElementById('copy_'+i);
+    const original = btn.textContent;
     btn.textContent = '✅ Kopyalandı';
-    btn.classList.add('copied');
-    setTimeout(()=>{ btn.textContent='📋 Kopyala'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(()=>{ btn.textContent = original; }, 2000);
   });
 }
 
@@ -565,8 +520,67 @@ function copyAll(){
   const all = (lastResult.commands||[]).map(c=>c.command).join('\n');
   navigator.clipboard.writeText(all).then(()=>{
     const btn = document.getElementById('copyAllBtn');
-    btn.textContent = '✅ Tüm Komutlar Kopyalandı!';
-    setTimeout(()=>{ btn.textContent='📋 Tüm Komutları Kopyala'; }, 2500);
+    if(btn) btn.textContent = '✅ Kopyalandı!';
+    setTimeout(()=>{ if(btn) btn.textContent='📋 Tümünü Kopyala'; }, 2500);
+  });
+}
+
+function showError(msg){
+  const errText = document.getElementById('errorMsg');
+  const errCard = document.getElementById('errorCard');
+  if(errText && errCard) {
+    errText.textContent = msg;
+    errCard.style.display = 'block';
+  } else { alert(msg); }
+}
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── History (Geçmiş) ── */
+let history = JSON.parse(localStorage.getItem('mc_cmd_history')||'[]');
+function saveHistory(version, idea, cmds){
+  const item = { version, idea: idea.slice(0,80), ts: Date.now() };
+  history = [item, ...history.filter(h=>h.idea!==item.idea)].slice(0,10);
+  localStorage.setItem('mc_cmd_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory(){
+  const grid = document.getElementById('histGrid');
+  if(!grid) return;
+  if(!history.length){ document.getElementById('histSection').style.display='none'; return; }
+  document.getElementById('histSection').style.display='block';
+  grid.innerHTML = history.map((h,i)=>`
+    <div class="hist-item" onclick="loadHistory(${i})">
+      <span class="hist-ver">${h.version}</span>
+      <span class="hist-idea">${escapeHtml(h.idea)}</span>
+      <button class="hist-del" onclick="delHistory(event,${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function loadHistory(i){
+  const h = history[i];
+  if(!inp) return;
+  inp.value = h.idea;
+  updateCount();
+  document.getElementById('versionSelect').value = h.version;
+  updateVerInfo();
+  inp.focus();
+}
+
+function delHistory(e, i){
+  e.stopPropagation();
+  history.splice(i,1);
+  localStorage.setItem('mc_cmd_history', JSON.stringify(history));
+  renderHistory();
+}
+</script>
+</body>
+</html>
+meout(()=>{ btn.textContent='📋 Tüm Komutları Kopyala'; }, 2500);
   });
 }
 
