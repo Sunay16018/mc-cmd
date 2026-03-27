@@ -208,12 +208,24 @@ footer a{color:var(--acc);text-decoration:none}
       <div class="logo-icon">⚡</div>
       <div>
         <div class="logo-name">MC COMMAND</div>
-        <div class="logo-ver">AI Generator · All Versions</div>
-      </div>
-    </div>
-    <div class="hdr-badge"><span class="dot"></span>Gemini 2.0 Flash</div>
+        <div class="logo-ver">AI Generator · All Versions<div></div>
   </div>
 </header>
+<div style="margin: 10px 0; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <p style="font-family:var(--fm); font-size:10px; color:white; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">— Reklam —</p>
+    <div style="min-height: 50px; display: flex; justify-content: center; align-items: center;">
+        <script>
+            atOptions = {
+                'key' : 'a7c48e0fb18bd31f7311ad4b86e82a70',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script src="https://turnstilesocially.com/a7c48e0fb18bd31f7311ad4b86e82a70/invoke.js"></script>
+    </div>
+</div>
 
 <!-- MAIN -->
 <div class="container">
@@ -288,7 +300,8 @@ footer a{color:var(--acc);text-decoration:none}
     </div>
 
     <!-- Generate -->
-    <button class="gen-btn" id="genBtn" onclick="generate()">
+    <button class="gen-btn" id="genBtn"
+    onclick="generate()">
       <span id="btnTxt">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Komut Üret
@@ -297,6 +310,11 @@ footer a{color:var(--acc);text-decoration:none}
         <span class="spin"></span> AI üretiyor...
       </span>
     </button>
+        <div style="margin-top: 25px; text-align: center;">
+        <p style="font-family:var(--fm); font-size:11px; color:white; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">— Sponsorlu İçerik / Reklamlar —</p>
+        <script async="async" data-cfasync="false" src="https://turnstilesocially.com/8b9d4f60e16171ffc2ac3b5e96dfe192/invoke.js"></script>
+        <div id="container-8b9d4f60e16171ffc2ac3b5e96dfe192"></div>
+    </div>
   </div>
 
   <!-- RESULT -->
@@ -345,16 +363,30 @@ footer a{color:var(--acc);text-decoration:none}
   </div>
 
   <!-- FEATURES -->
+  <div style="margin: 20px 0; text-align: center;">
+    <script async="async" data-cfasync="false" src="https://turnstilesocially.com/8b9d4f60e16171ffc2ac3b5e96dfe192/invoke.js"></script>
+    <div id="container-8b9d4f60e16171ffc2ac3b5e96dfe192"></div>
+</div>
+
+<footer>
+  <p>
+    MC Command Generator · 
+    <a href="https://youtube.com/@MinecraftKomutlariTurkce" target="_blank" style="color:var(--acc2); font-weight:bold;">
+      📺 Minecraft Komutları Türkçe YouTube Kanalı
+    </a> 
+    · 1.8 — 1.21.11
+  </p>
+</footer>
+
   <div class="features">
     <div class="feat"><div class="feat-ico">📅</div><h3>Tüm Sürümler</h3><p>1.8'den 1.21.11'e kadar sürüme özel doğru syntax</p></div>
-    <div class="feat"><div class="feat-ico">🤖</div><h3>Gemini 2.0 AI</h3><p>Google'ın AI'ı ile %100 çalışan komutlar üret</p></div>
     <div class="feat"><div class="feat-ico">📋</div><h3>Tek Tık Kopyala</h3><p>Her komutu anında panoya kopyala, oyuna yapıştır</p></div>
     <div class="feat"><div class="feat-ico">🕐</div><h3>Geçmiş</h3><p>Son üretilen komutlar kaydedilir, tekrar kullan</p></div>
   </div>
 </div>
 
 <footer>
-  <p>MC Command Generator · <a href="#">OpenRouter × Gemini 2.0 Flash Lite</a> · 1.8 — 1.21.11</p>
+  <p>MC Command Generator · </a> · 1.8 — 1.21.11</p>
 </footer>
 <script>
   let clickCount = 0; // Tıklamaları sayacak değişken
@@ -436,8 +468,8 @@ let lastResult = null;async function generate(){
   const idea = inp.value.trim();
 
   const version = document.getElementById('versionSelect').value;
-  const cmdType = document.getElementById('typeSelect') ? document.getElementById('typeSelect').value : 'All';
-
+  const cmdType = document.getElementById('cmdType') ? document.getElementById('cmdType').value : 'All';
+  
   setLoading(true);
   document.getElementById('resultCard').style.display = 'none';
   if(document.getElementById('errorCard')) document.getElementById('errorCard').style.display = 'none';
@@ -590,7 +622,6 @@ function delHistory(e, i){
 
     renderHistory();
 </script>
-
 <script src="https://pl28993059.profitablecpmratenetwork.com/18/91/e8/1891e81eb3ed08ab161b64f0fb5be3de.js"></script>
 
 <script src="https://pl28992732.profitablecpmratenetwork.com/94/6a/28/946a28d2167ad3c7dfeafbe850f5db4c.js"></script>
