@@ -259,13 +259,13 @@ footer a{color:var(--acc);text-decoration:none}
         <span>💬 Ne yapmak istiyorsun?</span>
         <span style="color:var(--tx3);font-size:.65rem;font-family:var(--fm)">Ctrl+Enter → Üret</span>
       </div>
-      <textarea id="ideaInput" class="idea-input" rows="4"
-        placeholder="Örn: Oyuncuya Sharpness 10 enchantlı kılıç ver, tüm oyuncuları koordinat 0 64 0'a teleport et, ekranda kırmızı 'GG' yazısı çıkar..."></textarea>
-      <div class="idea-footer">
-        <span><span id="charCount">0</span> karakter</span>
-        <span>Türkçe veya İngilizce yazabilirsin</span>
-      </div>
-    </div>
+    <textarea id="ideaInput" class="idea-input" rows="4" 
+    oninput="updateCount()"
+    placeholder="Örn: Oyuncuya Sharpness 10 enchantlı kılıç ver..."></textarea>
+<div class="idea-footer">
+    <span><span id="charCount">0</span> karakter</span>
+    <span>Türkçe veya İngilizce yazabilirsin</span>
+</div>
 
     <!-- Examples -->
     <div class="ex-section">
@@ -376,6 +376,13 @@ function updateVerInfo(){
   for(const [key,val] of Object.entries(verInfos)){
     if(v.startsWith(key.split('.').slice(0,2).join('.'))) desc = val;
   }
+function updateCount() {
+    const input = document.getElementById('ideaInput');
+    const count = document.getElementById('charCount');
+    if (input && count) {
+        count.textContent = input.value.length;
+    }
+}
   // exact match overrides
   if(verInfos[v]) desc = verInfos[v];
   document.getElementById('viDesc').textContent = desc;
