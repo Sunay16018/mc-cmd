@@ -351,7 +351,6 @@ footer a{color:var(--acc);text-decoration:none}
 <footer>
   <p>MC Command Generator · <a href="#">OpenRouter × Gemini 2.0 Flash Lite</a> · 1.8 — 1.21.11</p>
 </footer>
-
 <script>
 /* ── Versiyon Bilgisi ve Açıklamalar ── */
 const verInfos = {
@@ -540,6 +539,7 @@ function escapeHtml(s){
 
 /* ── History (Geçmiş) ── */
 let history = JSON.parse(localStorage.getItem('mc_cmd_history')||'[]');
+
 function saveHistory(version, idea, cmds){
   const item = { version, idea: idea.slice(0,80), ts: Date.now() };
   history = [item, ...history.filter(h=>h.idea!==item.idea)].slice(0,10);
@@ -571,61 +571,6 @@ function loadHistory(i){
   inp.focus();
 }
 
-function delHistory(e, i){
-  e.stopPropagation();
-  history.splice(i,1);
-  localStorage.setItem('mc_cmd_history', JSON.stringify(history));
-  renderHistory();
-}
-</script>
-</body>
-</html>
-meout(()=>{ btn.textContent='📋 Tüm Komutları Kopyala'; }, 2500);
-  });
-}
-
-function showError(msg){
-  document.getElementById('errorMsg').textContent = msg;
-  const ec = document.getElementById('errorCard');
-  ec.style.display = 'block';
-  ec.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-
-function escapeHtml(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ── History ── */
-let history = JSON.parse(localStorage.getItem('mc_cmd_history')||'[]');
-
-function saveHistory(version, idea, cmds){
-  const item = { version, idea: idea.slice(0,80), cmd: cmds[0]?.command || '', ts: Date.now() };
-  history = [item, ...history.filter(h=>h.idea!==item.idea)].slice(0,10);
-  localStorage.setItem('mc_cmd_history', JSON.stringify(history));
-  renderHistory();
-}
-
-function renderHistory(){
-  if(!history.length){ document.getElementById('histSection').style.display='none'; return; }
-  document.getElementById('histSection').style.display='block';
-  const grid = document.getElementById('histGrid');
-  grid.innerHTML = history.map((h,i)=>`
-    <div class="hist-item" onclick="loadHistory(${i})">
-      <span class="hist-ver">${h.version}</span>
-      <span class="hist-idea">${escapeHtml(h.idea)}</span>
-      <button class="hist-del" onclick="delHistory(event,${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function loadHistory(i){
-  const h = history[i];
-  inp.value = h.idea;
-  document.getElementById('charCount').textContent = h.idea.length;
-  document.getElementById('versionSelect').value = h.version;
-  updateVerInfo();
-  inp.focus();
-}
 function delHistory(e, i){
   e.stopPropagation();
   history.splice(i,1);
