@@ -455,21 +455,65 @@ function setEx(btn, text){
 }
 
 /* ── Komut Üretme (Generate) ── */
-let lastResult = null;async function generate(){
+let lastResult = null;
+let clickCount = 0; 
+
+async function generate() {
   if(!inp) return;
-  
-  // Reklam Sayacı Mantığı
+  const idea = inp.value.trim();
+  if(!idea) return;
+
+  // 1. Reklam Sayacı: Her 3 tıklamada bir SmartLink açar
   clickCount++;
   if(clickCount % 3 === 0) {
-    // Her 3 tıklamada bir SmartLink'i yeni sekmede açar
     window.open("https://www.profitablecpmratenetwork.com/j6uybqniym?key=9d0844e67c078c270eb06d0ccfd3bfae", "_blank");
   }
+
+  // 2. Form Verilerini Al (app.py'deki isimlerle aynı olmalı)
+  const version = document.getElementById('versionSelect').value;
+  const cmdType = document.getElementById('cmdType') ? document.getElementById('cmdType').value : 'All';
+
+  // 3. Butonu Yükleniyor Yap
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Üretiliyor...';
+
+  try {
+    // 4. Sunucuya (app.py) İstek Gönder
+    const res = await fetch('/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        idea: idea, 
+        version: version, 
+        command_type: cmdType 
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.success) {
+      renderResult(data);
+      // Geçmişe Kaydet
+      if(typeof saveHistory === 'function') {
+        saveHistory(version, idea, data.commands);
+      }
+    } else {
+      alert("Hata: " + (data.error || "Bilinmeyen bir sorun oluştu."));
+    }
+  } catch(e) {
+    console.error("Hata:", e);
+    alert("Sunucuya bağlanılamadı. app.py'nin çalıştığından emin ol!");
+  } finally {
+    // 5. Butonu Eski Haline Getir
+    btn.disabled = false;
+    btn.innerHTML = '<span>⚡</span> Komut Üret';
+  }
+}
 
   const idea = inp.value.trim();
 
   const version = document.getElementById('versionSelect').value;
-  const cmdType = document.getElementById('typeSelect') ? document.getElementById('typeSelect').value : 'All';
-  
+  const cmdType = document.getElementById('cmdType') ? document.getElementById('cmdType').value : 'All';
   setLoading(true);
   document.getElementById('resultCard').style.display = 'none';
   if(document.getElementById('errorCard')) document.getElementById('errorCard').style.display = 'none';
@@ -627,3 +671,10 @@ function delHistory(e, i){
 <script src="https://pl28992732.profitablecpmratenetwork.com/94/6a/28/946a28d2167ad3c7dfeafbe850f5db4c.js"></script>
 </body>
 </html>
+
+
+afbe850f5db4c.js"></script>
+</body>
+</html>
+
+
