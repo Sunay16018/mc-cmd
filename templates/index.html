@@ -468,7 +468,7 @@ let lastResult = null;async function generate(){
   const idea = inp.value.trim();
 
   const version = document.getElementById('versionSelect').value;
-  const cmdType = document.getElementById('cmdType') ? document.getElementById('cmdType').value : 'All';
+  const cmdType = document.getElementById('typeSelect') ? document.getElementById('typeSelect').value : 'All';
   
   setLoading(true);
   document.getElementById('resultCard').style.display = 'none';
