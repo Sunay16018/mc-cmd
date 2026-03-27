@@ -413,18 +413,42 @@ async function generate(){
   document.getElementById('errorCard').style.display = 'none';
 
   try {
-    const res = await fetch('/generate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({idea, version, command_type: cmdType})
+        // Vercel'de rotanın tam çözülmesi için window.location.origin eklendi
+    const res = await fetch(`${window.location.origin}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        idea: idea, 
+        version: version, 
+        command_type: cmdType
+      })
     });
-    const d = await res.json();
-    if(!res.ok || !d.success){ showError(d.error || 'Bilinmeyen hata'); return; }
+
+    // Sunucu yanıtını güvenli bir şekilde al
+    const d = await res.json().catch(() => ({ success: false, error: "Sunucudan geçersiz yanıt (JSON değil) geldi." }));
+
+    if (!res.ok || d.success === false) {
+      showError(d.error || `Hata oluştu (Kod: ${res.status})`);
+      return;
+    }
+
     lastResult = d;
     showResult(d);
+    
+    // BAŞARI EFEKTİ: Sonuç kartını yeşil neon ile parlat
+    const resultCard = document.getElementById('resultCard');
+    if(resultCard) {
+      resultCard.style.boxShadow = "0 0 30px var(--acc2)";
+      resultCard.style.transition = "0.4s ease";
+      setTimeout(() => resultCard.style.boxShadow = "none", 1500);
+    }
+
     saveHistory(version, idea, d.commands);
-  } catch(e){
-    showError('Sunucuya bağlanılamadı: ' + e.message);
+  } catch(e) {
+    console.error("İstek hatası:", e);
+    showError('Sunucuya ulaşılamadı: ' + e.message);
   } finally {
     setLoading(false);
   }
