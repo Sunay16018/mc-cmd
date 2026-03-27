@@ -259,9 +259,9 @@ footer a{color:var(--acc);text-decoration:none}
         <span>💬 Ne yapmak istiyorsun?</span>
         <span style="color:var(--tx3);font-size:.65rem;font-family:var(--fm)">Ctrl+Enter → Üret</span>
       </div>
-    <textarea id="ideaInput" class="idea-input" rows="4" 
-    oninput="updateCount()"
-    placeholder="Örn: Oyuncuya Sharpness 10 enchantlı kılıç ver..."></textarea>
+   <textarea id="ideaInput" class="idea-input" rows="4" 
+    oninput="updateCount()" 
+    placeholder="Örn: Elmas kılıç ver..."></textarea>
 <div class="idea-footer">
     <span><span id="charCount">0</span> karakter</span>
     <span>Türkçe veya İngilizce yazabilirsin</span>
@@ -389,13 +389,34 @@ function updateCount() {
 }
 updateVerInfo();
 
-/* ── Char Count ── */
-const inp = document.getElementById('ideaInput');
-inp.addEventListener('input',()=>{
-  document.getElementById('charCount').textContent = inp.value.length;
-});
-inp.addEventListener('keydown',e=>{
-  if(e.ctrlKey && e.key==='Enter') generate();
+/* ── Karakter Sayacı ve Tuş Kontrolü ── */
+// Sayfa tamamen yüklendiğinde çalışması için 'DOMContentLoaded' içine aldık
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('ideaInput');
+  const countDisp = document.getElementById('charCount');
+
+  if (inp && countDisp) {
+    // Yazdıkça sayacı güncelle
+    inp.addEventListener('input', () => {
+      countDisp.textContent = inp.value.length;
+    });
+
+    // Ctrl + Enter ile komut üret
+    inp.addEventListener('keydown', e => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        // Fonksiyon isminin 'generateCommand' olduğundan emin ol!
+        if (typeof generateCommand === "function") {
+          generateCommand();
+        } else if (typeof generate === "function") {
+          generate();
+        }
+      }
+    });
+    
+    console.log("Karakter sayacı ve kontroller başarıyla bağlandı.");
+  } else {
+    console.error("Hata: ideaInput veya charCount bulunamadı!");
+  }
 });
 
 /* ── Examples ── */
