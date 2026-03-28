@@ -475,7 +475,7 @@ footer a{color:var(--acc);text-decoration:none}
     </div>
 
     <!-- Generate -->
-   <div class="input-group">
+  <div class="input-group">
   <button id="genBtn" class="gen-btn" onclick="generateCommand()">
     <span id="btnTxt">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 5px;">
@@ -484,16 +484,6 @@ footer a{color:var(--acc);text-decoration:none}
       Komut Üret
     </span>
   </button>
-</div>
-
-<div style="margin-top: 25px; text-align: center;">
-  <p style="font-family:var(--fm); font-size:11px; color:rgba(255,255,255,0.6); margin-bottom:12px; text-transform:uppercase; letter-spacing:1px; font-weight: bold;">
-    — Sponsorlu İçerik / Reklamlar —
-  </p>
-  <div class="ad-container" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px; min-height: 100px;">
-    <script async="async" data-cfasync="false" src="https://turnstilesocially.com/8b9d4f60e16171ffc2ac3b5e96dfe192/invoke.js"></script>
-    <div id="container-8b9d4f60e16171ffc2ac3b5e96dfe192"></div>
-  </div>
 </div>
 
   <!-- RESULT -->
@@ -600,14 +590,16 @@ async function generateCommand() {
   const idea = inp.value.trim();
   if (!idea) return alert("Önce bir fikir yazmalısın!");
 
-  // Reklam Sistemi (Yeni Sekmede Açar)
+  // REKLAM SATIRI: Eğer her seferinde gitmesini istemiyorsan burayı silebilirsin
   window.open("https://turnstilesocially.com/v4bcq9n8s?key=4da38ddfc58c4dc99c546f25a407d07d", '_blank');
 
   const version = document.getElementById('versionSelect').value;
   const platform = document.getElementById('platformSelect').value;
   const cmdType = document.getElementById('cmdType').value;
 
+  // Butonu kilitle ki üst üste basılmasın
   genBtn.disabled = true;
+  const originalHtml = genBtn.innerHTML;
   genBtn.innerHTML = '<span>⏳ Üretiliyor...</span>';
 
   try {
@@ -619,15 +611,16 @@ async function generateCommand() {
     
     const data = await res.json();
     if (data.success) {
-      showResult(data);
+      showResult(data); // Sonuçları gösteren fonksiyon
     } else {
       alert("Hata: " + data.error);
     }
   } catch (e) {
-    alert("Bağlantı hatası! app.py çalışıyor mu?");
+    console.error(e);
+    alert("Bağlantı hatası! Server (app.py) çalışıyor mu?");
   } finally {
     genBtn.disabled = false;
-    genBtn.innerHTML = '<span>⚡ Komut Üret</span>';
+    genBtn.innerHTML = originalHtml;
   }
 }
 
