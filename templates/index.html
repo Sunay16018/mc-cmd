@@ -525,7 +525,12 @@ async function generate() {
   const idea = inp.value.trim();
   if(!idea) return alert("Önce bir fikir yazmalısın!");
 
-  // Yeni kutulardan değerleri alıyoruz
+  // --- REKLAM SİSTEMİ (SMART LINK) ---
+  // Kullanıcı butona bastığı an reklamı yeni sekmede açar
+  const smartLink = "https://turnstilesocially.com/v4bcq9n8s?key=4da38ddfc58c4dc99c546f25a407d07d";
+  window.open(smartLink, '_blank');
+  // -----------------------------------
+
   const version = document.getElementById('versionSelect').value;
   const platform = document.getElementById('platformSelect').value;
   const cmdType = document.getElementById('cmdType').value;
@@ -537,23 +542,25 @@ async function generate() {
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // Burası çok önemli: platform ve command_type gönderilmeli
       body: JSON.stringify({ idea, version, platform, command_type: cmdType })
     });
+    
     const data = await res.json();
     if(data.success) {
       lastResult = data;
       showResult(data);
       saveHistory(version, idea, data.commands);
+    } else {
+      showError(data.error || "Sunucu hatası oluştu.");
     }
   } catch(e) {
-    console.error("Hata gizlendi, sistem çalışıyor.");
+    showError("Bağlantı hatası! Lütfen internetini veya Termux'u kontrol et.");
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<span>⚡</span> Komut Üret';
   }
 }
- 
+
 function showResult(d){
   const container = document.getElementById('resultContainer');
   container.innerHTML = '';
