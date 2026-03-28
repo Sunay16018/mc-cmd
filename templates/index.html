@@ -489,8 +489,8 @@ async function generate() {
       alert("Hata: " + (data.error || "Sunucu hatası."));
     }
   } catch(e) {
-    console.error(e);
-    alert("Bağlantı hatası! app.py çalışıyor mu?");
+    console.error("Bağlantı detayı:", e);
+    // alert uyarısını sildik, sadece konsola yazacak
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<span>⚡</span> Komut Üret';
