@@ -634,15 +634,27 @@ function showResult(d) {
   
   cmdBlocks.innerHTML = ''; // Eski sonuçları temizle
   
-  d.commands.forEach((item, index) => {
+  // AI'dan gelen veriyi kontrol et (d.commands veya d.result olabilir)
+  const commands = d.commands || d.result || [];
+  
+  if (!Array.isArray(commands) || commands.length === 0) {
+    cmdBlocks.innerHTML = '<p style="color:#ff4444; padding:15px; text-align:center;">⚠️ Komut formatı anlaşılamadı. Lütfen tekrar deneyin.</p>';
+    return;
+  }
+
+  commands.forEach((item, index) => {
+    // AI bazen 'cmd' yerine 'command', 'desc' yerine 'description' diyebilir. Hepsini kontrol ediyoruz:
+    const cmdText = item.cmd || item.command || "Komut bulunamadı";
+    const cmdDesc = item.desc || item.description || item.explanation || "Açıklama yok";
+
     cmdBlocks.innerHTML += `
-      <div class="cmd-block animate-in">
-        <p class="cmd-desc">${escapeHtml(item.desc)}</p>
-        <div class="cmd-box">
-          <div class="cmd-num">${index + 1}</div>
-          <code class="cmd-text" id="cmd_${index}">${escapeHtml(item.cmd)}</code>
-          <button class="copy-btn" onclick="copyCmd(${index}, this)">📋 Kopyala</button>
+      <div class="cmd-block animate-in" style="background: rgba(255,255,255,0.05); margin-bottom: 15px; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="cmd-box" style="display: flex; align-items: center; gap: 10px; background: #0a0a0a; padding: 12px; border-radius: 8px; border: 1px solid #333;">
+          <div class="cmd-num" style="background: #ff0000; color: white; min-width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: bold; font-size: 12px;">${index + 1}</div>
+          <code class="cmd-text" id="cmd_${index}" style="flex-grow: 1; color: #00ffaa; font-family: 'Courier New', monospace; font-size: 14px; word-break: break-all;">${escapeHtml(cmdText)}</code>
+          <button class="copy-btn" onclick="copyCmd(${index}, this)" style="background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 12px;">📋 Kopyala</button>
         </div>
+        <p class="cmd-desc" style="margin-top: 10px; color: #bbb; font-size: 13px; line-height: 1.4; padding-left: 5px;">${escapeHtml(cmdDesc)}</p>
       </div>`;
   });
   
@@ -652,6 +664,13 @@ function showResult(d) {
   }
 }
 
+// Güvenlik için HTML karakterlerini temizleyen yardımcı fonksiyon (EĞER YOKSA EKLE)
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function copyCmd(id, btn) {
   const txt = document.getElementById('cmd_' + id).textContent;
   navigator.clipboard.writeText(txt).then(() => {
@@ -659,10 +678,6 @@ function copyCmd(id, btn) {
     btn.innerHTML = '✅ Kopyalandı';
     setTimeout(() => { btn.innerHTML = oldText; }, 2000);
   });
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
