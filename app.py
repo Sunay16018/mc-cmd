@@ -1,9 +1,30 @@
 import os, json, re
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory # Buraya send_from_directory ekledik
 import requests
 from requests.adapters import HTTPAdapter
 
 app = Flask(__name__)
+
+# --- BURADAN BAŞLA ---
+@app.route('/icon.png')
+def icon():
+    return send_from_directory('.', 'icon.png')
+
+@app.route('/logo.png')
+def logo():
+    return send_from_directory('.', 'logo.png')
+
+@app.route('/kanal.png')
+def kanal():
+    return send_from_directory('.', 'kanal.png')
+
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('.', 'manifest.json')
+
+@app.route('/sw.js')
+def sw():
+    return send_from_directory('.', 'sw.js')
 
 # API Ayarları (Güvenli Yöntem)
 API_KEY = os.environ.get("OPENROUTER_API_KEY")
