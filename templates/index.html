@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html "tr">
 <head>
-<link rel="icon" type="image/png" href="icon.png" />
+<link rel="icon" type="image/png" href="/icon.png" />
 
 <title>Minecraft Komut Üretici — Tüm Sürümler (1.8 - 1.21.11)</title>
 
 <meta name="description" content="En gelişmiş Minecraft komut üretici! AI desteği ile 1.21 components dahil tüm sürümlere özel hatasız komutlar oluşturun." />
 
 <meta name="keywords" content="minecraft komut üretici, mc command generator, minecraft ai, minecraft 1.21 commands, minecraft türkçe komut" />
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#ff0000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(reg => console.log('PWA Kayıt Başarılı!', reg))
+        .catch(err => console.log('PWA Kayıt Hatası:', err));
+    });
+  }
+</script>
 <meta charset="UTF-8"/>
 <meta name="google-site-verification" content="onX5VUeM-Enpij9BynUHizMkcDYfcPclDc25L54TODA" />
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -207,6 +220,95 @@ footer a{color:var(--acc);text-decoration:none}
 .badge-chat { background: #3498db; color: white; border: 1px solid #2980b9; }
 .badge-block { background: #e67e22; color: white; border: 1px solid #d35400; }
 .card-header { display: flex; align-items: center; margin-bottom: 10px; }
+/* Ana Kapsayıcı */
+.super-channel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    perspective: 1000px; /* 3D efekt için */
+}
+
+/* Link ve Hizalama */
+.super-channel-link {
+    display: flex;
+    flex-direction: column; /* İkon üstte, yazı altta */
+    align-items: center;
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+/* Devasa Kanal İkonu */
+.super-channel-icon {
+    width: 120px; /* Bayağı büyük yapıyoruz */
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid transparent; /* Gökkuşağı çerçeve için */
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7); /* YouTube kırmızısı parlama */
+    background-image: linear-gradient(white, white), linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    animation: rotateBorder 3s linear infinite; /* Çerçeve dönsün */
+    margin-bottom: 15px;
+    transition: 0.5s ease-in-out;
+}
+
+/* Yazı Paketi */
+.super-channel-text-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* RENKLİ, BÜYÜK, ANİMASYONLU VE ALTI ÇİZGİLİ YAZI */
+.super-channel-name {
+    font-size: 36px; /* Devasa boyut */
+    font-weight: 900;
+    text-transform: uppercase; /* Hepsini büyük harf yap */
+    letter-spacing: 2px;
+    
+    /* Gökkuşağı Renk Animasyonu */
+    background: linear-gradient(to right, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbowText 3s linear infinite;
+    
+    /* İSTEDİĞİN ALTTAN ÇİZGİ */
+    text-decoration: underline; 
+    text-underline-offset: 10px; /* Çizgiyi yazıdan uzaklaştırır */
+    text-decoration-color: rgba(255, 255, 255, 0.5); /* Çizgi rengi */
+    text-decoration-thickness: 3px; /* Çizgi kalınlığı */
+    
+    transition: 0.3s;
+    display: inline-block;
+}
+
+/* HOVER EFEKTLERİ */
+.super-channel-link:hover .super-channel-icon {
+    transform: scale(1.1) rotate(5deg); /* Büyü ve hafif dön */
+    box-shadow: 0 0 40px rgba(255, 0, 0, 1);
+}
+
+.super-channel-link:hover .super-channel-name {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Yazı parlasın */
+    text-decoration-color: #ffffff; /* Çizgi parlasın */
+    transform: translateY(-5px); /* Hafif yukarı kalksın */
+}
+
+/* ANİMASYON TANIMLAMALARI */
+
+/* 1. Gökkuşağı Yazı Renk Değişimi */
+@keyframes rainbowText {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+/* 2. İkon Çerçeve Dönüşü */
+@keyframes rotateBorder {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
 </style>
 </head>
 <body>
@@ -249,6 +351,14 @@ footer a{color:var(--acc);text-decoration:none}
       İstediğin Komutu<br/>
       <span>Saniyeler İçinde</span> Al
     </h1>
+    <div class="super-channel-container">
+    <a href="https://www.youtube.com/@MCKomutları" target="_blank" class="super-channel-link">
+        <img src="/logo.png" alt="MC Komutları Kanal İkonu" class="super-channel-icon">
+        <div class="super-channel-text-wrapper">
+            <span class="super-channel-name">MC Komutları YouTube Kanalı</span>
+        </div>
+    </a>
+</div>
     <p class="hero-desc">1.8'den 1.21.11'e kadar tüm sürümler desteklenir. Sürüme özel doğru syntax, hazır kopyalanabilir komutlar.</p>
   </div>
 
@@ -400,16 +510,6 @@ footer a{color:var(--acc);text-decoration:none}
     <script async="async" data-cfasync="false" src="https://turnstilesocially.com/8b9d4f60e16171ffc2ac3b5e96dfe192/invoke.js"></script>
     <div id="container-8b9d4f60e16171ffc2ac3b5e96dfe192"></div>
 </div>
-
-<footer>
-  <p>
-    MC Command Generator · 
-    <a href="https://youtube.com/@MinecraftKomutlariTurkce" target="_blank" style="color:var(--acc2); font-weight:bold;">
-      📺 Minecraft Komutları Türkçe YouTube Kanalı
-    </a> 
-    · 1.8 — 1.21.11
-  </p>
-</footer>
 
   <div class="features">
     <div class="feat"><div class="feat-ico">📅</div><h3>Tüm Sürümler</h3><p>1.8'den 1.21.11'e kadar sürüme özel doğru syntax</p></div>
