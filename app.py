@@ -209,48 +209,56 @@ def index():
 def ping():
     return jsonify({"ok":True,"model":MODEL})
 
-@app.route("/generate",methods=["POST"])
+@app.route('/generate', methods=['POST'])
 def generate():
-    data=request.get_json(silent=True) or {}
-    idea=(data.get("idea") or "").strip()
-    version=data.get("version","1.21.8")
-    cmd_type=data.get("command_type","custom / complex system")
-    print(f"[CMD] v={version} era={get_era(version)} idea={idea[:60]}")
-    if len(idea)<3: return jsonify({"error":"Çok kısa!"}),400
-    user_msg=(
-        f"Minecraft version: {version}\n"
-        f"Command type: {cmd_type}\n"
-        f"Request: {idea}\n\n"
-        "IMPORTANT: Write ALL commands in English only. Never translate command syntax to Turkish. "
-        "For where_to_run field use exactly: 'REPEATING COMMAND BLOCK (Always Active)', "
-        "'CHAIN COMMAND BLOCK (Always Active)', 'IMPULSE COMMAND BLOCK', or 'CHAT / CONSOLE'. "
-        "Generate the most professional, complete, and correct commands for this exact version."
+    data = request.json
+    idea = data.get("idea")
+    version = data.get("version")
+    platform = data.get("platform", "Java")
+    cmd_type = data.get("command_type", "All")
+
+    if not idea or not version:
+        return jsonify({"success": False, "error": "Eksik veri!"}), 400
+
+    # Yapay zekaya giden mesajı platform ve türe göre güncelledik
+    user_msg = (
+        f"Minecraft {platform} Edition {version} sürümü için şu fikirle ilgili komutlar üret: {idea}. "
+        f"Seçilen kategori: {cmd_type}. Lütfen her komutun 'place' (Sohbet veya Komut Bloğu) bilgisini "
+        f"JSON formatında 'commands' listesi içinde döndür."
     )
+
     try:
-        raw=call_api([{"role":"system","content":get_system(version)},{"role":"user","content":user_msg}])
+        raw = call_api([
+            {"role": "system", "content": get_system(version)},
+            {"role": "user", "content": user_msg}
+        ])
         print(f"[CMD] raw_len={len(raw)}")
-    except requests.exceptions.Timeout: return jsonify({"error":"API zaman aşımı. Tekrar dene."}),504
-    except requests.exceptions.ConnectionError as e: return jsonify({"error":f"Bağlantı: {str(e)[:60]}"}),503
-    except requests.exceptions.HTTPError as e:
-        c=e.response.status_code
-        if c==401: return jsonify({"error":"API key hatalı."}),401
-        if c==429: return jsonify({"error":"Rate limit."}),429
-        return jsonify({"error":f"HTTP {c}"}),500
-    except Exception as e: return jsonify({"error":str(e)[:200]}),500
-    try: parsed=parse(raw)
-    except Exception as e: return jsonify({"error":"Parse hatası: "+str(e)[:150]}),500
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "API zaman aşımı. Tekrar dene."}), 504
+    except Exception as e:
+        return jsonify({"error": str(e)[:200]}), 500
+
+    try:
+        parsed = parse(raw)
+    except Exception as e:
+        return jsonify({"error": "Parse hatası: " + str(e)[:150]}), 500
+
     return jsonify({
-        "success":True,"version":version,"era":get_era(version),"command_type":cmd_type,
-        "commands":parsed.get("commands",[]),"explanation":parsed.get("explanation",""),
-        "execution_order":parsed.get("execution_order",""),
-        "multiple_commands":parsed.get("multiple_commands",False),
-        "requires_datapack":parsed.get("requires_datapack",False),
-        "requires_command_block":parsed.get("requires_command_block",False),
-        "tips":parsed.get("tips",[]),"common_mistakes":parsed.get("common_mistakes",[])
+        "success": True,
+        "version": version,
+        "platform": platform,
+        "command_type": cmd_type,
+        "commands": parsed.get("commands", []),
+        "explanation": parsed.get("explanation", ""),
+        "execution_order": parsed.get("execution_order", ""),
+        "multiple_commands": parsed.get("multiple_commands", False),
+        "requires_datapack": parsed.get("requires_datapack", False),
+        "requires_command_block": parsed.get("requires_command_block", False),
+        "tips": parsed.get("tips", []),
+        "common_mistakes": parsed.get("common_mistakes", [])
     })
 
 if __name__ == "__main__":
+    # Render.com veya Termux için uyumlu port ayarı
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-
-app.app = app
