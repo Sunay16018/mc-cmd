@@ -224,8 +224,12 @@ def parse(raw):
 
 @app.route("/")
 def index():
-    return render_template("index.html",versions=VERSIONS,command_types=COMMAND_TYPES)
-
+    # Sürümleri ve komut tiplerini HTML'e gönderiyoruz ki dropdown'lar dolsun
+    return render_template(
+        "index.html", 
+        versions=VERSIONS, 
+        command_types=COMMAND_TYPES
+    )
 @app.route("/ping")
 def ping():
     return jsonify({"ok":True,"model":MODEL})
