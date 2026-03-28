@@ -1,21 +1,44 @@
 {
-  "name": "MC Komutları AI",
-  "short_name": "MC Komutlar",
-  "description": "Yapay Zeka Destekli Minecraft Komut Üreticisi",
-  "start_url": "/templates/index.html",
+  "name": "SantaCraft AI: Minecraft Komut Oluşturucu",
+  "short_name": "SantaCraft AI",
+  "description": "Minecraft Java ve Bedrock için yapay zeka destekli, profesyonel komut oluşturma aracı.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
+  "background_color": "#0a0a0a",
   "theme_color": "#ff0000",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "tr-TR",
+  "categories": ["entertainment", "games", "utilities"],
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/logo.png",
+      "src": "/icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Yapay Zeka ile Komut Üret"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Yeni Komut Üret",
+      "short_name": "Üret",
+      "url": "/?action=generate",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
     }
   ]
 }
