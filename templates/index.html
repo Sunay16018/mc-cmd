@@ -573,33 +573,32 @@ function updateVerInfo() {
   if (verInfos[v]) {
     desc = verInfos[v];
   } else {
-    const mainVer = v.split('.').slice(0, 2).join('.');
-    if (verInfos[mainVer]) desc = verInfos[mainVer];
+    const vNum = parseFloat(v);
+    if (vNum < 1.13) desc = "Legacy Syntax (Eski)";
+    else if (vNum >= 1.205) desc = "Components Syntax (Yeni)";
   }
   if (viDesc) viDesc.textContent = desc;
 }
 
 function updateCount() {
-  if (inp && charCount) {
-    charCount.textContent = inp.value.length;
+  const cCount = document.getElementById('charCount');
+  const ideaInp = document.getElementById('ideaInput');
+  if (ideaInp && cCount) {
+    cCount.textContent = ideaInp.value.length;
   }
 }
 
 async function generateCommand() {
-  // 1. Girdi kontrolü
-  const idea = inp.value.trim();
-  if (!idea) {
-    alert("Önce bir fikir yazmalısın!");
-    return;
-  }
+  const ideaInp = document.getElementById('ideaInput');
+  const idea = ideaInp.value.trim();
+  if (!idea) return alert("Önce bir fikir yazmalısın!");
 
-  // 2. Butonu kilitle ve yükleniyor animasyonunu göster
+  genBtn = document.getElementById('genBtn');
   genBtn.disabled = true;
-  const originalContent = genBtn.innerHTML;
+  const originalHtml = genBtn.innerHTML;
   genBtn.innerHTML = '<span>⏳ Üretiliyor...</span>';
 
   try {
-    // 3. API'ye isteği gönder
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -614,42 +613,36 @@ async function generateCommand() {
     const data = await res.json();
 
     if (data.success) {
-      // 4. Komut başarıyla üretildiyse sonucu göster
       showResult(data);
-
-      // 5. REKLAM BURADA AÇILMALI (Sadece başarı durumunda ve en sonda)
+      // Reklamı sadece başarı durumunda açıyoruz
       window.open("https://turnstilesocially.com/v4bcq9n8s?key=4da38ddfc58c4dc99c546f25a407d07d", '_blank');
     } else {
       alert("Hata: " + data.error);
     }
   } catch (e) {
-    console.error(e);
-    alert("Bağlantı hatası! Sunucu (app.py) çalışıyor mu?");
+    alert("Bağlantı hatası! Sunucu çalışıyor mu?");
   } finally {
-    // 6. İşlem bitince butonu eski haline getir
     genBtn.disabled = false;
-    genBtn.innerHTML = originalContent;
+    genBtn.innerHTML = originalHtml;
   }
 }
 
 function showResult(d) {
-  const container = document.getElementById('resultContainer');
+  const cmdBlocks = document.getElementById('cmdBlocks');
   const resultCard = document.getElementById('resultCard');
-  if (!container) return;
+  if (!cmdBlocks) return;
   
-  container.innerHTML = '';
+  cmdBlocks.innerHTML = ''; // Eski sonuçları temizle
+  
   d.commands.forEach((item, index) => {
-    container.innerHTML += `
-      <div class="result-card animate-in">
-        <div class="card-header">
-          <span class="cmd-id">#${index + 1}</span>
-          <span class="cmd-badge">${item.place || 'Sohbet'}</span>
-        </div>
-        <div class="code-box">
-          <code id="cmd_${index}">${escapeHtml(item.cmd)}</code>
+    cmdBlocks.innerHTML += `
+      <div class="cmd-block animate-in">
+        <p class="cmd-desc">${escapeHtml(item.desc)}</p>
+        <div class="cmd-box">
+          <div class="cmd-num">${index + 1}</div>
+          <code class="cmd-text" id="cmd_${index}">${escapeHtml(item.cmd)}</code>
           <button class="copy-btn" onclick="copyCmd(${index}, this)">📋 Kopyala</button>
         </div>
-        <p class="cmd-desc">${escapeHtml(item.desc)}</p>
       </div>`;
   });
   
@@ -672,18 +665,7 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-/* ── Sayfa Yüklendiğinde Her Şeyi Bağla ── */
 document.addEventListener('DOMContentLoaded', () => {
-  inp = document.getElementById('ideaInput');
-  charCount = document.getElementById('charCount');
-  genBtn = document.getElementById('genBtn');
-
-  if (inp) inp.addEventListener('input', updateCount);
-  if (genBtn) genBtn.onclick = generateCommand;
-  
-  const vSelect = document.getElementById('versionSelect');
-  if (vSelect) vSelect.addEventListener('change', updateVerInfo);
-
   updateVerInfo();
   updateCount();
 });
