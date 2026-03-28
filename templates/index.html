@@ -569,44 +569,16 @@ function saveHistory(version, idea, cmds){
   const item = { version, idea: idea.slice(0,80), ts: Date.now() };
   history = [item, ...history.filter(h=>h.idea!==item.idea)].slice(0,10);
   localStorage.setItem('mc_cmd_history', JSON.stringify(history));
+    localStorage.setItem('mc_cmd_history', JSON.stringify(history));
   renderHistory();
+} // <--- Eksik olan ve her şeyi bozan parantez buydu!
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-function renderHistory(){
-  const grid = document.getElementById('histGrid');
-  if(!grid) return;
-  if(!history.length){ document.getElementById('histSection').style.display='none'; return; }
-  document.getElementById('histSection').style.display='block';
-  grid.innerHTML = history.map((h,i)=>`
-    <div class="hist-item" onclick="loadHistory(${i})">
-      <span class="hist-ver">${h.version}</span>
-      <span class="hist-idea">${escapeHtml(h.idea)}</span>
-      <button class="hist-del" onclick="delHistory(event,${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function loadHistory(i){
-  const h = history[i];
-  if(!inp) return;
-  inp.value = h.idea;
-  updateCount();
-  document.getElementById('versionSelect').value = h.version;
-  updateVerInfo();
-  inp.focus();
-}
-
-function delHistory(e, i){
-  e.stopPropagation();
-  history.splice(i,1);
-  localStorage.setItem('mc_cmd_history', JSON.stringify(history));
-
-    renderHistory();
 </script>
-<script src="https://pl28993059.profitablecpmratenetwork.com/18/91/e8/1891e81eb3ed08ab161b64f0fb5be3de.js"></script>
 
+<script src="https://pl28993059.profitablecpmratenetwork.com/18/91/e8/1891e81eb3ed08ab161b64f0fb5be3de.js"></script>
 <script src="https://pl28992732.profitablecpmratenetwork.com/94/6a/28/946a28d2167ad3c7dfeafbe850f5db4c.js"></script>
 </body>
 </html>
-
-
