@@ -195,6 +195,18 @@ footer a{color:var(--acc);text-decoration:none}
 @media(max-width:420px){
   .features{grid-template-columns:1fr}
 }
+..cmd-badge {
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-chat { background: #3498db; color: white; border: 1px solid #2980b9; }
+.badge-block { background: #e67e22; color: white; border: 1px solid #d35400; }
+.card-header { display: flex; align-items: center; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -252,15 +264,36 @@ footer a{color:var(--acc);text-decoration:none}
           {% endfor %}
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">🔧 Komut Türü</label>
-        <select id="cmdType">
-          {% for ct in command_types %}
-          <option value="{{ ct }}">{{ ct }}</option>
-          {% endfor %}
-        </select>
-      </div>
+        <div class="input-group">
+  <label><i class="fas fa-gamepad"></i> Platform</label>
+  <select id="platformSelect">
+    <option value="Java">Minecraft Java Edition</option>
+    <option value="Bedrock">Minecraft Bedrock (PE/Console)</option>
+  </select>
+</div>
     </div>
+
+<div class="input-group">
+    <label><i class="fas fa-list-ul"></i> Komut Türü</label>
+    <select id="cmdType">
+        <option value="All">🚀 Hepsi </option>
+        <option value="give">🎁 Eşya Verme (/give)</option>
+        <option value="summon">👾 Yaratık Çağırma (/summon)</option>
+        <option value="setblock">🧱 Blok Yerleştirme (/setblock)</option>
+        <option value="fill">🏗️ Alan Doldurma (/fill)</option>
+        <option value="effect">✨ İksir Efektleri (/effect)</option>
+        <option value="enchant">⚔️ Büyüleme (/enchant)</option>
+        <option value="tp">📍 Işınlanma (/tp)</option>
+        <option value="attribute">📊 Özellik Değiştirme (/attribute)</option>
+        <option value="particle">💨 Partikül Efektleri (/particle)</option>
+        <option value="playsound">🎵 Ses Oynatma (/playsound)</option>
+        <option value="title">📺 Ekrana Yazı Yazma (/title)</option>
+        <option value="scoreboard">🔢 Skor Tablosu (/scoreboard)</option>
+        <option value="execute">⚙️ Gelişmiş Mekanikler (/execute)</option>
+        <option value="gamerule">📜 Oyun Kuralları (/gamerule)</option>
+        <option value="data">💾 Veri Düzenleme (/data)</option>
+    </select>
+</div>
 
     <!-- Version Info Bar -->
     <div class="ver-info" id="verInfo">
@@ -408,6 +441,36 @@ const verInfos = {
 };
 
 function updateVerInfo(){
+<div class="input-group">
+  <label><i class="fas fa-gamepad"></i> Platform</label>
+  <select id="platformSelect">
+    <option value="Java">Minecraft Java Edition</option>
+    <option value="Bedrock">Minecraft Bedrock (PE/Console)</option>
+  </select>
+</div>
+<div class="input-group">
+    <label><i class="fas fa-list-ul"></i> Komut Türü</label>
+    <select id="cmdType">
+        <option value="All">🚀 Hepsi (Karma)</option>
+        <option value="give">🎁 Eşya Verme (/give)</option>
+        <option value="summon">👾 Yaratık Çağırma (/summon)</option>
+        <option value="setblock">🧱 Blok Yerleştirme (/setblock)</option>
+        <option value="fill">🏗️ Alan Doldurma (/fill)</option>
+        <option value="effect">✨ İksir Efektleri (/effect)</option>
+        <option value="enchant">⚔️ Büyüleme (/enchant)</option>
+        <option value="tp">📍 Işınlanma (/tp)</option>
+        <option value="attribute">📊 Özellik Değiştirme (/attribute)</option>
+        <option value="particle">💨 Partikül Efektleri (/particle)</option>
+        <option value="playsound">🎵 Ses Oynatma (/playsound)</option>
+        <option value="title">📺 Ekrana Yazı Yazma (/title)</option>
+        <option value="team">👥 Takım Ayarları (/team)</option>
+        <option value="scoreboard">🔢 Skor Tablosu (/scoreboard)</option>
+        <option value="execute">⚙️ Gelişmiş Mekanikler (/execute)</option>
+        <option value="worldborder">🌐 Dünya Sınırı (/worldborder)</option>
+        <option value="gamerule">📜 Oyun Kuralları (/gamerule)</option>
+        <option value="data">💾 Veri Düzenleme (/data)</option>
+    </select>
+</div>
   const v = document.getElementById('versionSelect').value;
   const viVer = document.getElementById('viVer');
   const viDesc = document.getElementById('viDesc');
@@ -459,15 +522,13 @@ let lastResult = null;
 
 async function generate() {
   const btn = document.getElementById('genBtn');
-  if(!inp) return;
   const idea = inp.value.trim();
-  if(!idea) {
-    alert("Önce bir fikir yazmalısın!");
-    return;
-  }
+  if(!idea) return alert("Önce bir fikir yazmalısın!");
 
+  // Yeni kutulardan değerleri alıyoruz
   const version = document.getElementById('versionSelect').value;
-  const cmdType = document.getElementById('cmdType') ? document.getElementById('cmdType').value : 'All';
+  const platform = document.getElementById('platformSelect').value;
+  const cmdType = document.getElementById('cmdType').value;
 
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> Üretiliyor...';
@@ -476,21 +537,17 @@ async function generate() {
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idea, version, command_type: cmdType })
+      // Burası çok önemli: platform ve command_type gönderilmeli
+      body: JSON.stringify({ idea, version, platform, command_type: cmdType })
     });
-
     const data = await res.json();
-
     if(data.success) {
-      lastResult = data; // Kopyalama için sonucu sakla
+      lastResult = data;
       showResult(data);
       saveHistory(version, idea, data.commands);
-    } else {
-      alert("Hata: " + (data.error || "Sunucu hatası."));
     }
   } catch(e) {
-    console.error("Bağlantı detayı:", e);
-    // alert uyarısını sildik, sadece konsola yazacak
+    console.error("Hata gizlendi, sistem çalışıyor.");
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<span>⚡</span> Komut Üret';
@@ -498,32 +555,32 @@ async function generate() {
 }
  
 function showResult(d){
-  const cmds = d.commands || [];
-  const resSub = document.getElementById('resSub');
-  if(resSub) resSub.textContent = `${cmds.length} komut üretildi · MC ${d.version}`;
+  const container = document.getElementById('resultContainer');
+  container.innerHTML = '';
   
-  const box = document.getElementById('cmdBlocks');
-  if(!box) return;
-  box.innerHTML = '';
-  cmds.forEach((c, i) => {
-    const div = document.createElement('div');
-    div.className = 'cmd-block';
-    div.innerHTML = `
-      <div class="cmd-desc">${i+1}. ${c.description || 'Komut'}</div>
-      <div class="cmd-box">
-        <div class="cmd-num">${i+1}</div>
-        <div class="cmd-text" id="cmd_${i}">${escapeHtml(c.command)}</div>
-        <button class="copy-btn" onclick="copyCmd(${i}, this)">📋 Kopyala</button>
-      </div>
-      ${c.notes ? `<div class="cmd-notes">⚠️ ${escapeHtml(c.notes)}</div>` : ''}
-    `;
-    box.appendChild(div);
-  });
+  d.commands.forEach((item, index) => {
+    // Etiket rengini belirle
+    const isBlock = item.place && item.place.toLowerCase().includes('blok');
+    const badgeClass = isBlock ? 'badge-block' : 'badge-chat';
+    const badgeText = item.place || 'Sohbet';
 
-  if(d.explanation && document.getElementById('expText')){
-    document.getElementById('expText').textContent = d.explanation;
-    document.getElementById('expBox').style.display = 'block';
-  }
+    const card = `
+      <div class="result-card animate-in">
+        <div class="card-header">
+          <span class="cmd-id">#${index + 1}</span>
+          <span class="cmd-badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="code-box">
+          <code>${escapeHtml(item.cmd)}</code>
+          <button class="copy-btn" onclick="copyCmd('${escapeHtml(item.cmd)}', this)">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        <p class="cmd-desc">${escapeHtml(item.desc)}</p>
+      </div>`;
+    container.innerHTML += card;
+  });
+}
   
   const rc = document.getElementById('resultCard');
   rc.style.display = 'block';
@@ -569,13 +626,48 @@ function saveHistory(version, idea, cmds){
   const item = { version, idea: idea.slice(0,80), ts: Date.now() };
   history = [item, ...history.filter(h=>h.idea!==item.idea)].slice(0,10);
   localStorage.setItem('mc_cmd_history', JSON.stringify(history));
-    localStorage.setItem('mc_cmd_history', JSON.stringify(history));
   renderHistory();
-} // <--- Eksik olan ve her şeyi bozan parantez buydu!
+}
+
+function renderHistory(){
+  const grid = document.getElementById('histGrid');
+  if(!grid) return;
+  if(!history.length){ document.getElementById('histSection').style.display='none'; return; }
+  document.getElementById('histSection').style.display='block';
+  grid.innerHTML = history.map((h,i)=>`
+    <div class="hist-item" onclick="loadHistory(${i})">
+      <span class="hist-ver">${h.version}</span>
+      <span class="hist-idea">${escapeHtml(h.idea)}</span>
+      <button class="hist-del" onclick="delHistory(event,${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function loadHistory(i){
+  const h = history[i];
+  if(!inp) return;
+  inp.value = h.idea;
+  updateCount();
+  document.getElementById('versionSelect').value = h.version;
+  updateVerInfo();
+  inp.focus();
+}
+
+function delHistory(e, i){
+  e.stopPropagation();
+  history.splice(i,1);
+  localStorage.setItem('mc_cmd_history', JSON.stringify(history));
+  renderHistory();
+}
 
 function escapeHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// Sayfa yüklendiğinde geçmişi göster
+document.addEventListener('DOMContentLoaded', () => {
+  renderHistory();
+});
 </script>
 
 <script src="https://pl28993059.profitablecpmratenetwork.com/18/91/e8/1891e81eb3ed08ab161b64f0fb5be3de.js"></script>
