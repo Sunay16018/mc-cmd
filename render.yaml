@@ -5,7 +5,7 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
-      - key: OPENROUTER_API_KEY
-        value: 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
+      - key: CEREBRAS_API_KEY
+        value: csk-6f822djhp6r9prehc96wx2mmkp995f6yk35necmtrchh44nv
       - key: PYTHON_VERSION
         value: 3.11.0
