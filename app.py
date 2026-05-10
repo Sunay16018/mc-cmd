@@ -18,7 +18,7 @@ def manifest():return send_from_directory('.', 'manifest.json')
 def sw():      return send_from_directory('.', 'sw.js')
 
 # ── Cerebras API ──────────────────────────────────────────────
-API_KEY = os.environ.get("CEREBRAS_API_KEY", "csk-6f822djhp6r9prehc96wx2mmkp995f6yk35necmtrchh44nv")
+API_KEY = os.environ.get("CEREBRAS_API_KEY")
 API_URL = "https://api.cerebras.ai/v1/chat/completions"
 MODEL   = "llama3.1-8b"
 
