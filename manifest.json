@@ -1,6 +1,6 @@
 {
-  "name": "SantaCraft AI: Minecraft Komut Oluşturucu",
-  "short_name": "SantaCraft AI",
+  "name": "Minecraft Komut AI: Minecraft Komut Oluşturucu",
+  "short_name": "Minecfaft KOMUT AI",
   "description": "Minecraft Java ve Bedrock için yapay zeka destekli, profesyonel komut oluşturma aracı.",
   "start_url": "/",
   "display": "standalone",
