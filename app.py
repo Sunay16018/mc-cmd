@@ -20,7 +20,7 @@ def sw():      return send_from_directory('.', 'sw.js')
 # ── Cerebras API ──────────────────────────────────────────────
 API_KEY = os.environ.get("CEREBRAS_API_KEY")
 API_URL = "https://api.cerebras.ai/v1/chat/completions"
-MODEL   = "llama3.1-8b"
+MODEL   = "gpt-oss-120b"
 
 # ── Sürüm Listesi ─────────────────────────────────────────────
 VERSIONS = [
