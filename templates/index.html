@@ -306,14 +306,6 @@ footer a{color:var(--accent);text-decoration:none}
   </div>
 </header>
 
-<!-- AD TOP -->
-<div class="ad-strip">
-  <div class="ad-label">— Reklam —</div>
-  <div style="min-height:50px;display:flex;justify-content:center;align-items:center">
-    <script>atOptions={'key':'a7c48e0fb18bd31f7311ad4b86e82a70','format':'iframe','height':50,'width':320,'params':{}};</script>
-    <script src="https://turnstilesocially.com/a7c48e0fb18bd31f7311ad4b86e82a70/invoke.js"></script>
-  </div>
-</div>
 
 <!-- MAIN -->
 <div class="main">
@@ -474,12 +466,7 @@ footer a{color:var(--accent);text-decoration:none}
     <!-- RIGHT: RESULTS + INFO -->
     <div class="right-panel">
 
-      <!-- AD MID -->
-      <div class="ad-mid">
-        <div class="ad-label">— Reklam —</div>
-        <script async data-cfasync="false" src="https://turnstilesocially.com/8b9d4f60e16171ffc2ac3b5e96dfe192/invoke.js"></script>
-        <div id="container-8b9d4f60e16171ffc2ac3b5e96dfe192"></div>
-      </div>
+      
 
       <!-- RESULT AREA -->
       <div id="resultArea">
@@ -591,7 +578,7 @@ function getEraClass(era){
 function onVersionChange(){
   const v = document.getElementById('versionSel').value;
   const d = VD[v] || {};
-  const era = d.era || (v < '1.13' ? 'LEGACY' : v < '1.205' ? 'MODERN' : 'COMPONENTS');
+  const era = d.era || (v < '1.13' ? 'LEGACY' : v < '1.20.5' ? 'MODERN' : 'COMPONENTS');
   const bar = document.getElementById('verBar');
   bar.className = 'ver-bar ' + getEraClass(era);
   document.getElementById('vbEra').textContent = era;
@@ -640,21 +627,12 @@ async function generate(){
         command_type: document.getElementById('cmdTypeSel').value
       })
     });
-    const data = await res.json();
-    if(data.success){
-      showResult(data);
-      addHistory(data);
-      // Reklam pop-up başarı durumunda
-      try{ window.open("https://turnstilesocially.com/v4bcq9n8s?key=4da38ddfc58c4dc99c546f25a407d07d",'_blank'); }catch(e){}
-    } else {
-      showError(data.error || 'Bilinmeyen hata');
-    }
-  } catch(e){
-    showError('Bağlantı hatası: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    lbl.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Komut Üret';
-  }
+   const data = await res.json();
+if(data.success){
+  showResult(data);
+  addHistory(data);
+} else {
+  showError(data.error || 'Komut üretilemedi, tekrar deneyin.');
 }
 
 // ── Show Result ───────────────────────────────────────────────
@@ -832,9 +810,5 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderHist();
 });
 </script>
-
-<!-- Bottom Ads -->
-<script src="https://pl28993059.profitablecpmratenetwork.com/18/91/e8/1891e81eb3ed08ab161b64f0fb5be3de.js"></script>
-<script src="https://pl28992732.profitablecpmratenetwork.com/94/6a/28/946a28d2167ad3c7dfeafbe850f5db4c.js"></script>
 </body>
 </html>
