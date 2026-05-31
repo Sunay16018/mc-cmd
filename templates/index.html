@@ -3,48 +3,97 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>MC Komut Üretici — AI Destekli, Tüm Sürümler (1.8–1.21.11)</title>
-<meta name="description" content="Yapay zeka ile Minecraft komut üret. 1.8'den 1.21.11'e tüm sürümler, Legacy NBT ve Components syntax. Ücretsiz, Türkçe."/>
-<meta name="keywords" content="minecraft komut üretici, mc command generator, minecraft ai komut, 1.21 components, minecraft türkçe"/>
+<title>MC Komut Üretici — AI Destekli Minecraft Komut Generator | 1.8 - 1.21.11</title>
+<meta name="description" content="Minecraft komut üretici - 1.8'den 1.21.11'e tüm sürümler. AI destekli give, summon, execute, tellraw, fill komutları. Legacy NBT, Modern namespace ve Components syntax. Ücretsiz, Türkçe."/>
+<meta name="keywords" content="minecraft komut üretici, mc command generator, minecraft ai komut, 1.21 components, minecraft türkçe, minecraft give komutu, minecraft summon komutu, minecraft execute komutu, minecraft tellraw komutu, minecraft fill komutu, minecraft title komutu, minecraft effect komutu, minecraft tp komutu, minecraft kill komutu, minecraft scoreboard komutu, minecraft data komutu, minecraft function komutu, minecraft datapack, minecraft command block, minecraft redstone komutları, minecraft op item, minecraft custom item, minecraft boss summon, minecraft yıldırım komutu, minecraft hızlı komut, minecraft kolay komut, minecraft 1.21 komutları, minecraft 1.20 komutları, minecraft 1.19 komutları, minecraft 1.18 komutları, minecraft 1.17 komutları, minecraft 1.16 komutları, minecraft 1.15 komutları, minecraft 1.14 komutları, minecraft 1.13 komutları, minecraft 1.12 komutları, minecraft 1.11 komutları, minecraft 1.10 komutları, minecraft 1.9 komutları, minecraft 1.8 komutları, minecraft nbt komutları, minecraft components syntax, minecraft item modifier, minecraft attribute modifier, minecraft enchantment komutu, minecraft potion komutu, minecraft armor stand komutu, minecraft particle komutu, minecraft playsound komutu, minecraft schedule komutu, minecraft tag komutu, minecraft team komutu, minecraft worldborder komutu, minecraft gamerule komutu, minecraft difficulty komutu, minecraft weather komutu, minecraft time komutu, minecraft spawnpoint komutu, minecraft setworldspawn komutu, minecraft spreadplayers komutu, minecraft teleport komutu, minecraft clone komutu, minecraft setblock komutu, minecraft blockdata komutu, minecraft entitydata komutu, minecraft replaceitem komutu, minecraft clear komutu, minecraft give enchanted book, minecraft custom name item, minecraft lore item, minecraft unbreakable item, minecraft hide flags, minecraft can place on, minecraft can destroy"/>
 <meta name="theme-color" content="#0d1117"/>
+<meta name="author" content="MC Komutları"/>
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
 <meta name="google-site-verification" content="onX5VUeM-Enpij9BynUHizMkcDYfcPclDc25L54TODA"/>
 <link rel="manifest" href="/manifest.json"/>
 <link rel="icon" type="image/png" href="/icon.png"/>
+<link rel="apple-touch-icon" href="/icon.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="MC Komut Üretici"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://mc-cmd.vercel.app/"/>
+<meta property="og:title" content="MC Komut Üretici — AI Destekli Minecraft Komut Generator"/>
+<meta property="og:description" content="1.8'den 1.21.11'e tüm sürümler. Legacy NBT, Modern namespace ve Components syntax. Ücretsiz Türkçe komut üretici."/>
+<meta property="og:image" content="https://mc-cmd.vercel.app/og-image.png"/>
+<meta property="og:site_name" content="MC Komut Üretici"/>
+<meta property="og:locale" content="tr_TR"/>
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:url" content="https://mc-cmd.vercel.app/"/>
+<meta name="twitter:title" content="MC Komut Üretici — AI Destekli Minecraft Komut Generator"/>
+<meta name="twitter:description" content="1.8'den 1.21.11'e tüm sürümler. Legacy NBT, Modern namespace ve Components syntax."/>
+<meta name="twitter:image" content="https://mc-cmd.vercel.app/og-image.png"/>
+
+<link rel="canonical" href="https://mc-cmd.vercel.app/"/>
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MC Komut Üretici",
+  "url": "https://mc-cmd.vercel.app/",
+  "description": "AI destekli Minecraft komut üretici. 1.8'den 1.21.11'e tüm sürümler desteklenir.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "tr-TR",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"},
+  "author": {"@type": "Organization", "name": "MC Komutları", "url": "https://www.youtube.com/@MCKomutları"}
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Minecraft 1.21 komutları nasıl yazılır?", "acceptedAnswer": {"@type": "Answer", "text": "1.20.5 ve üstü sürümlerde Minecraft yeni Components syntax kullanır. Artık NBT tagleri yerine [component=değer] formatı kullanılır. Örneğin: /give @s diamond_sword[custom_name='Ejderha Kılıcı',enchantments={levels:{sharpness:5}}]"}},
+    {"@type": "Question", "name": "Minecraft komut üretici nedir?", "acceptedAnswer": {"@type": "Answer", "text": "Minecraft komut üretici, oyuncuların karmaşık komutları kolayca oluşturmasını sağlayan bir araçtır. Doğal dilde yazılan istekleri, seçilen Minecraft sürümüne uygun komutlara dönüştürür."}},
+    {"@type": "Question", "name": "Minecraft 1.8 ile 1.21 arasındaki komut farkları nelerdir?", "acceptedAnswer": {"@type": "Answer", "text": "1.8-1.12 arası Legacy döneminde NBT ID tabanlı syntax kullanılır. 1.13-1.20.4 arası Modern dönemde minecraft: namespace ve yeni execute syntaxi geldi. 1.20.5+ Components döneminde ise item'larda NBT kaldırıldı, yerine [component=val] sistemi getirildi."}},
+    {"@type": "Question", "name": "Minecraft give komutu nasıl kullanılır?", "acceptedAnswer": {"@type": "Answer", "text": "Give komutu oyunculara item vermek için kullanılır. 1.20.5+ sürümlerde: /give @s diamond_sword[custom_name='Özel Kılıç']. 1.13-1.20.4 arası: /give @s diamond_sword{display:{Name:'{\"text\":\"Özel Kılıç\"}'}}. 1.12 ve altı: /give @s minecraft:diamond_sword 1 0 {display:{Name:Özel Kılıç}}"}},
+    {"@type": "Question", "name": "Minecraft summon komutu ile nasıl mob spawn edilir?", "acceptedAnswer": {"@type": "Answer", "text": "Summon komutu ile özel özellikli moblar oluşturulabilir. Örnek: /summon zombie ~ ~ ~ {CustomName:'Boss',Health:200,Attributes:[{Name:generic.max_health,Base:200}],HandItems:[{id:diamond_sword,Count:1},{}]}"}}
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://mc-cmd.vercel.app/"}]
+}
+</script>
+
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{}));
 }
 </script>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080c10;
-  --bg1:#0d1117;
-  --bg2:#111720;
-  --bg3:#141a24;
-  --border:rgba(255,255,255,0.07);
-  --border-hover:rgba(0,212,180,0.3);
-  --accent:#00d4b4;
-  --accent2:#7c3aed;
-  --accent3:#f59e0b;
-  --red:#ef4444;
-  --green:#10b981;
-  --tx:#e2e8f0;
-  --tx2:#94a3b8;
-  --tx3:#475569;
-  --tx4:#1e2d40;
-  --r:12px;
-  --r2:8px;
-  --shadow:0 4px 32px rgba(0,0,0,0.6);
-  --glow:0 0 40px rgba(0,212,180,0.08);
+  --bg:#080c10;--bg1:#0d1117;--bg2:#111720;--bg3:#141a24;
+  --border:rgba(255,255,255,0.07);--border-hover:rgba(0,212,180,0.3);
+  --accent:#00d4b4;--accent2:#7c3aed;--accent3:#f59e0b;
+  --red:#ef4444;--green:#10b981;
+  --tx:#e2e8f0;--tx2:#94a3b8;--tx3:#475569;--tx4:#1e2d40;
+  --r:12px;--r2:8px;
+  --shadow:0 4px 32px rgba(0,0,0,0.6);--glow:0 0 40px rgba(0,212,180,0.08);
 }
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.6}
 
-/* ── BACKGROUND ── */
 .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
   background-size:48px 48px}
@@ -53,13 +102,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',sans-serif
              radial-gradient(ellipse 50% 40% at 85% 85%,rgba(124,58,237,0.05) 0%,transparent 60%)}
 .wrap{position:relative;z-index:10}
 
-/* ── HEADER ── */
-header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(8,12,16,0.92);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(24px);
-}
+header{position:sticky;top:0;z-index:100;background:rgba(8,12,16,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);}
 .hdr{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
 .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 0 20px rgba(0,212,180,0.25)}
@@ -70,43 +113,36 @@ header{
 .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ── AD STRIP ── */
-.ad-strip{text-align:center;padding:10px 20px;background:rgba(255,255,255,0.015);border-bottom:1px solid var(--border)}
-.ad-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-
-/* ── MAIN ── */
 .main{max-width:1100px;margin:0 auto;padding:0 24px 80px}
 
-/* ── HERO ── */
 .hero{padding:56px 0 44px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--accent);background:rgba(0,212,180,0.06);border:1px solid rgba(0,212,180,0.15);padding:7px 16px;border-radius:20px;letter-spacing:1.5px;margin-bottom:24px}
 .hero-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-1.5px}
 .hero-title .gr{background:linear-gradient(135deg,var(--accent) 0%,#00a8ff 50%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-desc{font-size:0.95rem;color:var(--tx2);max-width:540px;margin:0 auto 28px;line-height:1.8}
-.hero-channel{display:inline-flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 18px;text-decoration:none;transition:border-color .2s,transform .2s}
+
+.hero-channel{display:inline-flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 20px;text-decoration:none;transition:border-color .2s,transform .2s}
 .hero-channel:hover{border-color:rgba(255,0,0,0.4);transform:translateY(-2px)}
-.hero-channel img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.rainbow-frame{width:56px;height:56px;border-radius:14px;padding:3px;background:conic-gradient(from 0deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3,#ff0000);animation:rainbow-spin 4s linear infinite;flex-shrink:0}
+@keyframes rainbow-spin{to{transform:rotate(360deg)}}
+.rainbow-frame img{width:100%;height:100%;border-radius:11px;object-fit:cover;display:block;animation:rainbow-spin 4s linear infinite reverse}
 .hero-channel span{font-size:0.82rem;color:var(--tx2)}
 .hero-channel strong{color:var(--red);font-size:0.78rem;font-family:'JetBrains Mono',monospace}
 
-/* ── ERA BADGES ── */
 .era-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:36px}
 .era-badge{font-family:'JetBrains Mono',monospace;font-size:0.62rem;padding:5px 12px;border-radius:6px;border:1px solid;letter-spacing:1px;font-weight:600}
 .eb-legacy{color:#f59e0b;background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2)}
 .eb-modern{color:#60a5fa;background:rgba(96,165,250,0.07);border-color:rgba(96,165,250,0.2)}
 .eb-components{color:var(--accent);background:rgba(0,212,180,0.07);border-color:rgba(0,212,180,0.2)}
 
-/* ── LAYOUT ── */
 .layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 @media(max-width:740px){.layout{grid-template-columns:1fr}}
 
-/* ── CARD ── */
 .card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:border-color .3s,box-shadow .3s}
 .card:hover{border-color:rgba(0,212,180,0.12)}
 .card-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--tx3);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px}
 .card-title::before{content:'';width:3px;height:14px;background:var(--accent);border-radius:2px;display:inline-block}
 
-/* ── FORM ── */
 .fgroup{margin-bottom:14px}
 label.flabel{display:block;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}
 select,input,textarea{
@@ -121,22 +157,19 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 textarea::placeholder{color:var(--tx3)}
 .char-hint{display:flex;justify-content:space-between;margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3)}
 
-/* ── VERSION INFO BAR ── */
 .ver-bar{padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);margin:12px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .vb-era{font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:1px;white-space:nowrap}
-.era-LEGACY   .vb-era{color:#f59e0b;background:rgba(245,158,11,0.12)}
-.era-MODERN   .vb-era{color:#60a5fa;background:rgba(96,165,250,0.12)}
+.era-LEGACY .vb-era{color:#f59e0b;background:rgba(245,158,11,0.12)}
+.era-MODERN .vb-era{color:#60a5fa;background:rgba(96,165,250,0.12)}
 .era-COMPONENTS .vb-era{color:var(--accent);background:rgba(0,212,180,0.12)}
 .vb-desc{font-size:0.76rem;color:var(--tx2);flex:1}
 
-/* ── EXAMPLES ── */
 .ex-section{margin:14px 0}
 .ex-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
 .ex-chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font-size:0.73rem;color:var(--tx2);background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:5px 12px;border-radius:20px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .18s;user-select:none}
 .chip:hover,.chip.active{background:rgba(0,212,180,0.08);border-color:rgba(0,212,180,0.25);color:var(--accent)}
 
-/* ── GENERATE BUTTON ── */
 .gen-btn{
   width:100%;padding:15px;
   background:linear-gradient(135deg,#0066cc,var(--accent));
@@ -152,10 +185,8 @@ textarea::placeholder{color:var(--tx3)}
 .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── RIGHT PANEL ── */
 .right-panel{display:flex;flex-direction:column;gap:16px}
 
-/* ── VERSION CARD ── */
 .ver-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .ver-eras{display:grid;grid-template-columns:repeat(3,1fr)}
 .ver-era{padding:12px 10px;text-align:center;cursor:default;border-right:1px solid var(--border)}
@@ -165,18 +196,14 @@ textarea::placeholder{color:var(--tx3)}
 .era-leg .ve-name{color:#f59e0b}
 .era-mod .ve-name{color:#60a5fa}
 .era-comp .ve-name{color:var(--accent)}
-.ver-list{padding:0;max-height:0;overflow:hidden;border-top:0 solid var(--border)}
 
-/* ── RESULT ── */
 #resultArea{display:none}
 .result-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .rh-ico{font-size:1.8rem}
-.rh-info{}
 .rh-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--green);margin-bottom:3px}
 .rh-sub{font-size:0.78rem;color:var(--tx2)}
 .rh-era{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:0.62rem;padding:5px 10px;border-radius:6px}
 
-/* ── COMMAND BLOCK ── */
 .cmd-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;transition:border-color .2s}
 .cmd-item:hover{border-color:rgba(0,212,180,0.2)}
 .cmd-header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border)}
@@ -202,7 +229,6 @@ textarea::placeholder{color:var(--tx3)}
 .copy-btn.ok{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.25);color:var(--green)}
 .cmd-notes{padding:8px 14px;background:rgba(245,158,11,0.04);border-top:1px solid rgba(245,158,11,0.12);font-size:0.75rem;color:var(--accent3);display:flex;gap:8px;line-height:1.5}
 
-/* ── INFO BOXES ── */
 .info-box{border-radius:var(--r2);padding:14px 16px;margin:10px 0}
 .ib-explanation{background:rgba(0,212,180,0.04);border:1px solid rgba(0,212,180,0.1)}
 .ib-order{background:rgba(96,165,250,0.04);border:1px solid rgba(96,165,250,0.1)}
@@ -218,10 +244,9 @@ textarea::placeholder{color:var(--tx3)}
 .ib-text{font-size:0.82rem;color:var(--tx2);line-height:1.7}
 .ib-list{list-style:none;padding:0}
 .ib-list li{font-size:0.8rem;color:var(--tx2);padding:3px 0 3px 14px;position:relative;line-height:1.6}
-.ib-tips .ib-list li::before{content:'→';position:absolute;left:0;color:var(--green)}
-.ib-mistakes .ib-list li::before{content:'✗';position:absolute;left:0;color:var(--red)}
+.ib-tips .ib-list li::before{content:'>';position:absolute;left:0;color:var(--green)}
+.ib-mistakes .ib-list li::before{content:'x';position:absolute;left:0;color:var(--red)}
 
-/* ── COPY ALL ── */
 .copy-all{
   width:100%;padding:11px;background:rgba(0,212,180,0.05);border:1px solid rgba(0,212,180,0.15);
   border-radius:var(--r2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.72rem;
@@ -229,14 +254,12 @@ textarea::placeholder{color:var(--tx3)}
 }
 .copy-all:hover{background:rgba(0,212,180,0.1)}
 
-/* ── ERROR ── */
 #errorArea{display:none}
 .err-card{text-align:center;padding:40px 24px;background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.15);border-radius:var(--r)}
 .err-ico{font-size:2.5rem;margin-bottom:14px}
 .err-msg{font-size:0.85rem;color:var(--red);margin-bottom:18px;line-height:1.7}
 .err-close{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);padding:9px 24px;border-radius:var(--r2);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:0.82rem}
 
-/* ── HISTORY ── */
 .hist-section{margin-top:20px}
 .hist-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
 .hist-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
@@ -247,7 +270,6 @@ textarea::placeholder{color:var(--tx3)}
 .hi-del{background:none;border:none;color:var(--tx3);cursor:pointer;padding:2px 6px;border-radius:4px;font-size:0.8rem}
 .hi-del:hover{color:var(--red)}
 
-/* ── FEATURES ── */
 .features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:52px}
 @media(max-width:700px){.features{grid-template-columns:repeat(2,1fr)}}
 .feat{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center}
@@ -255,21 +277,34 @@ textarea::placeholder{color:var(--tx3)}
 .feat h3{font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--tx);margin-bottom:5px}
 .feat p{font-size:0.7rem;color:var(--tx3);line-height:1.6}
 
-/* ── AD MID ── */
-.ad-mid{text-align:center;padding:16px 0;margin:8px 0}
-.ad-mid .ad-label{margin-bottom:8px}
+.seo-section{margin-top:64px;padding-top:40px;border-top:1px solid var(--border)}
+.seo-section h2{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:24px;text-align:center}
+.seo-section h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin:24px 0 12px;color:var(--accent)}
+.seo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.seo-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.seo-grid{grid-template-columns:1fr}}
+.seo-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.seo-card h4{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.seo-card p{font-size:0.78rem;color:var(--tx2);line-height:1.7}
+.seo-card pre{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#4ade80;overflow-x:auto;margin-top:8px}
+.seo-card code{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#4ade80;background:var(--bg);padding:2px 6px;border-radius:4px}
+.seo-keywords{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.seo-keyword{font-size:0.65rem;color:var(--tx3);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px}
 
-/* ── FOOTER ── */
+.cmd-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.75rem}
+.cmd-table th{background:var(--bg2);color:var(--tx3);font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;padding:8px 10px;text-align:left;border:1px solid var(--border)}
+.cmd-table td{padding:8px 10px;border:1px solid var(--border);color:var(--tx2)}
+.cmd-table td:first-child{font-family:'JetBrains Mono',monospace;color:var(--accent)}
+.cmd-table tr:hover td{background:rgba(0,212,180,0.03)}
+
 footer{text-align:center;padding:28px 24px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--tx3);margin-top:48px}
 footer a{color:var(--accent);text-decoration:none}
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:rgba(0,212,180,0.2);border-radius:3px}
 ::selection{background:rgba(0,212,180,0.2);color:var(--accent)}
 
-/* ── MOBILE ── */
 @media(max-width:600px){
   .hdr{padding:12px 16px}
   .hdr-right{display:none}
@@ -280,7 +315,6 @@ footer a{color:var(--accent);text-decoration:none}
   .ver-era:last-child{border-bottom:none}
 }
 
-/* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{animation:fadeUp .35s ease forwards}
 </style>
@@ -290,284 +324,978 @@ footer a{color:var(--accent);text-decoration:none}
 <div class="bg-glow"></div>
 <div class="wrap">
 
-<!-- HEADER -->
 <header>
   <div class="hdr">
     <a class="logo" href="/">
-      <div class="logo-mark">⚡</div>
+      <div class="logo-mark">CMD</div>
       <div>
         <div class="logo-name">MC Komut Üretici</div>
-        <div class="logo-sub">AI Destekli · Tüm Sürümler</div>
+        <div class="logo-sub">AI Destekli - Tüm Sürümler</div>
       </div>
     </a>
     <div class="hdr-right">
-      <div class="status-dot"><span class="dot"></span>Cerebras AI · Llama 3.1</div>
+      <div class="status-dot"><span class="dot"></span>Cerebras AI - Llama 3.1</div>
     </div>
   </div>
 </header>
 
+<nav aria-label="breadcrumb" style="max-width:1100px;margin:0 auto;padding:8px 24px;font-size:0.65rem;color:var(--tx3)">
+  <span style="color:var(--accent)">Ana Sayfa</span>
+</nav>
 
-<!-- MAIN -->
-<div class="main">
+<main class="main">
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-badge">✦ AI DESTEKLI MINECRAFT KOMUT ÜRETİCİ</div>
-    <h1 class="hero-title">İstediğin Komutu<br/><span class="gr">Saniyeler İçinde</span> Üret</h1>
-    <p class="hero-desc">1.8'den 1.21.11'e kadar tüm sürümler. Legacy NBT, Modern namespace ve 1.20.5+ Components syntax — sürümüne özel %100 doğru komutlar.</p>
-    <a href="https://www.youtube.com/@MCKomutları" target="_blank" rel="noopener" class="hero-channel">
-      <img src="/kanal.png" alt="MC Komutları" onerror="this.style.display='none'"/>
-      <div>
-        <div style="font-size:.82rem;color:var(--tx);font-weight:600">MC Komutları</div>
-        <strong>YouTube Kanalı →</strong>
-      </div>
-    </a>
-  </div>
-
-  <!-- ERA BADGES -->
-  <div class="era-badges">
-    <span class="era-badge eb-legacy">⚔ LEGACY (1.8–1.12)</span>
-    <span class="era-badge eb-modern">🔵 MODERN (1.13–1.20.4)</span>
-    <span class="era-badge eb-components">⚡ COMPONENTS (1.20.5+)</span>
-  </div>
-
-  <!-- LAYOUT -->
-  <div class="layout">
-
-    <!-- LEFT: INPUT -->
+<section class="hero">
+  <div class="hero-badge">AI DESTEKLİ MINECRAFT KOMUT ÜRETİCİ</div>
+  <h1 class="hero-title">İstediğin Komutu<br/><span class="gr">Saniyeler İçinde</span> Üret</h1>
+  <p class="hero-desc">1.8'den 1.21.11'e kadar tüm sürümler. Legacy NBT, Modern namespace ve 1.20.5+ Components syntax - sürümüne özel doğru komutlar.</p>
+  <a href="https://www.youtube.com/@MCKomutları" target="_blank" rel="noopener" class="hero-channel">
+    <div class="rainbow-frame">
+      <img src="/kanal.png" alt="MC Komutları YouTube Kanalı" onerror="this.style.display='none'"/>
+    </div>
     <div>
-      <div class="card">
-        <div class="card-title">Komut Ayarları</div>
+      <div style="font-size:.82rem;color:var(--tx);font-weight:600">MC Komutları</div>
+      <strong>YouTube Kanalı &rarr;</strong>
+    </div>
+  </a>
+</section>
 
-        <!-- VERSION -->
-        <div class="fgroup">
-          <label class="flabel">🎮 Minecraft Sürümü</label>
-          <select id="versionSel" onchange="onVersionChange()">
-            <optgroup label="⚡ Components (1.20.5+)">
-              <option value="1.21.11">1.21.11</option>
-              <option value="1.21.8">1.21.8</option>
-              <option value="1.21.5">1.21.5</option>
-              <option value="1.21.4">1.21.4 — Bundles of Bravery</option>
-              <option value="1.21.1">1.21.1</option>
-              <option value="1.21">1.21 — Tricky Trials</option>
-              <option value="1.20.6">1.20.6</option>
-              <option value="1.20.5">1.20.5 — Components Başladı! ⚡</option>
-            </optgroup>
-            <optgroup label="🔵 Modern (1.13–1.20.4)">
-              <option value="1.20.4">1.20.4</option>
-              <option value="1.20.2">1.20.2</option>
-              <option value="1.20.1">1.20.1</option>
-              <option value="1.20">1.20 — Trails & Tales</option>
-              <option value="1.19.4">1.19.4</option>
-              <option value="1.19.3">1.19.3</option>
-              <option value="1.19.2">1.19.2</option>
-              <option value="1.19.1">1.19.1</option>
-              <option value="1.19">1.19 — Wild Update</option>
-              <option value="1.18.2">1.18.2</option>
-              <option value="1.18.1">1.18.1</option>
-              <option value="1.18">1.18 — Caves & Cliffs</option>
-              <option value="1.17.1">1.17.1</option>
-              <option value="1.17">1.17</option>
-              <option value="1.16.5">1.16.5 — Nether Update</option>
-              <option value="1.16.4">1.16.4</option>
-              <option value="1.16.3">1.16.3</option>
-              <option value="1.16.2">1.16.2</option>
-              <option value="1.16.1">1.16.1</option>
-              <option value="1.16">1.16</option>
-              <option value="1.15.2">1.15.2</option>
-              <option value="1.15">1.15 — Buzzy Bees</option>
-              <option value="1.14.4">1.14.4</option>
-              <option value="1.14">1.14 — Village & Pillage</option>
-              <option value="1.13.2">1.13.2</option>
-              <option value="1.13">1.13 — Aquatic (Flattening!)</option>
-            </optgroup>
-            <optgroup label="⚔ Legacy (1.8–1.12)">
-              <option value="1.12.2">1.12.2 — Son Eski Sürüm</option>
-              <option value="1.12">1.12 — World of Color</option>
-              <option value="1.11.2">1.11.2</option>
-              <option value="1.11">1.11 — Exploration</option>
-              <option value="1.10.2">1.10.2</option>
-              <option value="1.10">1.10</option>
-              <option value="1.9.4">1.9.4</option>
-              <option value="1.9">1.9 — Combat</option>
-              <option value="1.8.9">1.8.9</option>
-              <option value="1.8">1.8 — Klasik ⚔</option>
-            </optgroup>
-          </select>
-        </div>
+<div class="era-badges">
+  <span class="era-badge eb-legacy">LEGACY (1.8-1.12)</span>
+  <span class="era-badge eb-modern">MODERN (1.13-1.20.4)</span>
+  <span class="era-badge eb-components">COMPONENTS (1.20.5+)</span>
+</div>
 
-        <!-- VERSION INFO BAR -->
-        <div class="ver-bar" id="verBar">
-          <span class="vb-era" id="vbEra">COMPONENTS</span>
-          <span class="vb-desc" id="vbDesc">En son sürüm • Components syntax tam • pack_format güncel</span>
-        </div>
+<div class="layout">
 
-        <!-- PLATFORM -->
-        <div class="fgroup">
-          <label class="flabel">🖥 Platform</label>
-          <select id="platformSel">
-            <option value="Java">Java Edition (PC)</option>
-            <option value="Bedrock">Bedrock Edition (PE/Console)</option>
-          </select>
-        </div>
+<div>
+  <div class="card">
+    <div class="card-title">Komut Ayarları</div>
 
-        <!-- COMMAND TYPE -->
-        <div class="fgroup">
-          <label class="flabel">📂 Komut Türü</label>
-          <select id="cmdTypeSel">
-            {% for ct in command_types %}
-            <option value="{{ ct.value }}">{{ ct.label }}</option>
-            {% endfor %}
-          </select>
-        </div>
+    <div class="fgroup">
+      <label class="flabel">Minecraft Sürümü</label>
+      <select id="versionSel" onchange="onVersionChange()">
+        <optgroup label="COMPONENTS (1.20.5+)">
+          <option value="1.21.11">1.21.11 - En Güncel - Yeni Moblar ve Bloklar</option>
+          <option value="1.21.8">1.21.8 - Geliştirilmiş Yapay Zeka Davranışları</option>
+          <option value="1.21.5">1.21.5 - Yeni Biyomlar ve Bitkiler</option>
+          <option value="1.21.4">1.21.4 - Bundles of Bravery - Bundle Sistemi</option>
+          <option value="1.21.1">1.21.1 - Hata Düzenlemeleri ve Optimize</option>
+          <option value="1.21">1.21 - Tricky Trials - Trial Chambers</option>
+          <option value="1.20.6">1.20.6 - Son Modern Güncelleme</option>
+          <option value="1.20.5">1.20.5 - Components Başladı - Yeni Item Syntax</option>
+        </optgroup>
+        <optgroup label="MODERN (1.13-1.20.4)">
+          <option value="1.20.4">1.20.4 - Armor Trim ve Smithing Templates</option>
+          <option value="1.20.2">1.20.2 - Yeni Komut Özellikleri</option>
+          <option value="1.20.1">1.20.1 - Cherry Grove ve Sniffer</option>
+          <option value="1.20">1.20 - Trails and Tales - Camel ve Archaeology</option>
+          <option value="1.19.4">1.19.4 - Yeni Komut Argümanları</option>
+          <option value="1.19.3">1.19.3 - Bambu Mobilya ve Yeni Biyom</option>
+          <option value="1.19.2">1.19.2 - Hata Düzenlemeleri</option>
+          <option value="1.19.1">1.19.1 - Chat Raporlama Sistemi</option>
+          <option value="1.19">1.19 - Wild Update - Warden ve Deep Dark</option>
+          <option value="1.18.2">1.18.2 - Yeni Dünyalar ve Optimize</option>
+          <option value="1.18.1">1.18.1 - Hata Düzenlemeleri</option>
+          <option value="1.18">1.18 - Caves and Cliffs Part 2 - Yeni Yükseklik</option>
+          <option value="1.17.1">1.17.1 - Hata Düzenlemeleri</option>
+          <option value="1.17">1.17 - Caves and Cliffs Part 1 - Amethyst ve Copper</option>
+          <option value="1.16.5">1.16.5 - Nether Update - Netherite ve Piglin</option>
+          <option value="1.16.4">1.16.4 - Hata Düzenlemeleri</option>
+          <option value="1.16.3">1.16.3 - Hata Düzenlemeleri</option>
+          <option value="1.16.2">1.16.2 - Bastion Remnants ve Piglin Brute</option>
+          <option value="1.16.1">1.16.1 - Hata Düzenlemeleri</option>
+          <option value="1.16">1.16 - Nether Update - Yeni Nether Biyomları</option>
+          <option value="1.15.2">1.15.2 - Hata Düzenlemeleri</option>
+          <option value="1.15">1.15 - Buzzy Bees - Arı Kovanı ve Bal</option>
+          <option value="1.14.4">1.14.4 - Hata Düzenlemeleri</option>
+          <option value="1.14">1.14 - Village and Pillage - Yeni Köylüler</option>
+          <option value="1.13.2">1.13.2 - Hata Düzenlemeleri</option>
+          <option value="1.13">1.13 - Aquatic Update - Yeni Execute ve Flattening</option>
+        </optgroup>
+        <optgroup label="LEGACY (1.8-1.12)">
+          <option value="1.12.2">1.12.2 - Son Eski Sürüm - NBT ID Tabanlı</option>
+          <option value="1.12">1.12 - World of Color - Yeni Renk Sistemi</option>
+          <option value="1.11.2">1.11.2 - Hata Düzenlemeleri</option>
+          <option value="1.11">1.11 - Exploration Update - Observer ve Shulker Box</option>
+          <option value="1.10.2">1.10.2 - Hata Düzenlemeleri</option>
+          <option value="1.10">1.10 - Frostburn Update - Polar Bear ve Stray</option>
+          <option value="1.9.4">1.9.4 - Hata Düzenlemeleri</option>
+          <option value="1.9">1.9 - Combat Update - Dual Wield ve Shields</option>
+          <option value="1.8.9">1.8.9 - Hata Düzenlemeleri</option>
+          <option value="1.8">1.8 - Klasik - Eski PvP ve Slime Block</option>
+        </optgroup>
+      </select>
+    </div>
 
-        <!-- IDEA -->
-        <div class="fgroup">
-          <label class="flabel">💬 Ne yapmak istiyorsun?</label>
-          <textarea id="ideaInput" rows="4" oninput="onInput()" onkeydown="onKey(event)"
-            placeholder="Örn: Elmas kılıca Sharpness 10 ve ateş bükücü enchant ekle, özel isim koy..."></textarea>
-          <div class="char-hint">
-            <span><span id="charCount">0</span> karakter</span>
-            <span>Ctrl+Enter → Üret</span>
-          </div>
-        </div>
+    <div class="ver-bar era-COMPONENTS" id="verBar">
+      <span class="vb-era" id="vbEra">COMPONENTS</span>
+      <span class="vb-desc" id="vbDesc">En son sürüm - Components syntax tam - pack_format güncel</span>
+    </div>
 
-        <!-- EXAMPLES -->
-        <div class="ex-section">
-          <div class="ex-label">⚡ Hızlı Örnekler</div>
-          <div class="ex-chips">
-            <span class="chip" onclick="setEx(this,'Tüm oyunculara max büyülü netherite set ver, özel isimler koy')">⚔ OP Set</span>
-            <span class="chip" onclick="setEx(this,'Ekrana büyük sarı OYUN BAŞLIYOR yaz, 3 saniye kalsın')">📺 Title</span>
-            <span class="chip" onclick="setEx(this,'Her survival oyuncunun yanına yıldırım çaksın sürekli')">⚡ Yıldırım</span>
-            <span class="chip" onclick="setEx(this,'Nether star ver, özel isim Kutsal Yıldız, enchant glint ekle, kırmızı lore')">⭐ Custom Item</span>
-            <span class="chip" onclick="setEx(this,'Oyuncu öldüğünde spawn noktasına ışınlansın')">💀 Ölüm TP</span>
-            <span class="chip" onclick="setEx(this,'10x10x10 obsidian küp doldur merkezden')">🧱 Fill Alan</span>
-            <span class="chip" onclick="setEx(this,'Her 5 saniyede regeneration ve speed efekti ver')">✨ Efekt Döngü</span>
-            <span class="chip" onclick="setEx(this,'5 adet öldürünce oyuncuya elmas ver ve ekrana mesaj çıksın')">🏆 Kill Ödülü</span>
-            <span class="chip" onclick="setEx(this,'Dev kırmızı boss zombie çağır, 3x büyük, 200 HP, kılıçlı')">👾 Boss Spawn</span>
-            <span class="chip" onclick="setEx(this,'Oyuncu grass bloğa basınca hız efekti alsın')">🎯 Blok Trigger</span>
-          </div>
-        </div>
+    <div class="fgroup">
+      <label class="flabel">Platform</label>
+      <select id="platformSel">
+        <option value="Java">Java Edition (PC)</option>
+        <option value="Bedrock">Bedrock Edition (PE/Console)</option>
+      </select>
+    </div>
 
-        <!-- GENERATE BUTTON -->
-        <button class="gen-btn" id="genBtn" onclick="generate()">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span id="btnLabel">Komut Üret</span>
-        </button>
-      </div>
+    <div class="fgroup">
+      <label class="flabel">Komut Türü</label>
+      <select id="cmdTypeSel">
+        <option value="auto">Otomatik Algıla</option>
+        <option value="give">Item Verme (give)</option>
+        <option value="summon">Mob Oluşturma (summon)</option>
+        <option value="execute">Execute Sistemi</option>
+        <option value="tellraw">Mesaj Sistemi (tellraw/title)</option>
+        <option value="fill">Alan Doldurma (fill)</option>
+        <option value="effect">Efekt Verme (effect)</option>
+        <option value="tp">Işınlama (tp/teleport)</option>
+        <option value="scoreboard">Skor Tahtası (scoreboard)</option>
+        <option value="data">Data Komutları</option>
+        <option value="function">Fonksiyon Sistemi</option>
+        <option value="datapack">Datapack Oluşturma</option>
+      </select>
+    </div>
 
-      <!-- HISTORY -->
-      <div class="hist-section" id="histSection" style="display:none">
-        <div class="hist-label">🕐 Son Komutlar</div>
-        <div class="hist-list" id="histList"></div>
+    <div class="fgroup">
+      <label class="flabel">Ne yapmak istiyorsun?</label>
+      <textarea id="ideaInput" rows="4" oninput="onInput()" onkeydown="onKey(event)"
+        placeholder="Örn: Elmas kılıca Sharpness 10 ve ateş bükücü enchant ekle, özel isim koy..."></textarea>
+      <div class="char-hint">
+        <span><span id="charCount">0</span> karakter</span>
+        <span>Ctrl+Enter - Üret</span>
       </div>
     </div>
 
-    <!-- RIGHT: RESULTS + INFO -->
-    <div class="right-panel">
+    <div class="ex-section">
+      <div class="ex-label">Hızlı Örnekler</div>
+      <div class="ex-chips">
+        <span class="chip" onclick="setEx(this,'Tüm oyunculara max büyülü netherite set ver, özel isimler koy')">OP Set</span>
+        <span class="chip" onclick="setEx(this,'Ekrana büyük sarı OYUN BAŞLIYOR yaz, 3 saniye kalsın')">Title</span>
+        <span class="chip" onclick="setEx(this,'Her survival oyuncunun yanına yıldırım çaksın sürekli')">Yıldırım</span>
+        <span class="chip" onclick="setEx(this,'Nether star ver, özel isim Kutsal Yıldız, enchant glint ekle, kırmızı lore')">Custom Item</span>
+        <span class="chip" onclick="setEx(this,'Oyuncu öldüğünde spawn noktasına ışınlansın')">Ölüm TP</span>
+        <span class="chip" onclick="setEx(this,'10x10x10 obsidian küp doldur merkezden')">Fill Alan</span>
+        <span class="chip" onclick="setEx(this,'Her 5 saniyede regeneration ve speed efekti ver')">Efekt Döngüsü</span>
+        <span class="chip" onclick="setEx(this,'5 adet öldürünce oyuncuya elmas ver ve ekrana mesaj çıksın')">Kill Ödülü</span>
+        <span class="chip" onclick="setEx(this,'Dev kırmızı boss zombie çağır, 3x büyük, 200 HP, kılıçlı')">Boss Spawn</span>
+        <span class="chip" onclick="setEx(this,'Oyuncu grass bloğa basınca hız efekti alsın')">Blok Trigger</span>
+      </div>
+    </div>
 
-      
+    <button class="gen-btn" id="genBtn" onclick="generate()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span id="btnLabel">Komut Üret</span>
+    </button>
+  </div>
 
-      <!-- RESULT AREA -->
-      <div id="resultArea">
-        <div class="card" id="resultCard">
-          <div class="result-header">
-            <div class="rh-ico">✅</div>
-            <div class="rh-info">
-              <div class="rh-title">Komutlar Hazır!</div>
-              <div class="rh-sub" id="rhSub"></div>
-            </div>
-            <div class="rh-era" id="rhEra"></div>
-          </div>
+  <div class="hist-section" id="histSection" style="display:none">
+    <div class="hist-label">Son Komutlar</div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+</div>
 
-          <div id="cmdBlocks"></div>
+<div class="right-panel">
 
-          <div class="info-box ib-explanation" id="expBox" style="display:none">
-            <div class="ib-label">📖 Açıklama</div>
-            <div class="ib-text" id="expText"></div>
-          </div>
-
-          <div class="info-box ib-order" id="orderBox" style="display:none">
-            <div class="ib-label">📋 Çalıştırma Sırası</div>
-            <div class="ib-text" id="orderText"></div>
-          </div>
-
-          <div class="info-box ib-tips" id="tipsBox" style="display:none">
-            <div class="ib-label">💡 İpuçları</div>
-            <ul class="ib-list" id="tipsList"></ul>
-          </div>
-
-          <div class="info-box ib-mistakes" id="mistakesBox" style="display:none">
-            <div class="ib-label">⚠ Yaygın Hatalar</div>
-            <ul class="ib-list" id="mistakesList"></ul>
-          </div>
-
-          <div class="info-box ib-dp" id="dpBox" style="display:none">
-            <div class="ib-label">📦 Datapack Gerekli</div>
-            <div class="ib-text">Bu komut sistemi düzgün çalışmak için bir datapack veya sürekli command block döngüsü gerektirir.</div>
-          </div>
-
-          <button class="copy-all" id="copyAllBtn" onclick="copyAll()">
-            📋 Tüm Komutları Kopyala
-          </button>
+  <div id="resultArea">
+    <div class="card" id="resultCard">
+      <div class="result-header">
+        <div class="rh-ico">[OK]</div>
+        <div class="rh-info">
+          <div class="rh-title">Komutlar Hazır!</div>
+          <div class="rh-sub" id="rhSub"></div>
         </div>
+        <div class="rh-era" id="rhEra"></div>
       </div>
 
-      <!-- ERROR AREA -->
-      <div id="errorArea">
-        <div class="err-card">
-          <div class="err-ico">⚠️</div>
-          <div class="err-msg" id="errMsg"></div>
-          <button class="err-close" onclick="document.getElementById('errorArea').style.display='none'">Kapat</button>
-        </div>
+      <div id="cmdBlocks"></div>
+
+      <div class="info-box ib-explanation" id="expBox" style="display:none">
+        <div class="ib-label">Açıklama</div>
+        <div class="ib-text" id="expText"></div>
       </div>
 
-      <!-- ERA INFO CARD -->
-      <div class="ver-card">
-        <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:0">Sürüm Grupları</div>
-        </div>
-        <div class="ver-eras">
-          <div class="ver-era era-leg">
-            <div class="ve-name">⚔ LEGACY</div>
-            <div class="ve-range">1.8 – 1.12.2</div>
-            <div style="font-size:0.6rem;color:var(--tx3);margin-top:4px;line-height:1.4">NBT ID tabanlı<br/>damage değerleri<br/>Eski execute</div>
-          </div>
-          <div class="ver-era era-mod">
-            <div class="ve-name">🔵 MODERN</div>
-            <div class="ve-range">1.13 – 1.20.4</div>
-            <div style="font-size:0.6rem;color:var(--tx3);margin-top:4px;line-height:1.4">minecraft: namespace<br/>Yeni execute<br/>NBT objeler</div>
-          </div>
-          <div class="ver-era era-comp">
-            <div class="ve-name">⚡ COMPONENTS</div>
-            <div class="ve-range">1.20.5+</div>
-            <div style="font-size:0.6rem;color:var(--tx3);margin-top:4px;line-height:1.4">[component=val]<br/>NBT yok item'da<br">Yeni efektler</div>
-          </div>
-        </div>
+      <div class="info-box ib-order" id="orderBox" style="display:none">
+        <div class="ib-label">Çalıştırma Sırası</div>
+        <div class="ib-text" id="orderText"></div>
       </div>
 
+      <div class="info-box ib-tips" id="tipsBox" style="display:none">
+        <div class="ib-label">İpuçları</div>
+        <ul class="ib-list" id="tipsList"></ul>
+      </div>
+
+      <div class="info-box ib-mistakes" id="mistakesBox" style="display:none">
+        <div class="ib-label">Yaygın Hatalar</div>
+        <ul class="ib-list" id="mistakesList"></ul>
+      </div>
+
+      <div class="info-box ib-dp" id="dpBox" style="display:none">
+        <div class="ib-label">Datapack Gerekli</div>
+        <div class="ib-text">Bu komut sistemi düzgün çalışmak için bir datapack veya sürekli command block döngüsü gerektirir.</div>
+      </div>
+
+      <button class="copy-all" id="copyAllBtn" onclick="copyAll()">
+        Tüm Komutları Kopyala
+      </button>
     </div>
   </div>
 
-  <!-- FEATURES -->
-  <div class="features">
-    <div class="feat"><div class="feat-ico">📅</div><h3>Tüm Sürümler</h3><p>1.8'den 1.21.11'e sürüme özel doğru syntax</p></div>
-    <div class="feat"><div class="feat-ico">📋</div><h3>Tek Tık Kopyala</h3><p>Her komut tam görünür, tıkla kopyala</p></div>
-    <div class="feat"><div class="feat-ico">⚡</div><h3>Cerebras AI</h3><p>Hızlı ve güçlü Llama 3.1 motoru</p></div>
-    <div class="feat"><div class="feat-ico">🕐</div><h3>Geçmiş</h3><p>Son sorguların kaydedilir</p></div>
+  <div id="errorArea">
+    <div class="err-card">
+      <div class="err-ico">[!]</div>
+      <div class="err-msg" id="errMsg"></div>
+      <button class="err-close" onclick="document.getElementById('errorArea').style.display='none'">Kapat</button>
+    </div>
   </div>
 
-</div><!-- /main -->
+  <div class="ver-card">
+    <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:0">Sürüm Grupları</div>
+    </div>
+    <div class="ver-eras">
+      <div class="ver-era era-leg">
+        <div class="ve-name">LEGACY</div>
+        <div class="ve-range">1.8 - 1.12.2</div>
+        <div style="font-size:0.6rem;color:var(--tx3);margin-top:4px;line-height:1.4">NBT ID tabanlı<br/>damage değerleri<br/>Eski execute</div>
+      </div>
+      <div class="ver-era era-mod">
+        <div class="ve-name">MODERN</div>
+        <div class="ve-range">1.13 - 1.20.4</div>
+        <div style="font-size:0.6rem;color:var(--tx3);margin-top:4px;line-height:1.4">minecraft: namespace<br/>Yeni execute<br/>NBT objeler</div>
+      </div>
+      <div class="ver-era era-comp">
+        <div class="ve-name">COMPONENTS</div>
+        <div class="ve-range">1.20.5+</div>
+        <div style="font-size:0.6rem;color:var(--tx3);margin-top:4px;line-height:1.4">[component=val]<br/>NBT yok item'da<br/>Yeni efektler</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<section class="features" aria-label="Özellikler">
+  <div class="feat"><div class="feat-ico">[1]</div><h3>Tüm Sürümler</h3><p>1.8'den 1.21.11'e sürüme özel doğru syntax</p></div>
+  <div class="feat"><div class="feat-ico">[2]</div><h3>Tık Kopyala</h3><p>Her komut tam görünür, tıkla kopyala</p></div>
+  <div class="feat"><div class="feat-ico">[3]</div><h3>Cerebras AI</h3><p>Hızlı ve güçlü Llama 3.1 motoru</p></div>
+  <div class="feat"><div class="feat-ico">[4]</div><h3>Geçmiş</h3><p>Son sorguların kaydedilir</p></div>
+</section>
+<section class="seo-section" aria-label="Popüler Minecraft Komutları">
+<h2>Popüler Minecraft Komutları ve Örnekler</h2>
+<p style="text-align:center;color:var(--tx2);font-size:0.85rem;margin-bottom:32px;max-width:700px;margin-left:auto;margin-right:auto">Aşağıda her sürüm grubu için en çok kullanılan Minecraft komutları ve açıklamaları bulunmaktadır. Bu komutları doğrudan kopyalayıp oyununuzda kullanabilirsiniz.</p>
+
+<div class="seo-grid">
+<article class="seo-card">
+<h4>Give Komutları</h4>
+<p><strong>1.21 Components:</strong> Item verme komutu artık NBT yerine component sistemi kullanır.</p>
+<pre>/give @s diamond_sword[
+  custom_name='Ejderha Kılıcı',
+  enchantments={
+    levels:{sharpness:10,fire_aspect:3}
+  },
+  unbreakable={}
+]</pre>
+<p><strong>1.20.4 Modern:</strong></p>
+<pre>/give @s diamond_sword{
+  display:{Name:'{"text":"Ejderha Kılıcı"}'},
+  Enchantments:[
+    {id:sharpness,lvl:10},
+    {id:fire_aspect,lvl:3}
+  ],
+  Unbreakable:1
+}</pre>
+<p><strong>1.12.2 Legacy:</strong></p>
+<pre>/give @s minecraft:diamond_sword 1 0 {
+  display:{Name:Ejderha Kılıcı},
+  ench:[
+    {id:16,lvl:10},
+    {id:20,lvl:3}
+  ]
+}</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft give komutu</span>
+<span class="seo-keyword">minecraft özel item verme</span>
+<span class="seo-keyword">minecraft enchanted item</span>
+<span class="seo-keyword">minecraft custom name item</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Summon Komutları</h4>
+<p><strong>1.21 Boss Zombie:</strong></p>
+<pre>/summon zombie ~ ~ ~ {
+  CustomName:'Boss Zombie',
+  Health:200f,
+  Attributes:[
+    {Name:generic.max_health,Base:200},
+    {Name:generic.attack_damage,Base:15},
+    {Name:generic.scale,Base:3}
+  ],
+  HandItems:[
+    {id:diamond_sword,Count:1},
+    {}
+  ],
+  ArmorItems:[
+    {id:netherite_helmet,Count:1},
+    {id:netherite_chestplate,Count:1},
+    {id:netherite_leggings,Count:1},
+    {id:netherite_boots,Count:1}
+  ]
+}</pre>
+<p><strong>1.12.2 Legacy:</strong></p>
+<pre>/summon zombie ~ ~ ~ {
+  CustomName:Boss Zombie,
+  Health:200,
+  Attributes:[
+    {Name:generic.maxHealth,Base:200},
+    {Name:generic.attackDamage,Base:15}
+  ],
+  HandItems:[
+    {id:minecraft:diamond_sword,Count:1},
+    {}
+  ]
+}</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft summon komutu</span>
+<span class="seo-keyword">minecraft boss oluşturma</span>
+<span class="seo-keyword">minecraft özel mob</span>
+<span class="seo-keyword">minecraft zombie boss</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Execute Komutları</h4>
+<p><strong>1.21 Yeni Execute:</strong></p>
+<pre>/execute as @a at @s
+  if block ~ ~-1 ~ grass_block
+  run effect give @s speed 5 1</pre>
+<p><strong>1.20.4 Modern Execute:</strong></p>
+<pre>/execute as @a at @s
+  if block ~ ~-1 ~ minecraft:grass_block
+  run effect give @s minecraft:speed 5 1</pre>
+<p><strong>1.12.2 Legacy Execute:</strong></p>
+<pre>/execute @a ~ ~ ~
+  detect ~ ~-1 ~ minecraft:grass 0
+  effect @s minecraft:speed 5 1</pre>
+<p><strong>Her 5 saniyede efekt:</strong></p>
+<pre>/execute as @a run
+  effect give @s regeneration 6 0</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft execute komutu</span>
+<span class="seo-keyword">minecraft koşullu komut</span>
+<span class="seo-keyword">minecraft blok trigger</span>
+<span class="seo-keyword">minecraft efekt döngüsü</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Tellraw ve Title</h4>
+<p><strong>1.21 Ekran Mesajı:</strong></p>
+<pre>/title @a title {"text":"OYUN BAŞLIYOR","color":"yellow","bold":true}</pre>
+<p><strong>1.21 Alt Başlık:</strong></p>
+<pre>/title @a subtitle {"text":"Hazırlanın...","color":"gray"}</pre>
+<p><strong>1.21 Tellraw:</strong></p>
+<pre>/tellraw @a [
+  {"text":"[","color":"dark_gray"},
+  {"text":"SİSTEM","color":"green"},
+  {"text":"] ","color":"dark_gray"},
+  {"text":"Yeni görev başladı!","color":"white"}
+]</pre>
+<p><strong>1.12.2 Legacy Title:</strong></p>
+<pre>/title @a title {"text":"OYUN BAŞLIYOR","color":"yellow","bold":true}</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft title komutu</span>
+<span class="seo-keyword">minecraft tellraw komutu</span>
+<span class="seo-keyword">minecraft ekran mesajı</span>
+<span class="seo-keyword">minecraft renkli yazı</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Fill ve Setblock</h4>
+<p><strong>10x10x10 Obsidian Küp:</strong></p>
+<pre>/fill ~-5 ~-5 ~-5 ~5 ~5 ~5 obsidian</pre>
+<p><strong>Hava Kulesi:</strong></p>
+<pre>/fill ~-2 ~ ~-2 ~2 ~20 ~2 glass hollow</pre>
+<p><strong>Zemin Temizleme:</strong></p>
+<pre>/fill ~-10 ~-1 ~-10 ~10 ~-1 ~10 air</pre>
+<p><strong>1.21 Setblock:</strong></p>
+<pre>/setblock ~ ~ ~ command_block{Command:"say Merhaba"}</pre>
+<p><strong>1.12.2 Legacy Fill:</strong></p>
+<pre>/fill ~-5 ~-5 ~-5 ~5 ~5 ~5 minecraft:obsidian 0</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft fill komutu</span>
+<span class="seo-keyword">minecraft alan doldurma</span>
+<span class="seo-keyword">minecraft setblock</span>
+<span class="seo-keyword">minecraft yapı komutu</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Scoreboard Sistemi</h4>
+<p><strong>Skor Tahtası Oluşturma:</strong></p>
+<pre>/scoreboard objectives add öldürme
+  minecraft.killed:minecraft.zombie
+  "Öldürülen Zombi"</pre>
+<p><strong>Sürekli Görünür Yapma:</strong></p>
+<pre>/scoreboard objectives setdisplay sidebar öldürme</pre>
+<p><strong>Skor Arttırma:</strong></p>
+<pre>/scoreboard players add @a öldürme 1</pre>
+<p><strong>Koşullu Çalıştırma:</strong></p>
+<pre>/execute as @a
+  if score @s öldürme matches 5..
+  run give @s diamond 5</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft scoreboard komutu</span>
+<span class="seo-keyword">minecraft skor tahtası</span>
+<span class="seo-keyword">minecraft koşullu komut</span>
+<span class="seo-keyword">minecraft sayaç sistemi</span>
+</div>
+</article>
+</div>
+
+<h3 style="margin-top:40px">Minecraft Komut Referans Tablosu</h3>
+<p style="color:var(--tx2);font-size:0.8rem;margin-bottom:16px">Aşağıdaki tabloda tüm sürümlerde çalışan temel Minecraft komutları ve kullanımları yer almaktadır.</p>
+<div style="overflow-x:auto">
+<table class="cmd-table">
+<thead>
+<tr><th>Komut</th><th>Açıklama</th><th>Örnek Kullanım</th><th>Sürüm</th></tr>
+</thead>
+<tbody>
+<tr><td>/give</td><td>Item verme</td><td>/give @s diamond 64</td><td>Tüm</td></tr>
+<tr><td>/summon</td><td>Mob oluşturma</td><td>/summon zombie ~ ~ ~</td><td>Tüm</td></tr>
+<tr><td>/tp</td><td>Işınlama</td><td>/tp @s 100 64 200</td><td>Tüm</td></tr>
+<tr><td>/execute</td><td>Koşullu çalıştırma</td><td>/execute as @a at @s run say Merhaba</td><td>1.13+</td></tr>
+<tr><td>/effect</td><td>Efekt verme</td><td>/effect give @s speed 30 1</td><td>1.13+</td></tr>
+<tr><td>/fill</td><td>Alan doldurma</td><td>/fill ~-5 ~ ~-5 ~5 ~ ~5 stone</td><td>Tüm</td></tr>
+<tr><td>/setblock</td><td>Blok yerleştirme</td><td>/setblock ~ ~ ~ diamond_block</td><td>Tüm</td></tr>
+<tr><td>/title</td><td>Ekran başlığı</td><td>/title @a title {"text":"Başladı"}</td><td>Tüm</td></tr>
+<tr><td>/tellraw</td><td>Özel mesaj</td><td>/tellraw @a {"text":"Merhaba"}</td><td>Tüm</td></tr>
+<tr><td>/scoreboard</td><td>Skor sistemi</td><td>/scoreboard objectives add test dummy</td><td>Tüm</td></tr>
+<tr><td>/data</td><td>Data okuma/yazma</td><td>/data get entity @s Health</td><td>1.13+</td></tr>
+<tr><td>/function</td><td>Fonksiyon çalıştırma</td><td>/function namespace:fonksiyon</td><td>1.12+</td></tr>
+<tr><td>/schedule</td><td>Gecikmeli çalıştırma</td><td>/schedule function test 5s</td><td>1.14+</td></tr>
+<tr><td>/tag</td><td>Etiket ekleme</td><td>/tag @s add vip</td><td>1.13+</td></tr>
+<tr><td>/team</td><td>Takım sistemi</td><td>/team add kırmızı</td><td>Tüm</td></tr>
+<tr><td>/gamerule</td><td>Oyun kuralı</td><td>/gamerule keepInventory true</td><td>Tüm</td></tr>
+<tr><td>/difficulty</td><td>Zorluk ayarı</td><td>/difficulty hard</td><td>Tüm</td></tr>
+<tr><td>/weather</td><td>Hava durumu</td><td>/weather clear 6000</td><td>Tüm</td></tr>
+<tr><td>/time</td><td>Zaman ayarı</td><td>/time set day</td><td>Tüm</td></tr>
+<tr><td>/spawnpoint</td><td>Doğma noktası</td><td>/spawnpoint @s 100 64 200</td><td>Tüm</td></tr>
+<tr><td>/worldborder</td><td>Dünya sınırı</td><td>/worldborder set 1000</td><td>Tüm</td></tr>
+<tr><td>/kill</td><td>Öldürme</td><td>/kill @e[type=zombie]</td><td>Tüm</td></tr>
+<tr><td>/clear</td><td>Item temizleme</td><td>/clear @s diamond 64</td><td>Tüm</td></tr>
+<tr><td>/clone</td><td>Alan kopyalama</td><td>/clone ~-5 ~ ~-5 ~5 ~ ~5 100 64 200</td><td>Tüm</td></tr>
+<tr><td>/particle</td><td>Parçacık efekti</td><td>/particle minecraft:flame ~ ~ ~ 1 1 1 0 100</td><td>Tüm</td></tr>
+<tr><td>/playsound</td><td>Ses çalma</td><td>/playsound minecraft:block.note_block.pling master @s</td><td>Tüm</td></tr>
+<tr><td>/advancement</td><td>Başarım verme</td><td>/advancement grant @s all</td><td>1.12+</td></tr>
+<tr><td>/loot</td><td>Ganimet verme</td><td>/loot give @s loot minecraft:chests/end_city_treasure</td><td>1.15+</td></tr>
+<tr><td>/attribute</td><td>Özellik değiştirme</td><td>/attribute @s minecraft:generic.max_health base set 40</td><td>1.16+</td></tr>
+<tr><td>/item</td><td>Item değiştirme</td><td>/item replace entity @s weapon.mainhand with diamond_sword</td><td>1.17+</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3 style="margin-top:40px">Minecraft Komut Türleri ve Kullanım Alanları</h3>
+<div class="seo-grid">
+<article class="seo-card">
+<h4>Item Komutları</h4>
+<p>Minecraft'ta özel itemlar oluşturmak için <code>/give</code> komutu kullanılır. Her sürümde farklı syntax kullanılır:</p>
+<ul style="color:var(--tx2);font-size:0.78rem;line-height:1.8;margin-top:8px;padding-left:16px">
+<li><strong>Components (1.20.5+):</strong> <code>[custom_name='...',enchantments={...}]</code></li>
+<li><strong>Modern (1.13-1.20.4):</strong> <code>{display:{Name:'...'},Enchantments:[...]}</code></li>
+<li><strong>Legacy (1.8-1.12):</strong> <code>{display:{Name:...},ench:[...]}</code></li>
+</ul>
+<p style="margin-top:8px">Popüler item özellikleri: enchantment, custom name, lore, unbreakable, hide flags, can place on, can destroy, attribute modifiers.</p>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft item komutu</span>
+<span class="seo-keyword">minecraft özel eşya</span>
+<span class="seo-keyword">minecraft büyülü item</span>
+<span class="seo-keyword">minecraft nbt item</span>
+<span class="seo-keyword">minecraft components item</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Mob Komutları</h4>
+<p>Özel moblar oluşturmak için <code>/summon</code> komutu kullanılır. Boss moblar, özel özellikli hayvanlar ve NPC'ler oluşturulabilir.</p>
+<p style="margin-top:8px"><strong>Kullanılan NBT tagleri:</strong></p>
+<ul style="color:var(--tx2);font-size:0.78rem;line-height:1.8;padding-left:16px">
+<li>CustomName - Özel isim</li>
+<li>Health - Can puanı</li>
+<li>Attributes - Özellikler (hız, hasar, boyut)</li>
+<li>HandItems - Elindeki itemlar</li>
+<li>ArmorItems - Zırhlar</li>
+<li>ActiveEffects - Aktif efektler</li>
+<li>NoAI - Yapay zeka kapama</li>
+<li>Invulnerable - Hasar almama</li>
+</ul>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft mob komutu</span>
+<span class="seo-keyword">minecraft boss oluşturma</span>
+<span class="seo-keyword">minecraft summon nbt</span>
+<span class="seo-keyword">minecraft özel canlı</span>
+<span class="seo-keyword">minecraft npc oluşturma</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Redstone ve Mekanizmalar</h4>
+<p>Command blocklar ile karmaşık mekanizmalar oluşturulabilir. Command block türleri:</p>
+<ul style="color:var(--tx2);font-size:0.78rem;line-height:1.8;padding-left:16px">
+<li><strong>Impulse:</strong> Tek seferlik çalışır</li>
+<li><strong>Repeat:</strong> Her tick'te çalışır</li>
+<li><strong>Chain:</strong> Zincirleme çalışır</li>
+</ul>
+<p style="margin-top:8px">Command blocklar ile yapılabilenler: otomatik kapılar, tuzaklar, mini oyunlar, mağaza sistemleri, görev sistemleri, boss savaşları.</p>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft command block</span>
+<span class="seo-keyword">minecraft redstone komut</span>
+<span class="seo-keyword">minecraft mekanizma</span>
+<span class="seo-keyword">minecraft otomatik sistem</span>
+<span class="seo-keyword">minecraft mini oyun</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Datapack Sistemi</h4>
+<p>Datapack'ler Minecraft'ta özel oyun mekanikleri eklemek için kullanılır. Fonksiyonlar, loot tabloları, ilerlemeler, tarifler ve daha fazlası eklenebilir.</p>
+<p style="margin-top:8px"><strong>Datapack yapısı:</strong></p>
+<pre style="margin-top:8px">datapacks/
+  benim_pack/
+    pack.mcmeta
+    data/
+      namespace/
+        functions/
+          basla.mcfunction
+        loot_tables/
+        advancements/
+        recipes/</pre>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft datapack</span>
+<span class="seo-keyword">minecraft fonksiyon</span>
+<span class="seo-keyword">minecraft custom loot</span>
+<span class="seo-keyword">minecraft advancement</span>
+<span class="seo-keyword">minecraft recipe</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Efekt ve İksir Komutları</h4>
+<p>Oyunculara ve moblara efekt vermek için <code>/effect</code> komutu kullanılır.</p>
+<p style="margin-top:8px"><strong>Popüler efektler:</strong></p>
+<ul style="color:var(--tx2);font-size:0.78rem;line-height:1.8;padding-left:16px">
+<li>speed - Hız</li>
+<li>strength - Güç</li>
+<li>regeneration - Yenilenme</li>
+<li>resistance - Direnç</li>
+<li>jump_boost - Zıplama güçlendirmesi</li>
+<li>night_vision - Gece görüşü</li>
+<li>invisibility - Görünmezlik</li>
+<li>fire_resistance - Ateş direnci</li>
+<li>water_breathing - Suda nefes alma</li>
+<li>absorption - Emilim</li>
+</ul>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft efekt komutu</span>
+<span class="seo-keyword">minecraft iksir komutu</span>
+<span class="seo-keyword">minecraft potion komutu</span>
+<span class="seo-keyword">minecraft buff komutu</span>
+<span class="seo-keyword">minecraft effect give</span>
+</div>
+</article>
+
+<article class="seo-card">
+<h4>Dünya ve Oyun Ayarları</h4>
+<p>Oyun dünyasını ve kurallarını değiştirmek için kullanılan komutlar:</p>
+<ul style="color:var(--tx2);font-size:0.78rem;line-height:1.8;padding-left:16px">
+<li><code>/gamerule keepInventory true</code> - Ölünce item kaybetmeme</li>
+<li><code>/gamerule doDaylightCycle false</code> - Zamanı durdurma</li>
+<li><code>/gamerule doMobSpawning false</code> - Mob doğmasını kapatma</li>
+<li><code>/gamerule commandBlockOutput false</code> - Command block mesajlarını kapatma</li>
+<li><code>/difficulty peaceful</code> - Barışçıl mod</li>
+<li><code>/weather clear 999999</code> - Hava durumu sabitleme</li>
+<li><code>/time set day</code> - Gündüz yapma</li>
+</ul>
+<div class="seo-keywords">
+<span class="seo-keyword">minecraft gamerule</span>
+<span class="seo-keyword">minecraft dünya ayarı</span>
+<span class="seo-keyword">minecraft oyun kuralı</span>
+<span class="seo-keyword">minecraft difficulty</span>
+<span class="seo-keyword">minecraft weather komutu</span>
+</div>
+</article>
+</div>
+</section>
+
+<section class="seo-section" aria-label="Sık Sorulan Sorular">
+<h2>Sık Sorulan Sorular</h2>
+<div class="seo-grid">
+<article class="seo-card">
+<h4>Minecraft komutları nerede yazılır?</h4>
+<p>Minecraft komutları sohbet penceresinde (T tuşu) veya command blocklarda yazılır. Command blocklar creative modda <code>/give @s command_block</code> komutu ile alınabilir. Tek oyunculu dünyalarda hileler açık olmalıdır.</p>
+</article>
+<article class="seo-card">
+<h4>Minecraft 1.21 ile 1.20 arasındaki komut farkı nedir?</h4>
+<p>1.20.5 sürümünden itibaren Minecraft item komutlarında NBT tagleri kaldırıldı. Yerine <code>[component=değer]</code> sistemi getirildi. Bu değişiklik sadece item komutlarını etkiler, diğer komutlar (summon, execute vb.) aynı kalır.</p>
+</article>
+<article class="seo-card">
+<h4>Command block nasıl alınır?</h4>
+<p>Command block almak için sohbete <code>/give @s command_block</code> yazın. Command blocklar sadece creative modda ve op yetkisi olan oyuncular tarafından yerleştirilebilir. Survival modda command block kullanılamaz.</p>
+</article>
+<article class="seo-card">
+<h4>Minecraft komutları çalışmıyor ne yapmalıyım?</h4>
+<p>Komutların çalışması için: 1) Hileler açık olmalı, 2) Op yetkisi gerekebilir, 3) Komut doğru syntax ile yazılmalı, 4) Sürüm uyumlu olmalı. Hata mesajlarını dikkatle okuyun, genellikle sorunun ne olduğunu söyler.</p>
+</article>
+<article class="seo-card">
+<h4>Datapack nasıl yüklenir?</h4>
+<p>Datapack'ler dünya klasörünün içindeki <code>datapacks</code> klasörüne atılır. Oyun içinde <code>/datapack list</code> komutu ile görüntülenebilir ve <code>/datapack enable "pack_ismi"</code> ile etkinleştirilebilir.</p>
+</article>
+<article class="seo-card">
+<h4>Minecraft komut bloğu zinciri nasıl kurulur?</h4>
+<p>Command block zinciri kurmak için: 1) Repeat command block koyun, 2) Chain command blockları ardına yerleştirin, 3) Her blockun yönünü ok işareti ile bir sonrakine doğru çevirin, 4) Repeat blocka redstone sinyali verin. Zincir otomatik olarak çalışacaktır.</p>
+</article>
+</div>
+</section>
+
+<section class="seo-section" aria-label="Arama Anahtar Kelimeleri">
+<h2>Minecraft Komut Arama Terimleri</h2>
+<p style="text-align:center;color:var(--tx2);font-size:0.8rem;margin-bottom:24px">Sitemizde arayabileceğiniz popüler Minecraft komut terimleri ve konuları:</p>
+<div class="seo-keywords" style="justify-content:center">
+<span class="seo-keyword">minecraft komut üretici</span>
+<span class="seo-keyword">minecraft komut generator</span>
+<span class="seo-keyword">minecraft ai komut</span>
+<span class="seo-keyword">minecraft türkçe komut</span>
+<span class="seo-keyword">minecraft 1.21 komutları</span>
+<span class="seo-keyword">minecraft 1.20 komutları</span>
+<span class="seo-keyword">minecraft 1.19 komutları</span>
+<span class="seo-keyword">minecraft 1.18 komutları</span>
+<span class="seo-keyword">minecraft 1.17 komutları</span>
+<span class="seo-keyword">minecraft 1.16 komutları</span>
+<span class="seo-keyword">minecraft 1.15 komutları</span>
+<span class="seo-keyword">minecraft 1.14 komutları</span>
+<span class="seo-keyword">minecraft 1.13 komutları</span>
+<span class="seo-keyword">minecraft 1.12 komutları</span>
+<span class="seo-keyword">minecraft 1.11 komutları</span>
+<span class="seo-keyword">minecraft 1.10 komutları</span>
+<span class="seo-keyword">minecraft 1.9 komutları</span>
+<span class="seo-keyword">minecraft 1.8 komutları</span>
+<span class="seo-keyword">minecraft give komutu</span>
+<span class="seo-keyword">minecraft summon komutu</span>
+<span class="seo-keyword">minecraft execute komutu</span>
+<span class="seo-keyword">minecraft tellraw komutu</span>
+<span class="seo-keyword">minecraft title komutu</span>
+<span class="seo-keyword">minecraft fill komutu</span>
+<span class="seo-keyword">minecraft effect komutu</span>
+<span class="seo-keyword">minecraft tp komutu</span>
+<span class="seo-keyword">minecraft teleport komutu</span>
+<span class="seo-keyword">minecraft scoreboard komutu</span>
+<span class="seo-keyword">minecraft data komutu</span>
+<span class="seo-keyword">minecraft function komutu</span>
+<span class="seo-keyword">minecraft datapack komutu</span>
+<span class="seo-keyword">minecraft gamerule komutu</span>
+<span class="seo-keyword">minecraft difficulty komutu</span>
+<span class="seo-keyword">minecraft weather komutu</span>
+<span class="seo-keyword">minecraft time komutu</span>
+<span class="seo-keyword">minecraft kill komutu</span>
+<span class="seo-keyword">minecraft clear komutu</span>
+<span class="seo-keyword">minecraft clone komutu</span>
+<span class="seo-keyword">minecraft setblock komutu</span>
+<span class="seo-keyword">minecraft particle komutu</span>
+<span class="seo-keyword">minecraft playsound komutu</span>
+<span class="seo-keyword">minecraft schedule komutu</span>
+<span class="seo-keyword">minecraft tag komutu</span>
+<span class="seo-keyword">minecraft team komutu</span>
+<span class="seo-keyword">minecraft worldborder komutu</span>
+<span class="seo-keyword">minecraft spawnpoint komutu</span>
+<span class="seo-keyword">minecraft setworldspawn komutu</span>
+<span class="seo-keyword">minecraft spreadplayers komutu</span>
+<span class="seo-keyword">minecraft advancement komutu</span>
+<span class="seo-keyword">minecraft loot komutu</span>
+<span class="seo-keyword">minecraft attribute komutu</span>
+<span class="seo-keyword">minecraft item komutu</span>
+<span class="seo-keyword">minecraft experience komutu</span>
+<span class="seo-keyword">minecraft enchant komutu</span>
+<span class="seo-keyword">minecraft kick komutu</span>
+<span class="seo-keyword">minecraft ban komutu</span>
+<span class="seo-keyword">minecraft pardon komutu</span>
+<span class="seo-keyword">minecraft op komutu</span>
+<span class="seo-keyword">minecraft deop komutu</span>
+<span class="seo-keyword">minecraft whitelist komutu</span>
+<span class="seo-keyword">minecraft save komutu</span>
+<span class="seo-keyword">minecraft stop komutu</span>
+<span class="seo-keyword">minecraft reload komutu</span>
+<span class="seo-keyword">minecraft debug komutu</span>
+<span class="seo-keyword">minecraft seed komutu</span>
+<span class="seo-keyword">minecraft defaultgamemode komutu</span>
+<span class="seo-keyword">minecraft gamemode komutu</span>
+<span class="seo-keyword">minecraft list komutu</span>
+<span class="seo-keyword">minecraft me komutu</span>
+<span class="seo-keyword">minecraft msg komutu</span>
+<span class="seo-keyword">minecraft say komutu</span>
+<span class="seo-keyword">minecraft w komutu</span>
+<span class="seo-keyword">minecraft nbt komutları</span>
+<span class="seo-keyword">minecraft components syntax</span>
+<span class="seo-keyword">minecraft item modifier</span>
+<span class="seo-keyword">minecraft attribute modifier</span>
+<span class="seo-keyword">minecraft enchantment komutu</span>
+<span class="seo-keyword">minecraft potion komutu</span>
+<span class="seo-keyword">minecraft armor stand komutu</span>
+<span class="seo-keyword">minecraft custom item</span>
+<span class="seo-keyword">minecraft op item</span>
+<span class="seo-keyword">minecraft boss summon</span>
+<span class="seo-keyword">minecraft yıldırım komutu</span>
+<span class="seo-keyword">minecraft hızlı komut</span>
+<span class="seo-keyword">minecraft kolay komut</span>
+<span class="seo-keyword">minecraft komut bloğu</span>
+<span class="seo-keyword">minecraft redstone komutları</span>
+<span class="seo-keyword">minecraft command block zinciri</span>
+<span class="seo-keyword">minecraft otomatik komut</span>
+<span class="seo-keyword">minecraft koşullu komut</span>
+<span class="seo-keyword">minecraft döngü komutu</span>
+<span class="seo-keyword">minecraft sürekli komut</span>
+<span class="seo-keyword">minecraft canlı komut</span>
+<span class="seo-keyword">minecraft güncel komutlar</span>
+<span class="seo-keyword">minecraft yeni komutlar</span>
+<span class="seo-keyword">minecraft eski komutlar</span>
+<span class="seo-keyword">minecraft legacy komutlar</span>
+<span class="seo-keyword">minecraft modern komutlar</span>
+<span class="seo-keyword">minecraft java komutları</span>
+<span class="seo-keyword">minecraft bedrock komutları</span>
+<span class="seo-keyword">minecraft pe komutları</span>
+<span class="seo-keyword">minecraft pocket edition komutları</span>
+<span class="seo-keyword">minecraft konsol komutları</span>
+<span class="seo-keyword">minecraft server komutları</span>
+<span class="seo-keyword">minecraft admin komutları</span>
+<span class="seo-keyword">minecraft yetkili komutları</span>
+<span class="seo-keyword">minecraft yaratıcı mod komutları</span>
+<span class="seo-keyword">minecraft survival komutları</span>
+<span class="seo-keyword">minecraft adventure komutları</span>
+<span class="seo-keyword">minecraft spectator komutları</span>
+<span class="seo-keyword">minecraft hardcore komutları</span>
+<span class="seo-keyword">minecraft pvp komutları</span>
+<span class="seo-keyword">minecraft skyblock komutları</span>
+<span class="seo-keyword">minecraft factions komutları</span>
+<span class="seo-keyword">minecraft prison komutları</span>
+<span class="seo-keyword">minecraft creative komutları</span>
+<span class="seo-keyword">minecraft build komutları</span>
+<span class="seo-keyword">minecraft map komutları</span>
+<span class="seo-keyword">minecraft mini game komutları</span>
+<span class="seo-keyword">minecraft parkour komutları</span>
+<span class="seo-keyword">minecraft survival games komutları</span>
+<span class="seo-keyword">minecraft bed wars komutları</span>
+<span class="seo-keyword">minecraft sky wars komutları</span>
+<span class="seo-keyword">minecraft egg wars komutları</span>
+<span class="seo-keyword">minecraft murder mystery komutları</span>
+<span class="seo-keyword">minecraft hide and seek komutları</span>
+<span class="seo-keyword">minecraft spleef komutları</span>
+<span class="seo-keyword">minecraft tnt run komutları</span>
+<span class="seo-keyword">minecraft uhc komutları</span>
+<span class="seo-keyword">minecraft hunger games komutları</span>
+<span class="seo-keyword">minecraft battle royale komutları</span>
+<span class="seo-keyword">minecraft rpg komutları</span>
+<span class="seo-keyword">minecraft quest komutları</span>
+<span class="seo-keyword">minecraft görev komutları</span>
+<span class="seo-keyword">minecraft mağaza komutları</span>
+<span class="seo-keyword">minecraft ekonomi komutları</span>
+<span class="seo-keyword">minecraft para komutları</span>
+<span class="seo-keyword">minecraft takas komutları</span>
+<span class="seo-keyword">minecraft market komutları</span>
+<span class="seo-keyword">minecraft kilit komutları</span>
+<span class="seo-keyword">minecraft koruma komutları</span>
+<span class="seo-keyword">minecraft bölge komutları</span>
+<span class="seo-keyword">minecraft claim komutları</span>
+<span class="seo-keyword">minecraft warp komutları</span>
+<span class="seo-keyword">minecraft home komutları</span>
+<span class="seo-keyword">minecraft spawn komutları</span>
+<span class="seo-keyword">minecraft kit komutları</span>
+<span class="seo-keyword">minecraft starter kit komutları</span>
+<span class="seo-keyword">minecraft vip komutları</span>
+<span class="seo-keyword">minecraft yetki komutları</span>
+<span class="seo-keyword">minecraft rütbe komutları</span>
+<span class="seo-keyword">minecraft seviye komutları</span>
+<span class="seo-keyword">minecraft xp komutları</span>
+<span class="seo-keyword">minecraft deneyim komutları</span>
+<span class="seo-keyword">minecraft seviye atlama komutları</span>
+<span class="seo-keyword">minecraft zırh komutları</span>
+<span class="seo-keyword">minecraft silah komutları</span>
+<span class="seo-keyword">minecraft araç komutları</span>
+<span class="seo-keyword">minecraft alet komutları</span>
+<span class="seo-keyword">minecraft yiyecek komutları</span>
+<span class="seo-keyword">minecraft iksir komutları</span>
+<span class="seo-keyword">minecraft büyü komutları</span>
+<span class="seo-keyword">minecraft büyü kitabı komutları</span>
+<span class="seo-keyword">minecraft enchanted book komutları</span>
+<span class="seo-keyword">minecraft kılıç komutları</span>
+<span class="seo-keyword">minecraft ok komutları</span>
+<span class="seo-keyword">minecraft zırh komutları</span>
+<span class="seo-keyword">minecraft kalkan komutları</span>
+<span class="seo-keyword">minecraft balta komutları</span>
+<span class="seo-keyword">minecraft kazma komutları</span>
+<span class="seo-keyword">minecraft kürek komutları</span>
+<span class="seo-keyword">minecraft orak komutları</span>
+<span class="seo-keyword">minecraft çapa komutları</span>
+<span class="seo-keyword">minecraft balık tutma komutları</span>
+<span class="seo-keyword">minecraft yay komutları</span>
+<span class="seo-keyword">minecraft arbalet komutları</span>
+<span class="seo-keyword">minecraft üçlü arbalet komutları</span>
+<span class="seo-keyword">minecraft elitra komutları</span>
+<span class="seo-keyword">minecraft fırlatma komutları</span>
+<span class="seo-keyword">minecraft ateş komutu</span>
+<span class="seo-keyword">minecraft su komutu</span>
+<span class="seo-keyword">minecraft lav komutu</span>
+<span class="seo-keyword">minecraft toprak komutu</span>
+<span class="seo-keyword">minecraft taş komutu</span>
+<span class="seo-keyword">minecraft odun komutu</span>
+<span class="seo-keyword">minecraft yaprak komutu</span>
+<span class="seo-keyword">minecraft çiçek komutu</span>
+<span class="seo-keyword">minecraft mantar komutu</span>
+<span class="seo-keyword">minecraft meyve komutu</span>
+<span class="seo-keyword">minecraft tohum komutu</span>
+<span class="seo-keyword">minecraft fidan komutu</span>
+<span class="seo-keyword">minecraft hayvan komutu</span>
+<span class="seo-keyword">minecraft evcil hayvan komutu</span>
+<span class="seo-keyword">minecraft at komutu</span>
+<span class="seo-keyword">minecraft köpek komutu</span>
+<span class="seo-keyword">minecraft kedi komutu</span>
+<span class="seo-keyword">minecraft kuş komutu</span>
+<span class="seo-keyword">minecraft balık komutu</span>
+<span class="seo-keyword">minecraft köylü komutu</span>
+<span class="seo-keyword">minecraft golem komutu</span>
+<span class="seo-keyword">minecraft ejderha komutu</span>
+<span class="seo-keyword">minecraft wither komutu</span>
+<span class="seo-keyword">minecraft ender dragon komutu</span>
+<span class="seo-keyword">minecraft warden komutu</span>
+<span class="seo-keyword">minecraft guardian komutu</span>
+<span class="seo-keyword">minecraft elder guardian komutu</span>
+<span class="seo-keyword">minecraft shulker komutu</span>
+<span class="seo-keyword">minecraft phantom komutu</span>
+<span class="seo-keyword">minecraft pillager komutu</span>
+<span class="seo-keyword">minecraft ravager komutu</span>
+<span class="seo-keyword">minecraft evoker komutu</span>
+<span class="seo-keyword">minecraft vindicator komutu</span>
+<span class="seo-keyword">minecraft illusioner komutu</span>
+<span class="seo-keyword">minecraft vex komutu</span>
+<span class="seo-keyword">minecraft witch komutu</span>
+<span class="seo-keyword">minecraft slime komutu</span>
+<span class="seo-keyword">minecraft magma cube komutu</span>
+<span class="seo-keyword">minecraft ghast komutu</span>
+<span class="seo-keyword">minecraft blaze komutu</span>
+<span class="seo-keyword">minecraft wither skeleton komutu</span>
+<span class="seo-keyword">minecraft skeleton komutu</span>
+<span class="seo-keyword">minecraft spider komutu</span>
+<span class="seo-keyword">minecraft cave spider komutu</span>
+<span class="seo-keyword">minecraft silverfish komutu</span>
+<span class="seo-keyword">minecraft endermite komutu</span>
+<span class="seo-keyword">minecraft enderman komutu</span>
+<span class="seo-keyword">minecraft creeper komutu</span>
+<span class="seo-keyword">minecraft zombie komutu</span>
+<span class="seo-keyword">minecraft skeleton komutu</span>
+<span class="seo-keyword">minecraft drowned komutu</span>
+<span class="seo-keyword">minecraft husk komutu</span>
+<span class="seo-keyword">minecraft stray komutu</span>
+<span class="seo-keyword">minecraft piglin komutu</span>
+<span class="seo-keyword">minecraft zombified piglin komutu</span>
+<span class="seo-keyword">minecraft hoglin komutu</span>
+<span class="seo-keyword">minecraft zoglin komutu</span>
+<span class="seo-keyword">minecraft strider komutu</span>
+<span class="seo-keyword">minecraft pig komutu</span>
+<span class="seo-keyword">minecraft cow komutu</span>
+<span class="seo-keyword">minecraft sheep komutu</span>
+<span class="seo-keyword">minecraft chicken komutu</span>
+<span class="seo-keyword">minecraft rabbit komutu</span>
+<span class="seo-keyword">minecraft fox komutu</span>
+<span class="seo-keyword">minecraft wolf komutu</span>
+<span class="seo-keyword">minecraft ocelot komutu</span>
+<span class="seo-keyword">minecraft parrot komutu</span>
+<span class="seo-keyword">minecraft turtle komutu</span>
+<span class="seo-keyword">minecraft dolphin komutu</span>
+<span class="seo-keyword">minecraft squid komutu</span>
+<span class="seo-keyword">minecraft glow squid komutu</span>
+<span class="seo-keyword">minecraft axolotl komutu</span>
+<span class="seo-keyword">minecraft bat komutu</span>
+<span class="seo-keyword">minecraft bee komutu</span>
+<span class="seo-keyword">minecraft panda komutu</span>
+<span class="seo-keyword">minecraft polar bear komutu</span>
+<span class="seo-keyword">minecraft llama komutu</span>
+<span class="seo-keyword">minecraft trader llama komutu</span>
+<span class="seo-keyword">minecraft wandering trader komutu</span>
+<span class="seo-keyword">minecraft villager komutu</span>
+<span class="seo-keyword">minecraft iron golem komutu</span>
+<span class="seo-keyword">minecraft snow golem komutu</span>
+<span class="seo-keyword">minecraft mooshroom komutu</span>
+<span class="seo-keyword">minecraft horse komutu</span>
+<span class="seo-keyword">minecraft donkey komutu</span>
+<span class="seo-keyword">minecraft mule komutu</span>
+<span class="seo-keyword">minecraft skeleton horse komutu</span>
+<span class="seo-keyword">minecraft zombie horse komutu</span>
+<span class="seo-keyword">minecraft camel komutu</span>
+<span class="seo-keyword">minecraft sniffler komutu</span>
+<span class="seo-keyword">minecraft frog komutu</span>
+<span class="seo-keyword">minecraft tadpole komutu</span>
+<span class="seo-keyword">minecraft allay komutu</span>
+<span class="seo-keyword">minecraft breeze komutu</span>
+<span class="seo-keyword">minecraft bogged komutu</span>
+<span class="seo-keyword">minecraft creaking komutu</span>
+</div>
+</section>
 
 <footer>
-  <p>MC Komut Üretici · <a href="https://www.youtube.com/@MCKomutları" target="_blank">YouTube Kanalı</a> · 1.8 — 1.21.11</p>
+<p>MC Komut Üretici - <a href="https://www.youtube.com/@MCKomutları" target="_blank">YouTube Kanalı</a> - 1.8 - 1.21.11</p>
 </footer>
 
-</div><!-- /wrap -->
-
+</div>
 <script>
-// ── Version Details ───────────────────────────────────────────
-const VD = {{ version_details|tojson }};
+// ========== VERSION DETAILS ==========
+const VD = {
+  "1.21.11": {era:"COMPONENTS", desc:"En son sürüm - Yeni moblar ve bloklar - Components syntax tam"},
+  "1.21.8": {era:"COMPONENTS", desc:"Geliştirilmiş yapay zeka davranışları - Yeni komut özellikleri"},
+  "1.21.5": {era:"COMPONENTS", desc:"Yeni biyomlar ve bitkiler - Components syntax"},
+  "1.21.4": {era:"COMPONENTS", desc:"Bundles of Bravery - Bundle sistemi aktif"},
+  "1.21.1": {era:"COMPONENTS", desc:"Hata düzenlemeleri ve optimize - Components"},
+  "1.21": {era:"COMPONENTS", desc:"Tricky Trials - Trial Chambers - Yeni yapılar"},
+  "1.20.6": {era:"COMPONENTS", desc:"Son modern güncelleme - Components geçiş"},
+  "1.20.5": {era:"COMPONENTS", desc:"Components başladı - Yeni item syntax - NBT kalktı"},
+  "1.20.4": {era:"MODERN", desc:"Armor Trim ve Smithing Templates - Modern NBT"},
+  "1.20.2": {era:"MODERN", desc:"Yeni komut özellikleri - Modern syntax"},
+  "1.20.1": {era:"MODERN", desc:"Cherry Grove ve Sniffer - Modern NBT"},
+  "1.20": {era:"MODERN", desc:"Trails and Tales - Camel ve Archaeology"},
+  "1.19.4": {era:"MODERN", desc:"Yeni komut argümanları - Modern syntax"},
+  "1.19.3": {era:"MODERN", desc:"Bambu mobilya ve yeni biyom"},
+  "1.19.2": {era:"MODERN", desc:"Hata düzenlemeleri - Modern NBT"},
+  "1.19.1": {era:"MODERN", desc:"Chat raporlama sistemi"},
+  "1.19": {era:"MODERN", desc:"Wild Update - Warden ve Deep Dark"},
+  "1.18.2": {era:"MODERN", desc:"Yeni dünyalar ve optimize"},
+  "1.18.1": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.18": {era:"MODERN", desc:"Caves and Cliffs Part 2 - Yeni yükseklik sınırı"},
+  "1.17.1": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.17": {era:"MODERN", desc:"Caves and Cliffs Part 1 - Amethyst ve Copper"},
+  "1.16.5": {era:"MODERN", desc:"Nether Update - Netherite ve Piglin"},
+  "1.16.4": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.16.3": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.16.2": {era:"MODERN", desc:"Bastion Remnants ve Piglin Brute"},
+  "1.16.1": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.16": {era:"MODERN", desc:"Nether Update - Yeni Nether biyomları"},
+  "1.15.2": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.15": {era:"MODERN", desc:"Buzzy Bees - Arı kovanı ve bal"},
+  "1.14.4": {era:"MODERN", desc:"Hata düzenlemeleri"},
+  "1.14": {era:"MODERN", desc:"Village and Pillage - Yeni köylüler"},
+  "1.13.2": {era:"MODERN", desc:"Hata düzenlemeleri - Flattening"},
+  "1.13": {era:"MODERN", desc:"Aquatic Update - Yeni execute ve Flattening"},
+  "1.12.2": {era:"LEGACY", desc:"Son eski sürüm - NBT ID tabanlı syntax"},
+  "1.12": {era:"LEGACY", desc:"World of Color - Yeni renk sistemi"},
+  "1.11.2": {era:"LEGACY", desc:"Hata düzenlemeleri"},
+  "1.11": {era:"LEGACY", desc:"Exploration Update - Observer ve Shulker Box"},
+  "1.10.2": {era:"LEGACY", desc:"Hata düzenlemeleri"},
+  "1.10": {era:"LEGACY", desc:"Frostburn Update - Polar Bear ve Stray"},
+  "1.9.4": {era:"LEGACY", desc:"Hata düzenlemeleri"},
+  "1.9": {era:"LEGACY", desc:"Combat Update - Dual Wield ve Shields"},
+  "1.8.9": {era:"LEGACY", desc:"Hata düzenlemeleri"},
+  "1.8": {era:"LEGACY", desc:"Klasik - Eski PvP ve Slime Block"}
+};
 
 function getEraClass(era){
   if(era==='LEGACY') return 'era-LEGACY';
@@ -603,16 +1331,19 @@ function setEx(el, text){
   inp.focus();
 }
 
-// ── Generate ──────────────────────────────────────────────────
+// ========== GENERATE (DÜZELTİLMİŞ - CATCH EKLENDİ) ==========
 async function generate(){
   const idea = document.getElementById('ideaInput').value.trim();
-  if(!idea){ alert('Bir fikir yazmalısın!'); return; }
-  
+  if(!idea){ 
+    showError('Bir fikir yazmalısın!'); 
+    return; 
+  }
+
   const btn = document.getElementById('genBtn');
   const lbl = document.getElementById('btnLabel');
   btn.disabled = true;
   lbl.innerHTML = '<span class="spin"></span> Üretiliyor...';
-  
+
   document.getElementById('resultArea').style.display = 'none';
   document.getElementById('errorArea').style.display = 'none';
 
@@ -627,21 +1358,36 @@ async function generate(){
         command_type: document.getElementById('cmdTypeSel').value
       })
     });
-   const data = await res.json();
-if(data.success){
-  showResult(data);
-  addHistory(data);
-} else {
-  showError(data.error || 'Komut üretilemedi, tekrar deneyin.');
+
+    // Eğer sunucu yanıt vermezse
+    if(!res.ok){
+      throw new Error('Sunucu hatası: ' + res.status + ' ' + res.statusText);
+    }
+
+    const data = await res.json();
+
+    if(data.success){
+      showResult(data);
+      addHistory(data);
+    } else {
+      showError(data.error || 'Komut üretilemedi, tekrar deneyin.');
+    }
+  } catch(err) {
+    console.error('Generate hatası:', err);
+    showError('Bağlantı hatası: ' + (err.message || 'Sunucuya ulaşılamıyor. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.'));
+  } finally {
+    btn.disabled = false;
+    lbl.innerHTML = 'Komut Üret';
+  }
 }
 
-// ── Show Result ───────────────────────────────────────────────
+// ========== SHOW RESULT ==========
 function getWhereClass(where){
   if(!where) return 'where-chat';
   const w = where.toLowerCase();
-  if(w.includes('sohbet')||w.includes('konsol')) return 'where-chat';
+  if(w.includes('sohbet')||w.includes('konsol')||w.includes('chat')) return 'where-chat';
   if(w.includes('impulse')) return 'where-impulse';
-  if(w.includes('repeat')||w.includes('repeating')) return 'where-repeat';
+  if(w.includes('repeat')||w.includes('repeating')||w.includes('tekrar')) return 'where-repeat';
   if(w.includes('chain')||w.includes('zincir')) return 'where-chain';
   return 'where-chat';
 }
@@ -667,9 +1413,9 @@ function showResult(d){
     const desc = item.description || item.desc || '';
     const note = item.notes || '';
     const where= item.where_to_run || 'SOHBET / KONSOL';
-    
-    const notesHtml = note ? `<div class="cmd-notes">⚠ ${esc(note)}</div>` : '';
-    
+
+    const notesHtml = note ? `<div class="cmd-notes">! ${esc(note)}</div>` : '';
+
     blocks.innerHTML += `
     <div class="cmd-item fade-up" style="animation-delay:${i*0.06}s">
       <div class="cmd-header">
@@ -679,16 +1425,14 @@ function showResult(d){
       </div>
       <div class="cmd-code-wrap">
         <code class="cmd-code" id="cmdcode_${i}">${esc(cmd)}</code>
-        <button class="copy-btn" onclick="copyCmd(${i}, this)">📋 Kopyala</button>
+        <button class="copy-btn" onclick="copyCmd(${i}, this)">Kopyala</button>
       </div>
       ${notesHtml}
     </div>`;
   });
 
-  // Sub info
-  document.getElementById('rhSub').textContent = `${cmds.length} komut · Minecraft ${d.version} · ${d.platform}`;
-  
-  // ERA badge
+  document.getElementById('rhSub').textContent = `${cmds.length} komut - Minecraft ${d.version} - ${d.platform}`;
+
   const eraBadge = document.getElementById('rhEra');
   const eraColors = {LEGACY:'#f59e0b',MODERN:'#60a5fa',COMPONENTS:'#00d4b4'};
   eraBadge.style.color = eraColors[d.era] || '#94a3b8';
@@ -696,47 +1440,42 @@ function showResult(d){
   eraBadge.style.border = `1px solid ${eraColors[d.era] || '#94a3b8'}30`;
   eraBadge.textContent = d.era || 'JAVA';
 
-  // Explanation
   const expBox = document.getElementById('expBox');
   if(d.explanation){ expBox.style.display='block'; document.getElementById('expText').textContent = d.explanation; }
   else expBox.style.display='none';
 
-  // Order
   const orderBox = document.getElementById('orderBox');
   if(d.execution_order){ orderBox.style.display='block'; document.getElementById('orderText').textContent = d.execution_order; }
   else orderBox.style.display='none';
 
-  // Tips
   const tipsBox = document.getElementById('tipsBox');
   const tipsList = document.getElementById('tipsList');
   if(d.tips && d.tips.length){ tipsBox.style.display='block'; tipsList.innerHTML = d.tips.map(t=>`<li>${esc(t)}</li>`).join(''); }
   else tipsBox.style.display='none';
 
-  // Mistakes
   const mBox = document.getElementById('mistakesBox');
   const mList = document.getElementById('mistakesList');
   if(d.common_mistakes && d.common_mistakes.length){ mBox.style.display='block'; mList.innerHTML = d.common_mistakes.map(m=>`<li>${esc(m)}</li>`).join(''); }
   else mBox.style.display='none';
 
-  // Datapack
   document.getElementById('dpBox').style.display = d.requires_datapack ? 'block' : 'none';
 
   document.getElementById('resultArea').style.display = 'block';
   document.getElementById('resultArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ── Copy ──────────────────────────────────────────────────────
+// ========== COPY ==========
 function copyCmd(i, btn){
   const txt = document.getElementById('cmdcode_'+i).textContent;
   navigator.clipboard.writeText(txt).then(()=>{
     const old = btn.innerHTML;
     btn.classList.add('ok');
-    btn.innerHTML = '✅ Kopyalandı';
+    btn.innerHTML = 'Kopyalandı';
     setTimeout(()=>{ btn.classList.remove('ok'); btn.innerHTML = old; }, 2000);
   }).catch(()=>{
     const ta = document.createElement('textarea');
     ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-    btn.innerHTML = '✅'; setTimeout(()=>btn.innerHTML='📋 Kopyala',2000);
+    btn.innerHTML = 'Kopyalandı'; setTimeout(()=>btn.innerHTML='Kopyala',2000);
   });
 }
 
@@ -745,19 +1484,26 @@ function copyAll(){
   const all = Array.from(codes).map(c=>c.textContent).join('\n');
   navigator.clipboard.writeText(all).then(()=>{
     const btn = document.getElementById('copyAllBtn');
-    btn.textContent = '✅ Tümü Kopyalandı!';
-    setTimeout(()=>btn.textContent='📋 Tüm Komutları Kopyala',2500);
+    btn.textContent = 'Tümü Kopyalandı!';
+    setTimeout(()=>btn.textContent='Tüm Komutları Kopyala',2500);
+  }).catch(()=>{
+    const ta = document.createElement('textarea');
+    ta.value = Array.from(document.querySelectorAll('.cmd-code')).map(c=>c.textContent).join('\n');
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    const btn = document.getElementById('copyAllBtn');
+    btn.textContent = 'Tümü Kopyalandı!';
+    setTimeout(()=>btn.textContent='Tüm Komutları Kopyala',2500);
   });
 }
 
-// ── Error ─────────────────────────────────────────────────────
+// ========== ERROR ==========
 function showError(msg){
   document.getElementById('errMsg').textContent = msg;
   document.getElementById('errorArea').style.display = 'block';
   document.getElementById('errorArea').scrollIntoView({behavior:'smooth'});
 }
 
-// ── History ───────────────────────────────────────────────────
+// ========== HISTORY ==========
 function addHistory(d){
   const idea = document.getElementById('ideaInput').value.trim();
   const hist = getHist();
@@ -780,9 +1526,9 @@ function renderHist(){
   section.style.display = 'block';
   list.innerHTML = hist.map(h=>`
     <div class="hist-item" onclick="loadHist(${h.id})">
-      <span class="hi-ver">${h.version}</span>
+      <span class="hi-ver">${esc(h.version)}</span>
       <span class="hi-idea">${esc(h.idea)}</span>
-      <button class="hi-del" onclick="delHist(${h.id},event)">✕</button>
+      <button class="hi-del" onclick="delHist(${h.id},event)">x</button>
     </div>`).join('');
 }
 
@@ -803,7 +1549,7 @@ function delHist(id, e){
   renderHist();
 }
 
-// ── Init ─────────────────────────────────────────────────────
+// ========== INIT ==========
 document.addEventListener('DOMContentLoaded',()=>{
   onVersionChange();
   onInput();
