@@ -746,10 +746,12 @@ def method_not_allowed(error):
 
 @app.errorhandler(500)
 def internal_error(error):
+    import traceback
     logger.error(f"Sunucu hatası: {str(error)}")
+    logger.error(traceback.format_exc())
     return jsonify({
         "success": False,
-        "error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin."
+        "error": "Sunucu hatası oluştu. Detay: " + str(error)[:200]
     }), 500
 
 # ── Static Dosyalar (Sadece Gerekli Olanlar) ─────────────────
@@ -777,12 +779,25 @@ def sw():
 try:
     from pymongo import MongoClient
     from pymongo.errors import PyMongoError
+    from bson.objectid import ObjectId
+    from bson.errors import InvalidId
     MONGODB_URI = os.environ.get("MONGODB_URI")
     if MONGODB_URI:
-        mongo_client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+        mongo_client = MongoClient(
+            MONGODB_URI,
+            serverSelectionTimeoutMS=10000,
+            connectTimeoutMS=10000,
+            socketTimeoutMS=10000,
+            maxPoolSize=10,
+            retryWrites=True
+        )
         mongo_client.admin.command('ping')
         db = mongo_client["mc_komut"]
         community_collection = db["community_posts"]
+        # Index oluştur (performans için)
+        community_collection.create_index("approved")
+        community_collection.create_index("date")
+        community_collection.create_index("version")
         logger.info("MongoDB bağlantısı başarılı")
     else:
         logger.warning("MONGODB_URI ayarlanmamış - Topluluk özelliği devre dışı")
@@ -836,7 +851,7 @@ def community_page():
 @app.route("/api/community/posts", methods=["GET"])
 def get_community_posts():
     """Onaylanmış paylaşımları getir."""
-    if not community_collection:
+    if community_collection is None:
         return jsonify({
             "success": False,
             "error": "Topluluk özelliği şu an kullanılamıyor."
@@ -889,7 +904,7 @@ def get_community_posts():
 @app.route("/api/community/post", methods=["POST"])
 def create_community_post():
     """Yeni paylaşım oluştur."""
-    if not community_collection:
+    if community_collection is None:
         return jsonify({
             "success": False,
             "error": "Topluluk özelliği şu an kullanılamıyor."
@@ -963,12 +978,10 @@ def create_community_post():
 @app.route("/api/community/like/<post_id>", methods=["POST"])
 def like_post(post_id):
     """Paylaşımı beğen."""
-    if not community_collection:
+    if community_collection is None:
         return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
 
     try:
-        from bson.objectid import ObjectId
-
         ip = request.headers.get("X-Forwarded-For", request.remote_addr) or "unknown"
         ip_hash = hash_ip(ip)
 
@@ -997,12 +1010,10 @@ def like_post(post_id):
 @app.route("/api/community/report/<post_id>", methods=["POST"])
 def report_post(post_id):
     """Paylaşımı şikayet et."""
-    if not community_collection:
+    if community_collection is None:
         return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
 
     try:
-        from bson.objectid import ObjectId
-
         community_collection.update_one(
             {"_id": ObjectId(post_id)},
             {"$inc": {"reports": 1}}
@@ -1027,12 +1038,10 @@ def report_post(post_id):
 @app.route("/api/community/post/<post_id>", methods=["GET"])
 def get_single_post(post_id):
     """Tek paylaşım detayı."""
-    if not community_collection:
+    if community_collection is None:
         return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
 
     try:
-        from bson.objectid import ObjectId
-
         post = community_collection.find_one(
             {"_id": ObjectId(post_id), "approved": True},
             {"ip_hash": 0, "liked_by": 0}
