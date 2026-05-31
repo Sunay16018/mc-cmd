@@ -4,6 +4,8 @@ import json
 import re
 import logging
 import time
+import hashlib
+import secrets
 from functools import wraps
 
 from flask import Flask, request, jsonify, render_template, send_from_directory
@@ -871,7 +873,6 @@ def check_content(text, strict_mode=False, min_length=10):
 
 def hash_ip(ip):
     """IP hashleme - rate limit için"""
-    import hashlib
     return hashlib.sha256(ip.encode()).hexdigest()[:16]
 
 # ── Topluluk Endpointleri ────────────────────────────────────
