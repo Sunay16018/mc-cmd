@@ -778,7 +778,7 @@ def sw():
 
 # ── MongoDB Bağlantısı ───────────────────────────────────────
 try:
-    from pymongo import MongoClient
+    from pymongo import MongoClient, ASCENDING, DESCENDING
     from pymongo.errors import PyMongoError
     from bson.objectid import ObjectId
     from bson.errors import InvalidId
@@ -795,19 +795,32 @@ try:
         mongo_client.admin.command('ping')
         db = mongo_client["mc_komut"]
         community_collection = db["community_posts"]
+        comments_collection = db["community_comments"]
+        users_collection = db["community_users"]
         # Index oluştur (performans için)
         community_collection.create_index("approved")
         community_collection.create_index("date")
         community_collection.create_index("version")
+        community_collection.create_index([("likes", DESCENDING)])
+        comments_collection.create_index("post_id")
+        comments_collection.create_index("date")
+        users_collection.create_index("username", unique=True)
+        users_collection.create_index("token")
         logger.info("MongoDB bağlantısı başarılı")
     else:
         logger.warning("MONGODB_URI ayarlanmamış - Topluluk özelliği devre dışı")
         mongo_client = None
+        db = None
         community_collection = None
+        comments_collection = None
+        users_collection = None
 except Exception as e:
     logger.error("MongoDB bağlantı hatası: %s", str(e))
     mongo_client = None
+    db = None
     community_collection = None
+    comments_collection = None
+    users_collection = None
 
 # ── Küfür ve Spam Filtresi ──────────────────────────────────
 BAD_WORDS = [
@@ -815,11 +828,11 @@ BAD_WORDS = [
     "pezevenk", "kahpe", "dalyarak", "amcık", "gavat", "ibne", "kevaşe", "sürtük", "fahişe",
     "yavşak", "mal", "aptal", "gerizekalı", "salak", "moron", "idiot", "retard", "fuck",
     "shit", "bitch", "ass", "damn", "crap", "hell", "bastard", "dick", "cock", "pussy",
-    "whore", "slut", "nigger", "nigga", "fag", "retard", "cunt", "wanker", "twat",
-    "orospunun", "piçin", "amın", "sikik", "götveren", "yavşak", "pezevengin", "kahpenin",
-    "ananı", "babanı", "orosbu", "sikerim", "siktim", "sikiyim", "siktirgit", "siktr",
-    "amcığ", "götün", "yarak", "dalyarak", "orospu çocuğu", "piç kurusu", "amk oç",
-    "sikik", "gerzek", "aptal sürüsü", "mal herif", "salak herif", "gerizekalı herif"
+    "whore", "slut", "nigger", "nigga", "fag", "cunt", "wanker", "twat",
+    "orospunun", "piçin", "amın", "sikik", "götveren", "pezevengin", "kahpenin",
+    "ananı", "babanı", "sikerim", "siktim", "sikiyim", "siktirgit", "siktr",
+    "amcığ", "götün", "yarak", "orospu çocuğu", "piç kurusu", "amk oç",
+    "gerzek", "aptal sürüsü", "mal herif", "salak herif", "gerizekalı herif"
 ]
 
 def check_content(text):
@@ -830,8 +843,6 @@ def check_content(text):
             return False, "İçerik uygunsuz kelime içeriyor"
     if len(text) < 10:
         return False, "İçerik çok kısa (en az 10 karakter)"
-    if len(text) > 2000:
-        return False, "İçerik çok uzun (en fazla 2000 karakter)"
     return True, ""
 
 def hash_ip(ip):
@@ -847,6 +858,14 @@ def community_page():
     return render_template("topluluk.html",
         versions=VERSIONS,
         command_types=COMMAND_TYPES
+    )
+
+@app.route("/community/post/<post_id>")
+def post_detail_page(post_id):
+    """Gönderi detay sayfasını render et."""
+    return render_template("post.html",
+        post_id=post_id,
+        versions=VERSIONS
     )
 
 @app.route("/api/community/posts", methods=["GET"])
@@ -947,7 +966,7 @@ def create_community_post():
             }), 429
 
         post = {
-            "title": title,
+            "title": title[:200],
             "content": content,
             "author": author if author else "Anonim",
             "version": version,
@@ -956,7 +975,8 @@ def create_community_post():
             "reports": 0,
             "approved": True,
             "ip_hash": ip_hash,
-            "liked_by": []
+            "liked_by": [],
+            "comments_closed": False
         }
 
         result = community_collection.insert_one(post)
@@ -1054,11 +1074,324 @@ def get_single_post(post_id):
         post["_id"] = str(post["_id"])
         post["date"] = post["date"].isoformat() if "date" in post else ""
 
+        # Yorumları getir
+        comments = []
+        if comments_collection is not None and not post.get("comments_closed", False):
+            raw_comments = list(comments_collection.find(
+                {"post_id": post_id}
+            ).sort("date", -1).limit(100))
+            for c in raw_comments:
+                c["_id"] = str(c["_id"])
+                c["date"] = c["date"].isoformat() if "date" in c else ""
+                comments.append(c)
+
+        post["comments"] = comments
+        post["comment_count"] = len(comments)
+
         return jsonify({"success": True, "post": post})
 
     except Exception as e:
         logger.error("Paylaşım getirme hatası: %s", str(e))
         return jsonify({"success": False, "error": "Paylaşım getirilemedi."}), 500
+
+
+# ── YORUM ENDPOINTLERİ ──────────────────────────────────────
+
+@app.route("/api/community/post/<post_id>/comments", methods=["GET"])
+def get_comments(post_id):
+    """Bir gönderinin yorumlarını getir."""
+    if comments_collection is None:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        # Önce gönderinin yorumları kapalı mı kontrol et
+        post = community_collection.find_one(
+            {"_id": ObjectId(post_id)},
+            {"comments_closed": 1}
+        )
+        if post and post.get("comments_closed", False):
+            return jsonify({"success": True, "comments": [], "closed": True})
+
+        comments = list(comments_collection.find(
+            {"post_id": post_id}
+        ).sort("date", -1).limit(100))
+
+        for c in comments:
+            c["_id"] = str(c["_id"])
+            c["date"] = c["date"].isoformat() if "date" in c else ""
+
+        return jsonify({"success": True, "comments": comments, "closed": False})
+
+    except Exception as e:
+        logger.error("Yorum getirme hatası: %s", str(e))
+        return jsonify({"success": False, "error": "Yorumlar getirilemedi."}), 500
+
+
+@app.route("/api/community/post/<post_id>/comment", methods=["POST"])
+def add_comment(post_id):
+    """Yeni yorum ekle."""
+    if comments_collection is None or community_collection is None:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        # Gönderinin yorumları kapalı mı kontrol et
+        post = community_collection.find_one(
+            {"_id": ObjectId(post_id)},
+            {"comments_closed": 1}
+        )
+        if post and post.get("comments_closed", False):
+            return jsonify({"success": False, "error": "Bu gönderinin yorumları kapalı."}), 403
+
+        data = request.get_json(force=True)
+        content = data.get("content", "").strip()
+        author = data.get("author", "Anonim").strip()[:20]
+
+        if not content:
+            return jsonify({"success": False, "error": "Yorum içeriği boş olamaz."}), 400
+
+        if len(content) > 1000:
+            return jsonify({"success": False, "error": "Yorum en fazla 1000 karakter olabilir."}), 400
+
+        # Küfür kontrolü
+        ok, msg = check_content(content)
+        if not ok:
+            return jsonify({"success": False, "error": msg}), 400
+
+        # Etiketleri bul (@kullaniciadi)
+        mentions = re.findall(r'@([a-zA-Z0-9_ğüşıöçĞÜŞİÖÇ]+)', content)
+
+        comment = {
+            "post_id": post_id,
+            "content": content,
+            "author": author if author else "Anonim",
+            "date": datetime.now(),
+            "likes": 0,
+            "mentions": mentions
+        }
+
+        result = comments_collection.insert_one(comment)
+
+        return jsonify({
+            "success": True,
+            "message": "Yorumunuz eklendi.",
+            "comment_id": str(result.inserted_id)
+        })
+
+    except Exception as e:
+        logger.error("Yorum ekleme hatası: %s", str(e))
+        return jsonify({"success": False, "error": "Yorum eklenemedi."}), 500
+
+
+@app.route("/api/community/post/<post_id>/close-comments", methods=["POST"])
+def close_comments(post_id):
+    """Gönderi sahibi yorumları kapatır."""
+    if community_collection is None:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        community_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$set": {"comments_closed": True}}
+        )
+        return jsonify({"success": True, "message": "Yorumlar kapatıldı."})
+    except Exception as e:
+        logger.error("Yorum kapatma hatası: %s", str(e))
+        return jsonify({"success": False, "error": "İşlem başarısız."}), 500
+
+
+@app.route("/api/community/post/<post_id>/open-comments", methods=["POST"])
+def open_comments(post_id):
+    """Gönderi sahibi yorumları açar."""
+    if community_collection is None:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        community_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$set": {"comments_closed": False}}
+        )
+        return jsonify({"success": True, "message": "Yorumlar açıldı."})
+    except Exception as e:
+        logger.error("Yorum açma hatası: %s", str(e))
+        return jsonify({"success": False, "error": "İşlem başarısız."}), 500
+
+
+# ── KULLANICI SİSTEMİ (Basit Token-based) ───────────────────
+
+def generate_token():
+    """Rastgele token üret."""
+    return secrets.token_urlsafe(32)
+
+
+@app.route("/api/auth/register", methods=["POST"])
+def register_user():
+    """Yeni kullanıcı kaydı."""
+    if users_collection is None:
+        return jsonify({"success": False, "error": "Kullanıcı sistemi devre dışı"}), 503
+
+    try:
+        data = request.get_json(force=True)
+        username = data.get("username", "").strip()
+        password = data.get("password", "").strip()
+
+        if not username or not password:
+            return jsonify({"success": False, "error": "Kullanıcı adı ve şifre zorunlu."}), 400
+
+        if len(username) < 3 or len(username) > 20:
+            return jsonify({"success": False, "error": "Kullanıcı adı 3-20 karakter olmalı."}), 400
+
+        if len(password) < 4:
+            return jsonify({"success": False, "error": "Şifre en az 4 karakter olmalı."}), 400
+
+        # Küfür kontrolü
+        ok, msg = check_content(username)
+        if not ok:
+            return jsonify({"success": False, "error": "Kullanıcı adı uygunsuz."}), 400
+
+        # Şifreyi hashle
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+
+        # Kullanıcı var mı kontrol et
+        existing = users_collection.find_one({"username": username})
+        if existing:
+            return jsonify({"success": False, "error": "Bu kullanıcı adı zaten alınmış."}), 409
+
+        token = generate_token()
+
+        user = {
+            "username": username,
+            "password_hash": password_hash,
+            "token": token,
+            "created_at": datetime.now(),
+            "avatar": "",
+            "bio": ""
+        }
+
+        users_collection.insert_one(user)
+
+        return jsonify({
+            "success": True,
+            "message": "Kayıt başarılı!",
+            "token": token,
+            "username": username
+        })
+
+    except Exception as e:
+        logger.error("Kayıt hatası: %s", str(e))
+        return jsonify({"success": False, "error": "Kayıt başarısız."}), 500
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def login_user():
+    """Kullanıcı girişi."""
+    if users_collection is None:
+        return jsonify({"success": False, "error": "Kullanıcı sistemi devre dışı"}), 503
+
+    try:
+        data = request.get_json(force=True)
+        username = data.get("username", "").strip()
+        password = data.get("password", "").strip()
+
+        if not username or not password:
+            return jsonify({"success": False, "error": "Kullanıcı adı ve şifre zorunlu."}), 400
+
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+
+        user = users_collection.find_one({
+            "username": username,
+            "password_hash": password_hash
+        })
+
+        if not user:
+            return jsonify({"success": False, "error": "Kullanıcı adı veya şifre hatalı."}), 401
+
+        # Yeni token üret
+        token = generate_token()
+        users_collection.update_one(
+            {"_id": user["_id"]},
+            {"$set": {"token": token}}
+        )
+
+        return jsonify({
+            "success": True,
+            "token": token,
+            "username": username,
+            "avatar": user.get("avatar", ""),
+            "bio": user.get("bio", "")
+        })
+
+    except Exception as e:
+        logger.error("Giriş hatası: %s", str(e))
+        return jsonify({"success": False, "error": "Giriş başarısız."}), 500
+
+
+@app.route("/api/auth/me", methods=["GET"])
+def get_me():
+    """Token ile kullanıcı bilgisi getir."""
+    if users_collection is None:
+        return jsonify({"success": False, "error": "Kullanıcı sistemi devre dışı"}), 503
+
+    try:
+        token = request.headers.get("Authorization", "").replace("Bearer ", "")
+        if not token:
+            return jsonify({"success": False, "error": "Token gerekli."}), 401
+
+        user = users_collection.find_one({"token": token})
+        if not user:
+            return jsonify({"success": False, "error": "Geçersiz token."}), 401
+
+        return jsonify({
+            "success": True,
+            "username": user["username"],
+            "avatar": user.get("avatar", ""),
+            "bio": user.get("bio", "")
+        })
+
+    except Exception as e:
+        logger.error("Token kontrol hatası: %s", str(e))
+        return jsonify({"success": False, "error": "İşlem başarısız."}), 500
+
+
+@app.route("/api/auth/update-profile", methods=["POST"])
+def update_profile():
+    """Profil güncelle (avatar URL, bio)."""
+    if users_collection is None:
+        return jsonify({"success": False, "error": "Kullanıcı sistemi devre dışı"}), 503
+
+    try:
+        token = request.headers.get("Authorization", "").replace("Bearer ", "")
+        if not token:
+            return jsonify({"success": False, "error": "Token gerekli."}), 401
+
+        user = users_collection.find_one({"token": token})
+        if not user:
+            return jsonify({"success": False, "error": "Geçersiz token."}), 401
+
+        data = request.get_json(force=True)
+        updates = {}
+
+        if "avatar" in data:
+            avatar = data["avatar"].strip()
+            if len(avatar) > 500:
+                return jsonify({"success": False, "error": "Avatar URL çok uzun."}), 400
+            updates["avatar"] = avatar
+
+        if "bio" in data:
+            bio = data["bio"].strip()[:200]
+            updates["bio"] = bio
+
+        if updates:
+            users_collection.update_one(
+                {"_id": user["_id"]},
+                {"$set": updates}
+            )
+
+        return jsonify({"success": True, "message": "Profil güncellendi."})
+
+    except Exception as e:
+        logger.error("Profil güncelleme hatası: %s", str(e))
+        return jsonify({"success": False, "error": "İşlem başarısız."}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
