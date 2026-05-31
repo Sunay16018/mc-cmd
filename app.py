@@ -772,6 +772,284 @@ def sw():
 
 # ── Ana Çalıştırma ───────────────────────────────────────────
 
+
+# ── MongoDB Bağlantısı ───────────────────────────────────────
+try:
+    from pymongo import MongoClient
+    from pymongo.errors import PyMongoError
+    MONGODB_URI = os.environ.get("MONGODB_URI")
+    if MONGODB_URI:
+        mongo_client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+        mongo_client.admin.command('ping')
+        db = mongo_client["mc_komut"]
+        community_collection = db["community_posts"]
+        logger.info("MongoDB bağlantısı başarılı")
+    else:
+        logger.warning("MONGODB_URI ayarlanmamış - Topluluk özelliği devre dışı")
+        mongo_client = None
+        community_collection = None
+except Exception as e:
+    logger.error("MongoDB bağlantı hatası: %s", str(e))
+    mongo_client = None
+    community_collection = None
+
+# ── Küfür ve Spam Filtresi ──────────────────────────────────
+BAD_WORDS = [
+    "amk", "aq", "oç", "orospu", "piç", "sik", "siktir", "yarrak", "göt", "meme", "orosbu",
+    "pezevenk", "kahpe", "dalyarak", "amcık", "gavat", "ibne", "kevaşe", "sürtük", "fahişe",
+    "yavşak", "mal", "aptal", "gerizekalı", "salak", "moron", "idiot", "retard", "fuck",
+    "shit", "bitch", "ass", "damn", "crap", "hell", "bastard", "dick", "cock", "pussy",
+    "whore", "slut", "nigger", "nigga", "fag", "retard", "cunt", "wanker", "twat",
+    "orospunun", "piçin", "amın", "sikik", "götveren", "yavşak", "pezevengin", "kahpenin",
+    "ananı", "babanı", "orosbu", "sikerim", "siktim", "sikiyim", "siktirgit", "siktr",
+    "amcığ", "götün", "yarak", "dalyarak", "orospu çocuğu", "piç kurusu", "amk oç",
+    "sikik", "gerzek", "aptal sürüsü", "mal herif", "salak herif", "gerizekalı herif"
+]
+
+def check_content(text):
+    """İçerik kontrolü - küfür ve spam filtreleme"""
+    text_lower = text.lower()
+    for word in BAD_WORDS:
+        if word in text_lower:
+            return False, "İçerik uygunsuz kelime içeriyor"
+    if len(text) < 10:
+        return False, "İçerik çok kısa (en az 10 karakter)"
+    if len(text) > 2000:
+        return False, "İçerik çok uzun (en fazla 2000 karakter)"
+    return True, ""
+
+def hash_ip(ip):
+    """IP hashleme - rate limit için"""
+    import hashlib
+    return hashlib.sha256(ip.encode()).hexdigest()[:16]
+
+# ── Topluluk Endpointleri ────────────────────────────────────
+
+@app.route("/community")
+def community_page():
+    """Topluluk sayfasını render et."""
+    return render_template("topluluk.html",
+        versions=VERSIONS,
+        command_types=COMMAND_TYPES
+    )
+
+@app.route("/api/community/posts", methods=["GET"])
+def get_community_posts():
+    """Onaylanmış paylaşımları getir."""
+    if not community_collection:
+        return jsonify({
+            "success": False,
+            "error": "Topluluk özelliği şu an kullanılamıyor."
+        }), 503
+
+    try:
+        page = int(request.args.get("page", 1))
+        per_page = int(request.args.get("per_page", 10))
+        version_filter = request.args.get("version", "")
+        sort_by = request.args.get("sort", "newest")
+
+        skip = (page - 1) * per_page
+
+        query = {"approved": True}
+        if version_filter:
+            query["version"] = version_filter
+
+        if sort_by == "popular":
+            sort_field = [("likes", -1), ("date", -1)]
+        else:
+            sort_field = [("date", -1)]
+
+        posts = list(community_collection.find(
+            query,
+            {"ip_hash": 0}
+        ).sort(sort_field).skip(skip).limit(per_page))
+
+        total = community_collection.count_documents(query)
+
+        for post in posts:
+            post["_id"] = str(post["_id"])
+            post["date"] = post["date"].isoformat() if "date" in post else ""
+
+        return jsonify({
+            "success": True,
+            "posts": posts,
+            "total": total,
+            "page": page,
+            "per_page": per_page,
+            "total_pages": (total + per_page - 1) // per_page
+        })
+
+    except Exception as e:
+        logger.error("Topluluk listeleme hatası: %s", str(e))
+        return jsonify({
+            "success": False,
+            "error": "Paylaşımlar getirilemedi."
+        }), 500
+
+@app.route("/api/community/post", methods=["POST"])
+def create_community_post():
+    """Yeni paylaşım oluştur."""
+    if not community_collection:
+        return jsonify({
+            "success": False,
+            "error": "Topluluk özelliği şu an kullanılamıyor."
+        }), 503
+
+    try:
+        data = request.get_json(force=True)
+        title = data.get("title", "").strip()
+        content = data.get("content", "").strip()
+        author = data.get("author", "Anonim").strip()[:20]
+        version = data.get("version", "1.21.11")
+
+        if not title or not content:
+            return jsonify({
+                "success": False,
+                "error": "Başlık ve içerik zorunlu."
+            }), 400
+
+        ok, msg = check_content(title + " " + content)
+        if not ok:
+            return jsonify({
+                "success": False,
+                "error": msg
+            }), 400
+
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr) or "unknown"
+        ip_hash = hash_ip(ip)
+        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+        today_count = community_collection.count_documents({
+            "ip_hash": ip_hash,
+            "date": {"$gte": today}
+        })
+
+        if today_count >= 5:
+            return jsonify({
+                "success": False,
+                "error": "Günlük paylaşım limitine ulaştınız (max 5/gün)."
+            }), 429
+
+        post = {
+            "title": title,
+            "content": content,
+            "author": author if author else "Anonim",
+            "version": version,
+            "date": datetime.now(),
+            "likes": 0,
+            "reports": 0,
+            "approved": False,
+            "ip_hash": ip_hash,
+            "liked_by": []
+        }
+
+        result = community_collection.insert_one(post)
+
+        logger.info("Yeni paylaşım oluşturuldu: %s", title[:50])
+
+        return jsonify({
+            "success": True,
+            "message": "Gönderiniz incelendikten sonra yayınlanacak. Teşekkürler!",
+            "post_id": str(result.inserted_id)
+        })
+
+    except Exception as e:
+        logger.error("Paylaşım oluşturma hatası: %s", str(e))
+        return jsonify({
+            "success": False,
+            "error": "Paylaşım oluşturulamadı."
+        }), 500
+
+@app.route("/api/community/like/<post_id>", methods=["POST"])
+def like_post(post_id):
+    """Paylaşımı beğen."""
+    if not community_collection:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        from bson.objectid import ObjectId
+
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr) or "unknown"
+        ip_hash = hash_ip(ip)
+
+        post = community_collection.find_one({"_id": ObjectId(post_id)})
+        if not post:
+            return jsonify({"success": False, "error": "Paylaşım bulunamadı."}), 404
+
+        if ip_hash in post.get("liked_by", []):
+            community_collection.update_one(
+                {"_id": ObjectId(post_id)},
+                {"$inc": {"likes": -1}, "$pull": {"liked_by": ip_hash}}
+            )
+            new_likes = post["likes"] - 1
+            return jsonify({"success": True, "likes": max(0, new_likes), "liked": False})
+
+        community_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$inc": {"likes": 1}, "$push": {"liked_by": ip_hash}}
+        )
+        return jsonify({"success": True, "likes": post["likes"] + 1, "liked": True})
+
+    except Exception as e:
+        logger.error("Beğenme hatası: %s", str(e))
+        return jsonify({"success": False, "error": "İşlem başarısız."}), 500
+
+@app.route("/api/community/report/<post_id>", methods=["POST"])
+def report_post(post_id):
+    """Paylaşımı şikayet et."""
+    if not community_collection:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        from bson.objectid import ObjectId
+
+        community_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$inc": {"reports": 1}}
+        )
+
+        post = community_collection.find_one({"_id": ObjectId(post_id)})
+        if post and post.get("reports", 0) >= 3:
+            community_collection.update_one(
+                {"_id": ObjectId(post_id)},
+                {"$set": {"approved": False}}
+            )
+
+        return jsonify({
+            "success": True,
+            "message": "Şikayetiniz alındı. Teşekkürler."
+        })
+
+    except Exception as e:
+        logger.error("Şikayet hatası: %s", str(e))
+        return jsonify({"success": False, "error": "İşlem başarısız."}), 500
+
+@app.route("/api/community/post/<post_id>", methods=["GET"])
+def get_single_post(post_id):
+    """Tek paylaşım detayı."""
+    if not community_collection:
+        return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
+
+    try:
+        from bson.objectid import ObjectId
+
+        post = community_collection.find_one(
+            {"_id": ObjectId(post_id), "approved": True},
+            {"ip_hash": 0, "liked_by": 0}
+        )
+
+        if not post:
+            return jsonify({"success": False, "error": "Paylaşım bulunamadı."}), 404
+
+        post["_id"] = str(post["_id"])
+        post["date"] = post["date"].isoformat() if "date" in post else ""
+
+        return jsonify({"success": True, "post": post})
+
+    except Exception as e:
+        logger.error("Paylaşım getirme hatası: %s", str(e))
+        return jsonify({"success": False, "error": "Paylaşım getirilemedi."}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
