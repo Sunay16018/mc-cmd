@@ -1060,13 +1060,25 @@ def report_post(post_id):
         return jsonify({"success": False, "error": "Topluluk devre dışı"}), 503
 
     try:
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr) or "unknown"
+        ip_hash = hash_ip(ip)
+
+        # Aynı IP aynı gönderiyi tekrar şikayet edemez
+        post = community_collection.find_one({"_id": ObjectId(post_id)})
+        if not post:
+            return jsonify({"success": False, "error": "Paylaşım bulunamadı."}), 404
+
+        reported_by = post.get("reported_by", [])
+        if ip_hash in reported_by:
+            return jsonify({"success": False, "error": "Bu paylaşımı zaten şikayet ettiniz."}), 429
+
         community_collection.update_one(
             {"_id": ObjectId(post_id)},
-            {"$inc": {"reports": 1}}
+            {"$inc": {"reports": 1}, "$push": {"reported_by": ip_hash}}
         )
 
         post = community_collection.find_one({"_id": ObjectId(post_id)})
-        if post and post.get("reports", 0) >= 3:
+        if post and post.get("reports", 0) >= 10:
             community_collection.update_one(
                 {"_id": ObjectId(post_id)},
                 {"$set": {"approved": False}}
