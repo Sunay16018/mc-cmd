@@ -384,8 +384,13 @@ function showAlert(msg, type){
 }
 
 function isImageUrl(url){
-  return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url) ||
-         /hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url);
+  // Direkt görsel uzantıları olan URL'ler
+  if (/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url)) return true;
+  // Bilinen direkt görsel hosting domainleri
+  if (/i\.hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url)) return true;
+  // hizliresim.com kısa linkleri (sunucu tarafında çözümlenmiş olabilir, uzantısız da olabilir)
+  if (/i\.hizliresim\.com\/[a-zA-Z0-9]+$/i.test(url)) return true;
+  return false;
 }
 
 function processContent(text){
