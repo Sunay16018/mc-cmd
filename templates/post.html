@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Gönderi Detayı — MC Komut Üretici</title>
-<meta name="description" content="Minecraft komut topluluğu gönderi detayı."/>
+<title id="pageTitle">Gönderi Detayı — MC Komut Üretici</title>
+<meta name="description" id="pageDesc" content="Minecraft komut topluluğu gönderi detayı."/>
+<meta property="og:title" id="ogTitle" content="MC Komut Topluluğu"/>
+<meta property="og:description" id="ogDesc" content="Minecraft komut paylaşımı"/>
+<meta property="og:url" id="ogUrl" content=""/>
+<meta property="og:type" content="article"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" id="twTitle" content="MC Komut Topluluğu"/>
+<meta name="twitter:description" id="twDesc" content="Minecraft komut paylaşımı"/>
 <meta name="theme-color" content="#0d1117"/>
 <link rel="icon" type="image/png" href="/icon.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -422,6 +429,21 @@ async function loadPost(){
     renderPost(postData);
     renderComments(postData.comments || [], postData.comments_closed);
     document.getElementById('commentsSection').style.display = 'block';
+
+    // Meta tag'leri güncelle (SEO)
+    const postTitle = postData.title || 'Gönderi Detayı';
+    const postAuthor = postData.author || 'Anonim';
+    const postVersion = postData.version || '1.21';
+    const metaDesc = postTitle + ' - @' + postAuthor + ' tarafından paylaşıldı. Minecraft ' + postVersion + ' komut topluluğu.';
+
+    document.title = postTitle + ' — MC Komut Topluluğu';
+    document.getElementById('pageTitle').textContent = postTitle + ' — MC Komut Topluluğu';
+    document.getElementById('pageDesc').content = metaDesc;
+    document.getElementById('ogTitle').content = postTitle;
+    document.getElementById('ogDesc').content = metaDesc;
+    document.getElementById('ogUrl').content = window.location.href;
+    document.getElementById('twTitle').content = postTitle;
+    document.getElementById('twDesc').content = metaDesc;
   }catch(err){
     document.getElementById('postDetail').innerHTML = `
       <div class="comments-section" style="text-align:center;padding:60px 24px">
