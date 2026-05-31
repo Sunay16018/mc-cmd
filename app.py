@@ -8,7 +8,7 @@ import hashlib
 import secrets
 from functools import wraps
 
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, Response
 from flask_cors import CORS
 
 import requests
@@ -1417,6 +1417,90 @@ def update_profile():
         logger.error("Profil güncelleme hatası: %s", str(e))
         return jsonify({"success": False, "error": "İşlem başarısız."}), 500
 
+
+
+# ── Sitemap.xml (SEO) ────────────────────────────────────────
+
+BASE_URL = "https://mc-cmd.vercel.app"
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    """Dinamik sitemap.xml üretimi. MongoDB'den gönderileri çekerek SEO uyumlu XML döndürür."""
+    from xml.etree.ElementTree import Element, SubElement, tostring
+    from xml.dom import minidom
+
+    # Statik sayfalar (her zaman var)
+    static_pages = [
+        {"loc": "/",           "priority": "1.0",  "changefreq": "daily"},
+        {"loc": "/community",  "priority": "0.8",  "changefreq": "hourly"},
+    ]
+
+    # XML kök elemanı
+    urlset = Element("urlset")
+    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+
+    # 1) Statik sayfaları ekle
+    for page in static_pages:
+        url_elem = SubElement(urlset, "url")
+        SubElement(url_elem, "loc").text = BASE_URL + page["loc"]
+        SubElement(url_elem, "priority").text = page["priority"]
+        SubElement(url_elem, "changefreq").text = page["changefreq"]
+        SubElement(url_elem, "lastmod").text = today_str
+
+    # 2) Dinamik gönderileri MongoDB'den çek (hata durumunda atla)
+    if community_collection is not None:
+        try:
+            posts_cursor = community_collection.find(
+                {"approved": True},
+                {"_id": 1, "date": 1}
+            )
+
+            for post in posts_cursor:
+                post_id = str(post.get("_id", ""))
+                if not post_id:
+                    continue
+
+                # lastmod: date alanı varsa kullan, yoksa bugün
+                post_date = post.get("date")
+                if post_date and isinstance(post_date, datetime):
+                    lastmod = post_date.strftime("%Y-%m-%d")
+                else:
+                    lastmod = today_str
+
+                url_elem = SubElement(urlset, "url")
+                SubElement(url_elem, "loc").text = f"{BASE_URL}/community/post/{post_id}"
+                SubElement(url_elem, "priority").text = "0.6"
+                SubElement(url_elem, "changefreq").text = "weekly"
+                SubElement(url_elem, "lastmod").text = lastmod
+
+        except Exception as e:
+            logger.error("Sitemap: MongoDB'den gönderi çekilirken hata: %s", str(e))
+            # Hata durumunda statik sayfalar zaten eklenmiş, devam et
+
+    # XML'i pretty-print formatında string'e çevir
+    rough_string = tostring(urlset, encoding="unicode")
+    reparsed = minidom.parseString(rough_string)
+    pretty_xml = reparsed.toprettyxml(indent="  ")
+
+    # İlk satır (XML declaration) ekle
+    xml_declaration = '<?xml version="1.0" encoding="UTF-8"?>'
+    # pretty_xml zaten declaration içeriyor, ama encoding olmayabilir
+    if not pretty_xml.startswith('<?xml'):
+        pretty_xml = xml_declaration + "\n" + pretty_xml
+    else:
+        # Mevcut declaration'ı düzelt
+        pretty_xml = pretty_xml.replace(
+            '<?xml version="1.0" ?>',
+            xml_declaration
+        )
+
+    return Response(
+        pretty_xml,
+        mimetype="application/xml"
+    )
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
