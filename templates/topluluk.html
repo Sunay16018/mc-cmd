@@ -277,7 +277,7 @@ footer a{color:var(--accent);text-decoration:none}
     <div class="form-title">Yeni Paylaşım Oluştur</div>
 
     <div class="img-hint">
-      <strong>💡 Görsel Paylaşımı:</strong> HızlıResim (<a href="https://hizliresim.com" target="_blank" style="color:var(--accent)">hizliresim.com</a>)'den aldığınız <strong>kısa linki doğrudan yapıştırabilirsiniz</strong> (örn: <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent)">https://hizliresim.com/gmhbxez</code>). Sistem otomatik olarak görseli algılar ve gösterir. <strong>Komutları ``` ile çevreleyerek</strong> kod bloğu oluşturabilirsin.
+      <strong>💡 Görsel Paylaşımı:</strong> HızlıResim (<a href="https://hizliresim.com" target="_blank" style="color:var(--accent)">hizliresim.com</a>)'den aldığınız <strong>kısa linki doğrudan yapıştırabilirsiniz</strong> (örn: <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent)">https://hizliresim.com/gmhbxez</code>). Sistem otomatik olarak doğru uzantıyı bulup görseli gösterir. <strong>Komutları ``` ile çevreleyerek</strong> kod bloğu oluşturabilirsin.
     </div>
 
     <form id="postForm" onsubmit="submitPost(event)">
@@ -483,14 +483,12 @@ function showAlert(msg, type){
   setTimeout(()=>box.classList.remove('show'), 5000);
 }
 
-// URL'den görsel mi diye kontrol et (Geliştirilmiş: hizliresim kısa link desteği)
+// URL'den görsel mi diye kontrol et (Geliştirilmiş)
 function isImageUrl(url){
-  // Direkt görsel uzantıları olan URL'ler
+  // Direkt görsel uzantıları
   if (/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url)) return true;
-  // Bilinen direkt görsel hosting domainleri
+  // Bilinen direkt hosting domainleri
   if (/i\.hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url)) return true;
-  // hizliresim.com kısa linkleri (sunucu tarafında çözümlenmiş olabilir, uzantısız da olabilir)
-  if (/i\.hizliresim\.com\/[a-zA-Z0-9]+$/i.test(url)) return true;
   return false;
 }
 
