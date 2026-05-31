@@ -835,12 +835,35 @@ BAD_WORDS = [
     "gerzek", "aptal sürüsü", "mal herif", "salak herif", "gerizekalı herif"
 ]
 
-def check_content(text):
-    """İçerik kontrolü - küfür ve spam filtreleme"""
+def check_content(text, strict_mode=False):
+    """İçerik kontrolü - küfür ve spam filtreleme.
+
+    strict_mode=True: Tam kelime sınırı eşleşmesi (kullanıcı adları için)
+    strict_mode=False: Daha esnek kontrol (içerik için)
+    """
+    import re
     text_lower = text.lower()
+
     for word in BAD_WORDS:
-        if word in text_lower:
-            return False, "İçerik uygunsuz kelime içeriyor"
+        word_lower = word.lower()
+        if strict_mode:
+            # Tam kelime eşleşmesi - kelime sınırları arasında ara
+            # Türkçe karakterler ve alfanümerik karakterleri destekle
+            pattern = r'(?:^|[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ])' + re.escape(word_lower) + r'(?:[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]|$)'
+            if re.search(pattern, text_lower):
+                return False, "İçerik uygunsuz kelime içeriyor"
+        else:
+            # İçerik için substring kontrolü (kısa kelimeler hariç)
+            if len(word_lower) <= 3:
+                # Kısa kelimeler için tam kelime eşleşmesi
+                pattern = r'(?:^|[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ])' + re.escape(word_lower) + r'(?:[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]|$)'
+                if re.search(pattern, text_lower):
+                    return False, "İçerik uygunsuz kelime içeriyor"
+            else:
+                # Uzun kelimeler için substring kontrolü
+                if word_lower in text_lower:
+                    return False, "İçerik uygunsuz kelime içeriyor"
+
     if len(text) < 10:
         return False, "İçerik çok kısa (en az 10 karakter)"
     return True, ""
@@ -1243,10 +1266,10 @@ def register_user():
         if len(password) < 4:
             return jsonify({"success": False, "error": "Şifre en az 4 karakter olmalı."}), 400
 
-        # Küfür kontrolü
-        ok, msg = check_content(username)
+        # Küfür kontrolü (tam kelime eşleşmesi)
+        ok, msg = check_content(username, strict_mode=True)
         if not ok:
-            return jsonify({"success": False, "error": "Kullanıcı adı uygunsuz."}), 400
+            return jsonify({"success": False, "error": "Kullanıcı adı uygunsuz kelime içeriyor."}), 400
 
         # Şifreyi hashle
         password_hash = hashlib.sha256(password.encode()).hexdigest()
