@@ -23,75 +23,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# ── HızlıResim Link Çözümleme (Uzantı Tespiti ile) ─────────
-
-HIZLI_SHORT_PATTERN = re.compile(r'https?://(?:www\.)?hizliresim\.com/([a-zA-Z0-9]+)', re.IGNORECASE)
-HIZLI_DIRECT_PATTERN = re.compile(r'https?://i\.hizliresim\.com/([a-zA-Z0-9]+)', re.IGNORECASE)
-
-import concurrent.futures
-
-def _try_hizliresim_extension(image_id, ext, timeout=5):
-    """Tek bir uzantıyı dene, 200 dönerse URL'yi döndür."""
-    url = f'https://i.hizliresim.com/{image_id}{ext}'
-    try:
-        resp = requests.head(url, timeout=timeout, allow_redirects=True)
-        if resp.status_code == 200:
-            ct = resp.headers.get('Content-Type', '')
-            if ct.startswith('image/'):
-                return url
-    except Exception:
-        pass
-    return None
-
-def resolve_hizliresim_url(short_url):
-    """
-    hizliresim.com/ID kısa linkini gerçek direkt görsel URL'sine çevirir.
-    En yaygın uzantıları dener ve ilk çalışanı döndürür.
-    """
-    match = HIZLI_SHORT_PATTERN.search(short_url)
-    if not match:
-        return short_url
-
-    image_id = match.group(1)
-
-    # Zaten direkt link mi kontrol et (i.hizliresim.com/ID.ext)
-    direct_match = HIZLI_DIRECT_PATTERN.search(short_url)
-    if direct_match and re.search(r'\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$', short_url, re.IGNORECASE):
-        return short_url
-
-    # Yaygın uzantıları dene (en çok kullanılan sırayla)
-    extensions = ['.jpeg', '.png', '.jpg', '.gif', '.webp']
-
-    # Paralel dene - hangisi önce 200 dönerse
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {executor.submit(_try_hizliresim_extension, image_id, ext): ext for ext in extensions}
-        for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            if result:
-                logger.info("Hizliresim çözümlendi: %s -> %s", image_id, result)
-                return result
-
-    # Hiçbiri çalışmadıysa uzantısız dene
-    logger.warning("Hizliresim uzantı bulunamadı: %s, uzantısız deneniyor", image_id)
-    return f'https://i.hizliresim.com/{image_id}'
-
-def resolve_hizliresim_urls(text):
-    """Metin içindeki TÜM hizliresim.com kısa linklerini çözümler."""
-    if not text:
-        return text
-
-    def replace_match(match):
-        short_url = match.group(0)
-        return resolve_hizliresim_url(short_url)
-
-    return HIZLI_SHORT_PATTERN.sub(replace_match, text)
-
-def contains_hizliresim_shortlink(text):
-    """Metin hizliresim.com kısa linki içeriyor mu?"""
-    if not text:
-        return False
-    return bool(HIZLI_SHORT_PATTERN.search(text))
-
 app = Flask(__name__)
 CORS(app, resources={r"/generate": {"origins": "*"}, r"/ping": {"origins": "*"}})
 
@@ -1036,10 +967,6 @@ def create_community_post():
                 "success": False,
                 "error": "Başlık ve içerik zorunlu."
             }), 400
-
-        # Hizliresim kısa linklerini direkt linke çevir (uzantı tespiti ile)
-        if contains_hizliresim_shortlink(content):
-            content = resolve_hizliresim_urls(content)
 
         ok, msg = check_content(title + " " + content)
         if not ok:
