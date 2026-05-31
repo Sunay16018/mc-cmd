@@ -954,7 +954,7 @@ def create_community_post():
             "date": datetime.now(),
             "likes": 0,
             "reports": 0,
-            "approved": False,
+            "approved": True,
             "ip_hash": ip_hash,
             "liked_by": []
         }
@@ -965,7 +965,7 @@ def create_community_post():
 
         return jsonify({
             "success": True,
-            "message": "Gönderiniz incelendikten sonra yayınlanacak. Teşekkürler!",
+            "message": "Paylaşımınız yayınlandı! Teşekkürler.",
             "post_id": str(result.inserted_id)
         })
 
