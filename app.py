@@ -835,11 +835,12 @@ BAD_WORDS = [
     "gerzek", "aptal sürüsü", "mal herif", "salak herif", "gerizekalı herif"
 ]
 
-def check_content(text, strict_mode=False):
+def check_content(text, strict_mode=False, min_length=10):
     """İçerik kontrolü - küfür ve spam filtreleme.
 
     strict_mode=True: Tam kelime sınırı eşleşmesi (kullanıcı adları için)
     strict_mode=False: Daha esnek kontrol (içerik için)
+    min_length: Minimum karakter sayısı (içerik için 10, kullanıcı adı için 3)
     """
     import re
     text_lower = text.lower()
@@ -864,8 +865,8 @@ def check_content(text, strict_mode=False):
                 if word_lower in text_lower:
                     return False, "İçerik uygunsuz kelime içeriyor"
 
-    if len(text) < 10:
-        return False, "İçerik çok kısa (en az 10 karakter)"
+    if len(text) < min_length:
+        return False, f"İçerik çok kısa (en az {min_length} karakter)"
     return True, ""
 
 def hash_ip(ip):
@@ -1266,10 +1267,10 @@ def register_user():
         if len(password) < 4:
             return jsonify({"success": False, "error": "Şifre en az 4 karakter olmalı."}), 400
 
-        # Küfür kontrolü (tam kelime eşleşmesi)
-        ok, msg = check_content(username, strict_mode=True)
+        # Küfür kontrolü (tam kelime eşleşmesi, min 3 karakter)
+        ok, msg = check_content(username, strict_mode=True, min_length=3)
         if not ok:
-            return jsonify({"success": False, "error": "Kullanıcı adı uygunsuz kelime içeriyor."}), 400
+            return jsonify({"success": False, "error": msg}), 400
 
         # Şifreyi hashle
         password_hash = hashlib.sha256(password.encode()).hexdigest()
