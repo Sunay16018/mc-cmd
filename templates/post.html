@@ -289,6 +289,89 @@ footer a{color:var(--accent);text-decoration:none}
 </div>
 
 <script>
+// ── HızlıResim Link Çözümleme (Frontend - Title Parse) ─────
+
+const HIZLI_SHORT_REGEX = /https?:\/\/(?:www\.)?hizliresim\.com\/([a-zA-Z0-9]+)/gi;
+const HIZLI_DIRECT_REGEX = /https?:\/\/i\.hizliresim\.com\/([a-zA-Z0-9]+)/i;
+
+async function resolveHizliResimExtension(imageId) {
+    const cacheKey = 'hizli_' + imageId;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) return cached;
+
+    try {
+        const proxyUrls = [
+            'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://hizliresim.com/' + imageId),
+            'https://corsproxy.io/?' + encodeURIComponent('https://hizliresim.com/' + imageId),
+        ];
+
+        let html = null;
+        for (const proxyUrl of proxyUrls) {
+            try {
+                const res = await fetch(proxyUrl, { method: 'GET', signal: AbortSignal.timeout(8000) });
+                if (res.ok) {
+                    html = await res.text();
+                    break;
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+
+        if (!html) {
+            console.warn('Hizliresim çözümleme başarısız (proxy):', imageId);
+            return null;
+        }
+
+        // Title'dan uzantıyı çıkar: <title>gmhbxez.jpeg - HızlıResim</title>
+        const titleMatch = html.match(/<title>([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)\s*-\s*H[ıi]zl[ıi]Resim/i);
+        if (titleMatch) {
+            const ext = titleMatch[2].toLowerCase();
+            const directUrl = 'https://i.hizliresim.com/' + imageId + '.' + ext;
+            sessionStorage.setItem(cacheKey, directUrl);
+            return directUrl;
+        }
+
+        // Alternatif: og:image meta tag
+        const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+        if (ogMatch) {
+            sessionStorage.setItem(cacheKey, ogMatch[1]);
+            return ogMatch[1];
+        }
+
+        return null;
+    } catch (err) {
+        console.error('Hizliresim çözümleme hatası:', err);
+        return null;
+    }
+}
+
+async function resolveHizliResimUrls(text) {
+    if (!text) return text;
+    const matches = [...text.matchAll(HIZLI_SHORT_REGEX)];
+    if (!matches.length) return text;
+
+    let result = text;
+    const promises = [];
+
+    for (const match of matches) {
+        const fullUrl = match[0];
+        const imageId = match[1];
+        promises.push(
+            resolveHizliResimExtension(imageId).then(directUrl => {
+                if (directUrl) {
+                    result = result.replace(fullUrl, directUrl);
+                }
+            }).catch(() => {})
+        );
+    }
+
+    await Promise.all(promises);
+    return result;
+}
+
+// ── Mevcut Kodlar ──────────────────────────────────────────
+
 const POST_ID = window.location.pathname.split('/').pop();
 let authMode = 'login';
 let currentUser = null;
@@ -384,14 +467,14 @@ function showAlert(msg, type){
 }
 
 function isImageUrl(url){
-  // Direkt görsel uzantıları
-  if (/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url)) return true;
-  // Bilinen direkt hosting domainleri
-  if (/i\.hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url)) return true;
-  return false;
+  return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url) ||
+         /hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url);
 }
 
-function processContent(text){
+async function processContent(text){
+  // Önce hizliresim kısa linklerini çözümle
+  text = await resolveHizliResimUrls(text);
+
   let codeBlocks = [];
   let processed = text.replace(/```([\s\S]*?)```/g, (match, code) => {
     codeBlocks.push(code.trim());
@@ -399,7 +482,7 @@ function processContent(text){
   });
   processed = processed.replace(/(https?:\/\/[^\s]+)/g, (url) => {
     if(isImageUrl(url)){
-      return `<img src="${esc(url)}" alt="Görsel" onclick="openImgModal('${esc(url)}')" loading="lazy"/>`;
+      return `<img src="${esc(url)}" alt="Görsel" onclick="openImgModal('${esc(url)}')" loading="lazy" onerror="this.style.display='none'"/>`;
     }
     return `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>`;
   });
@@ -429,7 +512,7 @@ async function loadPost(){
     }
 
     postData = data.post;
-    renderPost(postData);
+    await renderPost(postData);
     renderComments(postData.comments || [], postData.comments_closed);
     document.getElementById('commentsSection').style.display = 'block';
 
@@ -457,10 +540,10 @@ async function loadPost(){
   }
 }
 
-function renderPost(post){
+async function renderPost(post){
   const date = post.date ? new Date(post.date).toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : 'Bilinmiyor';
   const initial = (post.author || 'A').charAt(0).toUpperCase();
-  const contentHtml = processContent(post.content || '');
+  const contentHtml = await processContent(post.content || '');
   const shareUrl = window.location.href;
 
   document.getElementById('postDetail').innerHTML = `

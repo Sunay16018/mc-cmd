@@ -370,6 +370,112 @@ footer a{color:var(--accent);text-decoration:none}
 </div>
 
 <script>
+// ── HızlıResim Link Çözümleme (Frontend - Title Parse) ─────
+
+const HIZLI_SHORT_REGEX = /https?:\/\/(?:www\.)?hizliresim\.com\/([a-zA-Z0-9]+)/gi;
+const HIZLI_DIRECT_REGEX = /https?:\/\/i\.hizliresim\.com\/([a-zA-Z0-9]+)/i;
+
+/**
+ * hizliresim.com kısa linkinin uzantısını sayfa title'ından çözümle.
+ * Sayfayı fetch edip <title> tag'ini parse eder.
+ * Örn: <title>gmhbxez.jpeg - HızlıResim</title> → .jpeg
+ */
+async function resolveHizliResimExtension(imageId) {
+    const cacheKey = 'hizli_' + imageId;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) return cached;
+
+    try {
+        // CORS proxy kullanarak hizliresim sayfasını çek
+        // Vercel'de kendi API'mize proxy yapabiliriz veya public CORS proxy kullanabiliriz
+        const proxyUrls = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent('https://hizliresim.com/' + imageId)}`,
+            `https://corsproxy.io/?${encodeURIComponent('https://hizliresim.com/' + imageId)}`,
+        ];
+
+        let html = null;
+        for (const proxyUrl of proxyUrls) {
+            try {
+                const res = await fetch(proxyUrl, { method: 'GET', signal: AbortSignal.timeout(8000) });
+                if (res.ok) {
+                    html = await res.text();
+                    break;
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+
+        if (!html) {
+            console.warn('Hizliresim çözümleme başarısız (proxy):', imageId);
+            return null;
+        }
+
+        // Title'dan uzantıyı çıkar
+        // Örn: <title>gmhbxez.jpeg - HızlıResim</title>
+        const titleMatch = html.match(/<title>([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)\s*-\s*H[ıi]zl[ıi]Resim/i);
+        if (titleMatch) {
+            const ext = titleMatch[2].toLowerCase();
+            const directUrl = `https://i.hizliresim.com/${imageId}.${ext}`;
+            sessionStorage.setItem(cacheKey, directUrl);
+            return directUrl;
+        }
+
+        // Alternatif: meta og:image veya sayfadaki ilk img src'i bul
+        const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+        if (ogMatch) {
+            sessionStorage.setItem(cacheKey, ogMatch[1]);
+            return ogMatch[1];
+        }
+
+        console.warn('Hizliresim title parse başarısız:', imageId);
+        return null;
+
+    } catch (err) {
+        console.error('Hizliresim çözümleme hatası:', err);
+        return null;
+    }
+}
+
+/**
+ * Metin içindeki tüm hizliresim kısa linklerini çözümle.
+ * Asenkron olduğu için Promise döndürür.
+ */
+async function resolveHizliResimUrls(text) {
+    if (!text) return text;
+
+    const matches = [...text.matchAll(HIZLI_SHORT_REGEX)];
+    if (!matches.length) return text;
+
+    let result = text;
+    const promises = [];
+
+    for (const match of matches) {
+        const fullUrl = match[0];
+        const imageId = match[1];
+
+        promises.push(
+            resolveHizliResimExtension(imageId).then(directUrl => {
+                if (directUrl) {
+                    result = result.replace(fullUrl, directUrl);
+                }
+            }).catch(() => {})
+        );
+    }
+
+    await Promise.all(promises);
+    return result;
+}
+
+/**
+ * Hizliresim kısa linki mi kontrol et
+ */
+function isHizliResimShort(url) {
+    return HIZLI_SHORT_REGEX.test(url);
+}
+
+// ── Mevcut Kodlar ──────────────────────────────────────────
+
 let currentPage = 1;
 let totalPages = 1;
 let authMode = 'login';
@@ -483,17 +589,17 @@ function showAlert(msg, type){
   setTimeout(()=>box.classList.remove('show'), 5000);
 }
 
-// URL'den görsel mi diye kontrol et (Geliştirilmiş)
+// URL'den görsel mi diye kontrol et
 function isImageUrl(url){
-  // Direkt görsel uzantıları
-  if (/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url)) return true;
-  // Bilinen direkt hosting domainleri
-  if (/i\.hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url)) return true;
-  return false;
+  return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url) ||
+         /hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url);
 }
 
-// İçeriği işle (görselleri ve linkleri)
-function processContent(text){
+// İçeriği işle (görselleri ve linkleri) - Async: hizliresim çözümleme
+async function processContent(text){
+  // Önce hizliresim kısa linklerini çözümle
+  text = await resolveHizliResimUrls(text);
+
   // Önce kod bloklarını ayıkla
   let codeBlocks = [];
   let processed = text.replace(/```([\s\S]*?)```/g, (match, code) => {
@@ -504,7 +610,7 @@ function processContent(text){
   // Linkleri işle
   processed = processed.replace(/(https?:\/\/[^\s]+)/g, (url) => {
     if(isImageUrl(url)){
-      return `<img src="${esc(url)}" alt="Görsel" onclick="openImgModal('${esc(url)}')" loading="lazy"/>`;
+      return `<img src="${esc(url)}" alt="Görsel" onclick="openImgModal('${esc(url)}')" loading="lazy" onerror="this.style.display='none'"/>`;
     }
     return `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>`;
   });
@@ -552,17 +658,18 @@ async function loadPosts(page){
       return;
     }
 
-    list.innerHTML = posts.map(post=>renderPost(post)).join('');
+    const rendered = await Promise.all(posts.map(post => renderPost(post)));
+    list.innerHTML = rendered.join('');
     renderPagination();
   }catch(err){
     list.innerHTML = '<div class="empty"><div class="empty-ico">[!]</div><div class="empty-title">Bağlantı Hatası</div><div class="empty-desc">Sunucuya ulaşılamıyor. Lütfen daha sonra tekrar deneyin.</div></div>';
   }
 }
 
-function renderPost(post){
+async function renderPost(post){
   const date = post.date ? new Date(post.date).toLocaleDateString('tr-TR') : 'Bilinmiyor';
   const initial = (post.author || 'A').charAt(0).toUpperCase();
-  const contentHtml = processContent(post.content || '');
+  const contentHtml = await processContent(post.content || '');
 
   return `
   <div class="post-card" onclick="goToPost('${post._id}')">
