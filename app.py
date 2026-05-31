@@ -1,28 +1,63 @@
-import os, json, re
+import os
+import json
+import re
+import logging
+import time
+from functools import wraps
+
 from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask_cors import CORS
+
 import requests
 from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+# ── Logging Ayarı ────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+CORS(app, resources={r"/generate": {"origins": "*"}, r"/ping": {"origins": "*"}})
 
-# ── Static Files ─────────────────────────────────────────────
-@app.route('/icon.png')
-def icon():    return send_from_directory('.', 'icon.png')
-@app.route('/logo.png')
-def logo():    return send_from_directory('.', 'logo.png')
-@app.route('/kanal.png')
-def kanal():   return send_from_directory('.', 'kanal.png')
-@app.route('/manifest.json')
-def manifest():return send_from_directory('.', 'manifest.json')
-@app.route('/sw.js')
-def sw():      return send_from_directory('.', 'sw.js')
-
-# ── Cerebras API ──────────────────────────────────────────────
+# ── Cerebras API Ayarları ────────────────────────────────────
 API_KEY = os.environ.get("CEREBRAS_API_KEY")
 API_URL = "https://api.cerebras.ai/v1/chat/completions"
-MODEL   = "gpt-oss-120b"
+MODEL = "gpt-oss-120b"
 
-# ── Sürüm Listesi ─────────────────────────────────────────────
+# GPT OSS 120B temperature yapılandırılamaz - kaldırıldı
+MAX_TOKENS = 3000
+REQUEST_TIMEOUT = (15, 120)  # (connect, read)
+
+# ── API Key Kontrolü ─────────────────────────────────────────
+if not API_KEY:
+    logger.warning("CEREBRAS_API_KEY ortam değişkeni ayarlanmamış! API çağrıları başarısız olacak.")
+
+# ── Retry Session ────────────────────────────────────────────
+def get_retry_session(
+    retries=3,
+    backoff_factor=1,
+    status_forcelist=(500, 502, 503, 504),
+    allowed_methods=("POST", "GET")
+):
+    session = requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+        allowed_methods=allowed_methods,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('https://', adapter)
+    session.mount('http://', adapter)
+    return session
+
+# ── Sürüm Listesi ────────────────────────────────────────────
 VERSIONS = [
     "1.21.11","1.21.8","1.21.5","1.21.4","1.21.1","1.21",
     "1.20.6","1.20.5","1.20.4","1.20.2","1.20.1","1.20",
@@ -36,80 +71,81 @@ VERSIONS = [
     "1.9.4","1.9","1.8.9","1.8"
 ]
 
+# ── Komut Türleri (Emoji Yok) ────────────────────────────────
 COMMAND_TYPES = [
-    {"value":"all",       "label":"🚀 Tümü (Otomatik Seç)"},
-    {"value":"give",      "label":"🎁 Eşya Verme (/give)"},
-    {"value":"summon",    "label":"👾 Yaratık Çağırma (/summon)"},
-    {"value":"effect",    "label":"✨ Efekt Verme (/effect)"},
-    {"value":"enchant",   "label":"⚔️ Büyüleme (/enchant)"},
-    {"value":"tp",        "label":"📍 Işınlanma (/tp)"},
-    {"value":"setblock",  "label":"🧱 Blok Koy (/setblock)"},
-    {"value":"fill",      "label":"🏗️ Alan Doldur (/fill)"},
-    {"value":"execute",   "label":"⚙️ Koşullu Komut (/execute)"},
-    {"value":"scoreboard","label":"🔢 Skor Tablosu (/scoreboard)"},
-    {"value":"title",     "label":"📺 Ekran Yazısı (/title)"},
-    {"value":"tellraw",   "label":"💬 Süslü Sohbet (/tellraw)"},
-    {"value":"playsound", "label":"🎵 Ses Oynat (/playsound)"},
-    {"value":"particle",  "label":"💨 Partikül (/particle)"},
-    {"value":"gamerule",  "label":"📜 Oyun Kuralı (/gamerule)"},
-    {"value":"data",      "label":"💾 Veri Düzenle (/data)"},
-    {"value":"bossbar",   "label":"👑 Boss Bar (/bossbar)"},
-    {"value":"attribute", "label":"📊 Özellik (/attribute)"},
-    {"value":"tag",       "label":"🏷️ Etiket (/tag)"},
-    {"value":"team",      "label":"👥 Takım (/team)"},
-    {"value":"advancement","label":"🏆 Başarım (/advancement)"},
-    {"value":"schedule",  "label":"⏱️ Zamanlayıcı (/schedule)"},
-    {"value":"loot",      "label":"💰 Loot (/loot)"},
-    {"value":"item",      "label":"🎒 Eşya Yönet (/item)"},
-    {"value":"complex",   "label":"🔥 Karmaşık Sistem"},
+    {"value":"all",       "label":"Tümü (Otomatik Seç)"},
+    {"value":"give",      "label":"Eşya Verme (/give)"},
+    {"value":"summon",    "label":"Yaratık Çağırma (/summon)"},
+    {"value":"effect",    "label":"Efekt Verme (/effect)"},
+    {"value":"enchant",   "label":"Büyüleme (/enchant)"},
+    {"value":"tp",        "label":"Işınlama (/tp)"},
+    {"value":"setblock",  "label":"Blok Koy (/setblock)"},
+    {"value":"fill",      "label":"Alan Doldur (/fill)"},
+    {"value":"execute",   "label":"Koşullu Komut (/execute)"},
+    {"value":"scoreboard","label":"Skor Tablosu (/scoreboard)"},
+    {"value":"title",     "label":"Ekran Yazısı (/title)"},
+    {"value":"tellraw",   "label":"Süslü Sohbet (/tellraw)"},
+    {"value":"playsound", "label":"Ses Oynat (/playsound)"},
+    {"value":"particle",  "label":"Partikül (/particle)"},
+    {"value":"gamerule",  "label":"Oyun Kuralı (/gamerule)"},
+    {"value":"data",      "label":"Veri Düzenle (/data)"},
+    {"value":"bossbar",   "label":"Boss Bar (/bossbar)"},
+    {"value":"attribute", "label":"Özellik (/attribute)"},
+    {"value":"tag",       "label":"Etiket (/tag)"},
+    {"value":"team",      "label":"Takım (/team)"},
+    {"value":"advancement","label":"Başarım (/advancement)"},
+    {"value":"schedule",  "label":"Zamanlayıcı (/schedule)"},
+    {"value":"loot",      "label":"Loot (/loot)"},
+    {"value":"item",      "label":"Eşya Yönet (/item)"},
+    {"value":"complex",   "label":"Karmaşık Sistem"},
 ]
 
-# ── Sürüm Detay Bilgileri (Frontend için) ────────────────────
+# ── Sürüm Detay Bilgileri ────────────────────────────────────
 VERSION_DETAILS = {
-    "1.8":    {"era":"LEGACY","label":"1.8 — Klasik (Old School)","desc":"Eski NBT syntax • damage değerleri • Enchant ID'leri sayısal"},
-    "1.8.9":  {"era":"LEGACY","label":"1.8.9 — Klasik Stabil","desc":"Eski NBT syntax • /give item:damage formatı • En popüler eski versiyon"},
-    "1.9":    {"era":"LEGACY","label":"1.9 — Combat Update","desc":"İkili kılıç sistemi • Yeni ok mekaniği • Eski NBT devam ediyor"},
-    "1.9.4":  {"era":"LEGACY","label":"1.9.4 — Combat Stabil","desc":"1.9 döneminin en stabil sürümü • PvP meta değişti"},
-    "1.10":   {"era":"LEGACY","label":"1.10 — Frostburn","desc":"Polar ayı & magma küp eklendi • Eski syntax devam"},
-    "1.10.2": {"era":"LEGACY","label":"1.10.2 — Frostburn Stabil","desc":"Bugfix odaklı sürüm • Eski NBT formatı geçerli"},
-    "1.11":   {"era":"LEGACY","label":"1.11 — Exploration","desc":"Haberci, Çoban, Evoker • Observer bloğu • Eski syntax"},
-    "1.11.2": {"era":"LEGACY","label":"1.11.2 — Exploration Stabil","desc":"Stabil versiyon • Eski komut sistemi son hali"},
-    "1.12":   {"era":"LEGACY","label":"1.12 — World of Color","desc":"Renk sistemi yenilendi • Somut bloklar • Eski syntax son"},
-    "1.12.2": {"era":"LEGACY","label":"1.12.2 — Son Eski Sürüm","desc":"⚠️ Eski syntax son versiyonu • NBT ID tabanlı • /give item 1 0 {nbt} formatı"},
-    "1.13":   {"era":"MODERN","label":"1.13 — Aquatic (Flattening)","desc":"🔄 DEV REBİRTH! Tüm komutlar değişti • Namespace zorunlu • minecraft:item formatı"},
-    "1.13.2": {"era":"MODERN","label":"1.13.2 — Aquatic Stabil","desc":"Yeni syntax ilk stabil • /effect give format • execute yenilendi tamamen"},
-    "1.14":   {"era":"MODERN","label":"1.14 — Village & Pillage","desc":"Köy yenilendi • /schedule eklendi • tags sistemi • Datapack desteği güçlendi"},
-    "1.14.4": {"era":"MODERN","label":"1.14.4 — V&P Stabil","desc":"Önemli bug düzeltmeleri • Modern syntax stabil hale geldi"},
-    "1.15":   {"era":"MODERN","label":"1.15 — Buzzy Bees","desc":"Arılar & bal • Performance iyileştirmeleri • Komut sistemi Modern"},
-    "1.15.2": {"era":"MODERN","label":"1.15.2 — Buzzy Bees Stabil","desc":"Bug düzeltmeleri • Modern syntax tam yerleşti"},
-    "1.16":   {"era":"MODERN","label":"1.16 — Nether Update","desc":"Nether tamamen yenilendi • Piglins • Yeni biyomlar • Modern komutlar"},
-    "1.16.1": {"era":"MODERN","label":"1.16.1","desc":"Nether Update ilk • Soul Speed büyüsü eklendi"},
-    "1.16.2": {"era":"MODERN","label":"1.16.2","desc":"Piglin Brute eklendi • Basalt delta biyomu"},
-    "1.16.3": {"era":"MODERN","label":"1.16.3","desc":"Stabil Nether • Önemli crash düzeltmeleri"},
-    "1.16.4": {"era":"MODERN","label":"1.16.4","desc":"Social Interactions • Çevrimiçi oyuncu engelleme"},
-    "1.16.5": {"era":"MODERN","label":"1.16.5 — Nether Stabil","desc":"En popüler 1.16 sürümü • Çoğu mod/server bunu kullanır"},
-    "1.17":   {"era":"MODERN","label":"1.17 — Caves & Cliffs Pt.1","desc":"Goat, Axolotl, Glow Squid • /random komutu yok • 1. parti"},
-    "1.17.1": {"era":"MODERN","label":"1.17.1 — C&C Stabil","desc":"Önemli düzeltmeler • Modern syntax devam"},
-    "1.18":   {"era":"MODERN","label":"1.18 — Caves & Cliffs Pt.2","desc":"Dev yeraltı mağaraları • Yeni ore dağılımı • attribute güncellemeleri"},
-    "1.18.1": {"era":"MODERN","label":"1.18.1","desc":"Cave güncelleme • Spawning düzeltmeleri"},
-    "1.18.2": {"era":"MODERN","label":"1.18.2 — Cave Stabil","desc":"Stabil mağara • /locate POI desteği • En iyi 1.18"},
-    "1.19":   {"era":"MODERN","label":"1.19 — Wild Update","desc":"Mangrove, Deep Dark, Allay • /summon allay • Warden boss"},
-    "1.19.1": {"era":"MODERN","label":"1.19.1","desc":"Chat raporlama sistemi • Küçük düzeltmeler"},
-    "1.19.2": {"era":"MODERN","label":"1.19.2","desc":"Kritik güvenlik yaması • Modern syntax devam"},
-    "1.19.3": {"era":"MODERN","label":"1.19.3","desc":"Camel & Sniffer hazırlığı • Inventory değişiklikleri"},
-    "1.19.4": {"era":"MODERN","label":"1.19.4 — Wild Stabil","desc":"En popüler 1.19 • /execute store result güçlendi"},
-    "1.20":   {"era":"MODERN","label":"1.20 — Trails & Tales","desc":"Bamboo, Camel, Cherry Grove • Archaeology • Modern syntax"},
-    "1.20.1": {"era":"MODERN","label":"1.20.1","desc":"Önemli düzeltmeler • En popüler 1.20 başlangıcı"},
-    "1.20.2": {"era":"MODERN","label":"1.20.2","desc":"Protocol değişikliği • Birden fazla oyuncu selector"},
-    "1.20.4": {"era":"MODERN","label":"1.20.4","desc":"Son eski item syntax • NBT tabanlı son versiyon • items yakında değişecek"},
-    "1.20.5": {"era":"COMPONENTS","label":"1.20.5 — COMPONENTS BAŞLADI! ⚡","desc":"🚨 BÜYÜK DEĞİŞİKLİK! NBT → Components • /give @p item[component=...] formatı"},
-    "1.20.6": {"era":"COMPONENTS","label":"1.20.6 — Components Stabil","desc":"Components format oturdu • minecraft:enchantments={levels:{...}} • Eski NBT çalışmaz!"},
-    "1.21":   {"era":"COMPONENTS","label":"1.21 — Tricky Trials","desc":"Trial Chambers • Mace silahı • Breeze mob • Components syntax zorunlu"},
-    "1.21.1": {"era":"COMPONENTS","label":"1.21.1","desc":"Trial fix • Components devam • Wind Charge silahı"},
-    "1.21.4": {"era":"COMPONENTS","label":"1.21.4 — Bundles of Bravery","desc":"Bundle eklendi • Yeni item özellikleri • Components genişledi"},
-    "1.21.5": {"era":"COMPONENTS","label":"1.21.5","desc":"Performance • Components tam stabil • Yeni potion efektleri"},
-    "1.21.8": {"era":"COMPONENTS","label":"1.21.8","desc":"Güncel stabil • Components tam oturdu • Tüm yeni itemlar"},
-    "1.21.11":{"era":"COMPONENTS","label":"1.21.11 — En Güncel ✅","desc":"En son sürüm • Components syntax tam • pack_format güncel"},
+    "1.8":    {"era":"LEGACY","label":"1.8 - Klasik (Old School)","desc":"Eski NBT syntax - damage değerleri - Enchant ID'leri sayısal"},
+    "1.8.9":  {"era":"LEGACY","label":"1.8.9 - Klasik Stabil","desc":"Eski NBT syntax - /give item:damage formatı - En popüler eski versiyon"},
+    "1.9":    {"era":"LEGACY","label":"1.9 - Combat Update","desc":"İkili kılıç sistemi - Yeni ok mekaniği - Eski NBT devam ediyor"},
+    "1.9.4":  {"era":"LEGACY","label":"1.9.4 - Combat Stabil","desc":"1.9 döneminin en stabil sürümü - PvP meta değişti"},
+    "1.10":   {"era":"LEGACY","label":"1.10 - Frostburn","desc":"Polar ayı ve magma küp eklendi - Eski syntax devam"},
+    "1.10.2": {"era":"LEGACY","label":"1.10.2 - Frostburn Stabil","desc":"Bugfix odaklı sürüm - Eski NBT formatı geçerli"},
+    "1.11":   {"era":"LEGACY","label":"1.11 - Exploration","desc":"Haberci, Çoban, Evoker - Observer bloğu - Eski syntax"},
+    "1.11.2": {"era":"LEGACY","label":"1.11.2 - Exploration Stabil","desc":"Stabil versiyon - Eski komut sistemi son hali"},
+    "1.12":   {"era":"LEGACY","label":"1.12 - World of Color","desc":"Renk sistemi yenilendi - Somut bloklar - Eski syntax son"},
+    "1.12.2": {"era":"LEGACY","label":"1.12.2 - Son Eski Sürüm","desc":"Eski syntax son versiyonu - NBT ID tabanlı - /give item 1 0 {nbt} formatı"},
+    "1.13":   {"era":"MODERN","label":"1.13 - Aquatic (Flattening)","desc":"DEV REBIRTH! Tüm komutlar değişti - Namespace zorunlu - minecraft:item formatı"},
+    "1.13.2": {"era":"MODERN","label":"1.13.2 - Aquatic Stabil","desc":"Yeni syntax ilk stabil - /effect give format - execute yenilendi tamamen"},
+    "1.14":   {"era":"MODERN","label":"1.14 - Village and Pillage","desc":"Köy yenilendi - /schedule eklendi - tags sistemi - Datapack desteği güçlendi"},
+    "1.14.4": {"era":"MODERN","label":"1.14.4 - V&P Stabil","desc":"Önemli bug düzeltmeleri - Modern syntax stabil hale geldi"},
+    "1.15":   {"era":"MODERN","label":"1.15 - Buzzy Bees","desc":"Arılar ve bal - Performance iyileştirmeleri - Komut sistemi Modern"},
+    "1.15.2": {"era":"MODERN","label":"1.15.2 - Buzzy Bees Stabil","desc":"Bug düzeltmeleri - Modern syntax tam yerleşti"},
+    "1.16":   {"era":"MODERN","label":"1.16 - Nether Update","desc":"Nether tamamen yenilendi - Piglins - Yeni biyomlar - Modern komutlar"},
+    "1.16.1": {"era":"MODERN","label":"1.16.1","desc":"Nether Update ilk - Soul Speed büyüsü eklendi"},
+    "1.16.2": {"era":"MODERN","label":"1.16.2","desc":"Piglin Brute eklendi - Basalt delta biyomu"},
+    "1.16.3": {"era":"MODERN","label":"1.16.3","desc":"Stabil Nether - Önemli crash düzeltmeleri"},
+    "1.16.4": {"era":"MODERN","label":"1.16.4","desc":"Social Interactions - Çevrimiçi oyuncu engelleme"},
+    "1.16.5": {"era":"MODERN","label":"1.16.5 - Nether Stabil","desc":"En popüler 1.16 sürümü - Çoğu mod/server bunu kullanır"},
+    "1.17":   {"era":"MODERN","label":"1.17 - Caves and Cliffs Pt.1","desc":"Goat, Axolotl, Glow Squid - 1. parti"},
+    "1.17.1": {"era":"MODERN","label":"1.17.1 - C&C Stabil","desc":"Önemli düzeltmeler - Modern syntax devam"},
+    "1.18":   {"era":"MODERN","label":"1.18 - Caves and Cliffs Pt.2","desc":"Dev yeraltı mağaraları - Yeni ore dağılımı - attribute güncellemeleri"},
+    "1.18.1": {"era":"MODERN","label":"1.18.1","desc":"Cave güncelleme - Spawning düzeltmeleri"},
+    "1.18.2": {"era":"MODERN","label":"1.18.2 - Cave Stabil","desc":"Stabil mağara - /locate POI desteği - En iyi 1.18"},
+    "1.19":   {"era":"MODERN","label":"1.19 - Wild Update","desc":"Mangrove, Deep Dark, Allay - /summon allay - Warden boss"},
+    "1.19.1": {"era":"MODERN","label":"1.19.1","desc":"Chat raporlama sistemi - Küçük düzeltmeler"},
+    "1.19.2": {"era":"MODERN","label":"1.19.2","desc":"Kritik güvenlik yaması - Modern syntax devam"},
+    "1.19.3": {"era":"MODERN","label":"1.19.3","desc":"Camel ve Sniffer hazırlığı - Inventory değişiklikleri"},
+    "1.19.4": {"era":"MODERN","label":"1.19.4 - Wild Stabil","desc":"En popüler 1.19 - /execute store result güçlendi"},
+    "1.20":   {"era":"MODERN","label":"1.20 - Trails and Tales","desc":"Bamboo, Camel, Cherry Grove - Archaeology - Modern syntax"},
+    "1.20.1": {"era":"MODERN","label":"1.20.1","desc":"Önemli düzeltmeler - En popüler 1.20 başlangıcı"},
+    "1.20.2": {"era":"MODERN","label":"1.20.2","desc":"Protocol değişikliği - Birden fazla oyuncu selector"},
+    "1.20.4": {"era":"MODERN","label":"1.20.4","desc":"Son eski item syntax - NBT tabanlı son versiyon"},
+    "1.20.5": {"era":"COMPONENTS","label":"1.20.5 - COMPONENTS BAŞLADI!","desc":"BÜYÜK DEĞİŞİKLİK! NBT -> Components - /give @p item[component=...] formatı"},
+    "1.20.6": {"era":"COMPONENTS","label":"1.20.6 - Components Stabil","desc":"Components format oturdu - Eski NBT çalışmaz!"},
+    "1.21":   {"era":"COMPONENTS","label":"1.21 - Tricky Trials","desc":"Trial Chambers - Mace silahı - Breeze mob - Components syntax zorunlu"},
+    "1.21.1": {"era":"COMPONENTS","label":"1.21.1","desc":"Trial fix - Components devam - Wind Charge silahı"},
+    "1.21.4": {"era":"COMPONENTS","label":"1.21.4 - Bundles of Bravery","desc":"Bundle eklendi - Yeni item özellikleri - Components genişledi"},
+    "1.21.5": {"era":"COMPONENTS","label":"1.21.5","desc":"Performance - Components tam stabil - Yeni potion efektleri"},
+    "1.21.8": {"era":"COMPONENTS","label":"1.21.8","desc":"Güncel stabil - Components tam oturdu - Tüm yeni itemlar"},
+    "1.21.11":{"era":"COMPONENTS","label":"1.21.11 - En Güncel","desc":"En son sürüm - Components syntax tam - pack_format güncel"},
 }
 
 def get_era(version):
@@ -120,7 +156,7 @@ def get_era(version):
     if minor < 20 or (minor == 20 and patch < 5): return "MODERN"
     return "COMPONENTS"
 
-# ── System Prompts ────────────────────────────────────────────
+# ── Sistem Promptları ────────────────────────────────────────
 
 SYSTEM_LEGACY = """You are an elite Minecraft command expert specializing in LEGACY versions (1.8-1.12.2).
 
@@ -134,7 +170,7 @@ LEGACY SYNTAX REFERENCE:
   - /give @p minecraft:diamond_sword 1 0 {ench:[{id:16,lvl:5},{id:20,lvl:2},{id:35,lvl:3}],display:{Name:"Kutsal Kılıç",Lore:["Efsane silah"]}}
   - Enchant IDs: Prot=0,FireProt=1,FeatherFall=4,Thorns=7,Resp=6,DepthStrider=8,Sharpness=16,Smite=17,BaneArthropod=18,Knockback=19,FireAspect=20,Looting=21,Efficiency=32,SilkTouch=33,Unbreaking=35,Fortune=35,Power=48,Punch=49,Flame=50,Infinity=51,Mending=70,FrostWalker=9
   - Potions: /give @p minecraft:potion 1 0 {Potion:"minecraft:strength",CustomPotionEffects:[{Id:5,Amplifier:4,Duration:200000}]}
-  
+
 /effect: /effect <player> <effectID_number> [seconds] [amplifier]
   - Speed=1,SlowFall=2,Haste=3,MiningFatigue=4,Strength=5,InstantHealth=6,InstantDmg=7,JumpBoost=8,Nausea=9,Regen=10,Resistance=11,FireRes=12,WaterBreathing=13,Invisibility=14,Blindness=15,NightVision=16,Hunger=17,Weakness=18,Poison=19,Wither=20,HealthBoost=21,Absorption=22,Saturation=23
   - /effect @a 1 30 2 (true for hide particles in 1.9+)
@@ -147,7 +183,7 @@ LEGACY SYNTAX REFERENCE:
 /execute (legacy): /execute <entity> <x> <y> <z> <command>
   - /execute @a ~ ~ ~ detect ~ ~-1 ~ minecraft:grass_block 0 effect @p 1 5 2
 
-/scoreboard: 
+/scoreboard:
   - /scoreboard objectives add kills totalKillCount "Kill Sayacı"
   - /scoreboard objectives setdisplay sidebar kills
   - /scoreboard players set @p kills 0
@@ -216,7 +252,7 @@ MODERN SYNTAX REFERENCE (1.13+ Flattening):
   - /execute if score @s kills matches 1.. unless score @s rewarded matches 1.. run give @s minecraft:diamond 1
 
 /scoreboard:
-  - /scoreboard objectives add kills minecraft.killed:minecraft.player "☠ Kill Sayısı"
+  - /scoreboard objectives add kills minecraft.killed:minecraft.player "Kill Sayısı"
   - /scoreboard objectives setdisplay sidebar kills
   - /scoreboard players add @a kills 0
   - /scoreboard players set @p kills 0
@@ -243,7 +279,7 @@ MODERN SYNTAX REFERENCE (1.13+ Flattening):
 /fill: /fill ~-5 ~-1 ~-5 ~5 ~5 ~5 minecraft:obsidian outline | /fill ~ ~ ~ ~10 ~ ~10 minecraft:air replace minecraft:water
 /attribute: /attribute @p minecraft:generic.max_health base set 40
 /tag: /tag @p add vip | @e[tag=boss,tag=!dead]
-/team: /team add red "§cKırmızı Takım" | /team join red @p | /team modify red color red
+/team: /team add red "Kırmızı Takım" | /team join red @p | /team modify red color red
 /advancement: /advancement grant @a only minecraft:story/iron_tools | /advancement revoke @a everything
 
 COMMAND BLOCK TYPES:
@@ -283,34 +319,34 @@ COMPONENTS SYNTAX REFERENCE (1.20.5+):
 /give: /give <selector> <namespace:item>[components] [count]
   ENCHANTMENTS:
   - /give @p minecraft:netherite_sword[minecraft:enchantments={levels:{"minecraft:sharpness":10,"minecraft:fire_aspect":5,"minecraft:looting":10,"minecraft:mending":1,"minecraft:unbreaking":10,"minecraft:sweeping_edge":3}}] 1
-  
+
   CUSTOM NAME:
-  - /give @p minecraft:netherite_sword[minecraft:custom_name='{"text":"⚔ GODSLAYER","color":"dark_red","bold":true,"italic":false}'] 1
-  
+  - /give @p minecraft:netherite_sword[minecraft:custom_name='{"text":"Godslayer","color":"dark_red","bold":true,"italic":false}'] 1
+
   LORE:
-  - /give @p minecraft:diamond[minecraft:lore=['{"text":"✦ Efsanevi Parça","color":"light_purple","italic":false}','{"text":"Void\'dan dövülmüş","color":"dark_purple","italic":true}']] 1
-  
+  - /give @p minecraft:diamond[minecraft:lore=['{"text":"Efsanevi Parça","color":"light_purple","italic":false}','{"text":"Void'dan dövülmüş","color":"dark_purple","italic":true}']] 1
+
   UNBREAKABLE:
   - /give @p minecraft:diamond_sword[minecraft:unbreakable={}] 1
   - /give @p minecraft:diamond_sword[minecraft:unbreakable={show_in_tooltip:false}] 1
-  
+
   ENCHANT GLINT:
   - /give @p minecraft:nether_star[minecraft:enchantment_glint_override=true] 1
-  
+
   CUSTOM DATA:
   - /give @p minecraft:nether_star[minecraft:custom_data={boss_egg:1,tier:3,owner:"player1"}] 1
-  
+
   ATTRIBUTE MODIFIERS:
   - /give @p minecraft:diamond_chestplate[minecraft:attribute_modifiers={modifiers:[{type:"minecraft:generic.armor",amount:20.0,operation:"add_value",slot:"chest",id:"bonus_armor"}]}] 1
-  
+
   HIDE TOOLTIP:
   - /give @p minecraft:paper[minecraft:hide_tooltip={}] 1
-  
+
   FOOD:
   - /give @p minecraft:stick[minecraft:food={nutrition:20,saturation_modifier:20.0,can_always_eat:true}] 1
-  
+
   FULL OP SWORD EXAMPLE:
-  - /give @p minecraft:netherite_sword[minecraft:enchantments={levels:{"minecraft:sharpness":10,"minecraft:fire_aspect":5,"minecraft:looting":10,"minecraft:mending":1,"minecraft:unbreaking":10}},minecraft:custom_name='{"text":"⚔ GODSLAYER","color":"dark_red","bold":true,"italic":false}',minecraft:lore=['{"text":"Void ile dövülmüş","color":"dark_purple","italic":true}'],minecraft:unbreakable={show_in_tooltip:false},minecraft:enchantment_glint_override=true] 1
+  - /give @p minecraft:netherite_sword[minecraft:enchantments={levels:{"minecraft:sharpness":10,"minecraft:fire_aspect":5,"minecraft:looting":10,"minecraft:mending":1,"minecraft:unbreaking":10}},minecraft:custom_name='{"text":"Godslayer","color":"dark_red","bold":true,"italic":false}',minecraft:lore=['{"text":"Void ile dövülmüş","color":"dark_purple","italic":true}'],minecraft:unbreakable={show_in_tooltip:false},minecraft:enchantment_glint_override=true] 1
 
 /effect: Same as modern but new 1.21 effects:
   - /effect give @a minecraft:wind_charged 60 1 true
@@ -319,7 +355,7 @@ COMPONENTS SYNTAX REFERENCE (1.20.5+):
   - /effect give @a minecraft:infested 60 1 true
 
 /summon: Still uses NBT for entities:
-  - /summon minecraft:zombie ~ ~1 ~ {Health:200.0f,Attributes:[{"Name":"minecraft:generic.max_health","Base":200.0},{"Name":"minecraft:generic.scale","Base":3.0},{"Name":"minecraft:generic.attack_damage","Base":20.0},{"Name":"minecraft:generic.armor","Base":20.0},{"Name":"minecraft:generic.movement_speed","Base":0.4},{"Name":"minecraft:generic.follow_range","Base":64.0}],CustomName:'{"text":"TITAN BOSS","color":"dark_red","bold":true}',CustomNameVisible:1b,PersistenceRequired:1b,NoAI:0b,Tags:["boss","titan"],HandItems:[{id:"minecraft:netherite_sword",count:1,components:{"minecraft:enchantments":{levels:{"minecraft:sharpness":10}}}},{}]}
+  - /summon minecraft:zombie ~ ~1 ~ {Health:200.0f,Attributes:[{"Name":"minecraft:generic.max_health","Base":200.0},{"Name":"minecraft:generic.scale","Base":3.0},{"Name":"minecraft:generic.attack_damage","Base":20.0},{"Name":"minecraft:generic.armor","Base":20.0},{"Name":"minecraft:generic.movement_speed","Base":0.4},{"Name":"minecraft:generic.follow_range","Base":64.0}],CustomName:'{"text":"TITAN BOSS","color":"dark_red","bold":true}',CustomNameVisible:1b,PersistenceRequired:1b,NoAI:0b,Tags:["boss","titan"],HandItems:[{id:"minecraft:netherite_sword",count:1,components:{"minecraft:enchantments":{levels:{"minecraft:sharpness":10}}}},{}}]}
 
 /execute: Same as modern plus:
   - /execute store result score #random rand run random value 0..99
@@ -367,86 +403,182 @@ def get_system(version):
     prompts = {"LEGACY": SYSTEM_LEGACY, "MODERN": SYSTEM_MODERN, "COMPONENTS": SYSTEM_COMPONENTS}
     base = prompts[era]
     detail = VERSION_DETAILS.get(version, {})
-    extra = f"\n\nGenerating for Minecraft Java Edition {version}. {detail.get('desc','')}\nAll commands MUST be 100% correct for version {version} specifically. Return ONLY valid JSON."
+    extra = "\n\nGenerating for Minecraft Java Edition " + version + ". "
+    extra += detail.get("desc", "") + " "
+    extra += "All commands MUST be 100% correct for version " + version + " specifically. "
+    extra += "Return ONLY valid JSON."
     return base + extra
 
+# ── API Cagri Fonksiyonu ─────────────────────────────────────
+
 def call_api(msgs):
-    s = requests.Session()
-    s.mount('https://', HTTPAdapter(max_retries=1))
-    resp = s.post(
-        API_URL,
-        headers={
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": MODEL,
-            "messages": msgs,
-            "temperature": 0.15,
-            "max_tokens": 3000,
-            "stream": False
-        },
-        timeout=(15, 90)
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    return data["choices"][0]["message"]["content"]
+    """Cerebras API'ye istek gonder. Retry ve hata yonetimi icerir."""
+    if not API_KEY:
+        raise ValueError("CEREBRAS_API_KEY ortam degiskeni ayarlanmamis!")
+
+    session = get_retry_session()
+    start_time = time.time()
+
+    try:
+        resp = session.post(
+            API_URL,
+            headers={
+                "Authorization": "Bearer " + API_KEY,
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": MODEL,
+                "messages": msgs,
+                "max_tokens": MAX_TOKENS,
+                "stream": False
+            },
+            timeout=REQUEST_TIMEOUT
+        )
+        resp.raise_for_status()
+
+        elapsed = time.time() - start_time
+        logger.info("API yaniti alindi: %.2fs", elapsed)
+
+        data = resp.json()
+        return data["choices"][0]["message"]["content"]
+
+    except requests.exceptions.Timeout:
+        logger.error("API zaman asimina ugradi")
+        raise TimeoutError("API zaman asimina ugradi. Lutfen tekrar deneyin.")
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response else "Bilinmiyor"
+        logger.error("API HTTP hatasi: %s - %s", status, str(e))
+        if status == 401:
+            raise ValueError("API anahtari gecersiz. Lutfen CEREBRAS_API_KEY'i kontrol edin.")
+        elif status == 429:
+            raise ValueError("Rate limit asildi. Lutfen birkac saniye bekleyin.")
+        elif status >= 500:
+            raise ValueError("Cerebras sunucu hatasi (%s). Lutfen daha sonra tekrar deneyin." % status)
+        else:
+            raise ValueError("API hatasi: %s" % str(e)[:200])
+    except requests.exceptions.ConnectionError:
+        logger.error("API baglanti hatasi")
+        raise ConnectionError("Cerebras API'ye baglanilamiyor. Internet baglantinizi kontrol edin.")
+    except Exception as e:
+        logger.error("Beklenmeyen API hatasi: %s", str(e))
+        raise RuntimeError("Beklenmeyen hata: %s" % str(e)[:200])
+
+# ── JSON Parse Fonksiyonu (Robust) ───────────────────────────
 
 def parse_response(raw):
+    """AI yanitini guvenli sekilde JSON'a cevir."""
     raw = raw.strip()
-    # Strip markdown fences
-    raw = re.sub(r'^```(?:json)?\s*', '', raw)
+
+    # Markdown code block temizle
+    raw = re.sub(r'^```(?:json)?\s*', '', raw, flags=re.IGNORECASE)
     raw = re.sub(r'\s*```\s*$', '', raw)
     raw = raw.strip()
-    
-    # Direct parse
+
+    # Bos yanit kontrolu
+    if not raw:
+        raise ValueError("API bos yanit dondurdu")
+
+    # Dogrudan parse dene
     try:
         return json.loads(raw)
-    except:
+    except json.JSONDecodeError:
         pass
-    
-    # Fix unescaped newlines in strings
-    def fix_json(text):
+
+    # String icerisindeki newline karakterlerini escape et
+    def fix_json_string(text):
         result = []
         in_string = False
+        escape_next = False
         i = 0
         while i < len(text):
             c = text[i]
-            if c == '\\' and i + 1 < len(text):
+            if escape_next:
                 result.append(c)
-                result.append(text[i+1])
-                i += 2
-                continue
-            if c == '"':
-                in_string = not in_string
-            elif in_string and c == '\n':
-                result.append('\\n')
+                escape_next = False
                 i += 1
                 continue
-            elif in_string and c == '\r':
+            if c == "\\":
+                result.append(c)
+                escape_next = True
+                i += 1
+                continue
+            if c == '"' and not escape_next:
+                in_string = not in_string
+            elif in_string and c == "\n":
+                result.append("\\n")
+                i += 1
+                continue
+            elif in_string and c == "\r":
+                i += 1
+                continue
+            elif in_string and c == "\t":
+                result.append("\\t")
                 i += 1
                 continue
             result.append(c)
             i += 1
-        return ''.join(result)
-    
+        return "".join(result)
+
     try:
-        return json.loads(fix_json(raw))
-    except:
+        fixed = fix_json_string(raw)
+        return json.loads(fixed)
+    except json.JSONDecodeError:
         pass
-    
-    # Extract JSON object
+
+    # JSON objesi ara (en son care)
     m = re.search(r'\{.*\}', raw, re.DOTALL)
     if m:
         try:
-            return json.loads(fix_json(m.group(0)))
-        except:
+            fixed = fix_json_string(m.group(0))
+            return json.loads(fixed)
+        except json.JSONDecodeError:
             pass
-    
-    raise ValueError(f"JSON parse failed. Raw: {raw[:200]}")
+
+    # Hata detayini logla
+    logger.error("JSON parse basarisiz. Ham veri (ilk 500 karakter): %s", raw[:500])
+    raise ValueError("AI yaniti JSON formatinda degil. Ham veri: %s..." % raw[:200])
+
+# ── Yanit Dogrulama ──────────────────────────────────────────
+
+def validate_response(parsed, version):
+    """AI yanitinin yapisini dogrula."""
+    if not isinstance(parsed, dict):
+        raise ValueError("AI yaniti JSON obje degil")
+
+    commands = parsed.get("commands", [])
+    if not commands:
+        raise ValueError("AI yanitinda komut bulunamadi")
+
+    for i, cmd in enumerate(commands):
+        if not isinstance(cmd, dict):
+            raise ValueError("Komut %d obje degil" % (i+1))
+        if "command" not in cmd:
+            raise ValueError("Komut %d 'command' alani icermiyor" % (i+1))
+        if not cmd["command"] or not cmd["command"].startswith("/"):
+            raise ValueError("Komut %d gecersiz: %s" % (i+1, cmd.get("command", "BOS")))
+
+    # Varsayilan degerleri ekle
+    defaults = {
+        "explanation": "",
+        "execution_order": "",
+        "multiple_commands": False,
+        "requires_datapack": False,
+        "requires_command_block": False,
+        "tips": [],
+        "common_mistakes": []
+    }
+
+    for key, val in defaults.items():
+        if key not in parsed:
+            parsed[key] = val
+
+    return parsed
+
+# ── Flask Route'ları ─────────────────────────────────────────
 
 @app.route("/")
 def index():
+    """Ana sayfa - index.html render et."""
     return render_template("index.html",
         versions=VERSIONS,
         command_types=COMMAND_TYPES,
@@ -455,71 +587,199 @@ def index():
 
 @app.route("/ping")
 def ping():
-    return jsonify({"ok": True, "model": MODEL, "api": "Cerebras"})
+    """Sağlık kontrolü endpoint'i."""
+    return jsonify({
+        "ok": True,
+        "model": MODEL,
+        "api": "Cerebras",
+        "api_key_configured": bool(API_KEY),
+        "timestamp": time.time()
+    })
 
 @app.route("/version-info/<version>")
 def version_info(version):
+    """Sürüm detay bilgilerini döndür."""
     detail = VERSION_DETAILS.get(version, {})
     era = get_era(version)
-    return jsonify({"era": era, **detail})
+    return jsonify({
+        "era": era,
+        "version": version,
+        **detail
+    })
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    data = request.json
+    """Ana komut üretim endpoint'i."""
+    start_time = time.time()
+
+    # API key kontrolü
+    if not API_KEY:
+        logger.error("API anahtarı ayarlanmamış")
+        return jsonify({
+            "success": False,
+            "error": "API anahtarı ayarlanmamış. Lütfen CEREBRAS_API_KEY ortam değişkenini ayarlayın."
+        }), 503
+
+    # İstek verisini al
+    try:
+        data = request.get_json(force=True)
+    except Exception as e:
+        logger.warning(f"Geçersiz JSON isteği: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": "Geçersiz JSON formatı. Lütfen isteğinizi kontrol edin."
+        }), 400
+
     idea = data.get("idea", "").strip()
-    version = data.get("version", "1.21.4")
+    version = data.get("version", "1.21.11")
     platform = data.get("platform", "Java")
     cmd_type = data.get("command_type", "all")
 
+    # Validasyon
     if not idea:
-        return jsonify({"success": False, "error": "Bir fikir yazmalısın!"}), 400
-    if not version:
-        return jsonify({"success": False, "error": "Sürüm seçilmedi!"}), 400
+        return jsonify({
+            "success": False,
+            "error": "Bir fikir yazmalısın!"
+        }), 400
+
+    if version not in VERSIONS:
+        return jsonify({
+            "success": False,
+            "error": f"Geçersiz sürüm: {version}. Desteklenen sürümler: {', '.join(VERSIONS[:5])}..."
+        }), 400
 
     era = get_era(version)
     type_hint = f" Komut türü: {cmd_type}." if cmd_type != "all" else ""
-    
+
     user_msg = (
         f"Minecraft Java Edition {version} için şu isteği komutlara dönüştür: {idea}.{type_hint} "
         f"Sürüm erası: {era}. Tüm komutlar bu sürüm için %100 doğru ve çalışır olmalı."
     )
 
+    logger.info(f"Komut üretim isteği: sürüm={version}, era={era}, idea={idea[:50]}...")
+
+    # API çağrısı
     try:
         raw = call_api([
             {"role": "system", "content": get_system(version)},
             {"role": "user",   "content": user_msg}
         ])
-    except requests.exceptions.Timeout:
-        return jsonify({"success": False, "error": "API zaman aşımına uğradı. Tekrar dene."}), 504
-    except requests.exceptions.HTTPError as e:
-        return jsonify({"success": False, "error": f"API Hatası: {str(e)[:100]}"}), 500
+    except TimeoutError as e:
+        logger.error(f"Zaman aşımı: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "retry_after": 5
+        }), 504
+    except (ValueError, ConnectionError, RuntimeError) as e:
+        logger.error(f"API hatası: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)[:200]}), 500
+        logger.error(f"Beklenmeyen hata: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": f"Beklenmeyen hata: {str(e)[:200]}"
+        }), 500
 
+    # JSON parse
     try:
         parsed = parse_response(raw)
+        validated = validate_response(parsed, version)
+    except ValueError as e:
+        logger.error(f"Parse hatası: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": f"AI yanıtı işlenemedi: {str(e)[:200]}",
+            "raw_preview": raw[:300] if 'raw' in dir() else "Yok"
+        }), 500
     except Exception as e:
-        return jsonify({"success": False, "error": f"Yanıt formatlanamadı: {str(e)[:100]}"}), 500
+        logger.error(f"Doğrulama hatası: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": f"Yanıt doğrulanamadı: {str(e)[:200]}"
+        }), 500
 
+    # Başarılı yanıt
     detail = VERSION_DETAILS.get(version, {})
-    
-    return jsonify({
+    elapsed = time.time() - start_time
+
+    logger.info(f"Komut üretimi başarılı: {len(validated.get('commands', []))} komut, {elapsed:.2f}s")
+
+    response_data = {
         "success": True,
         "version": version,
         "era": era,
         "era_label": detail.get("label", version),
         "platform": platform,
         "command_type": cmd_type,
-        "commands": parsed.get("commands", []),
-        "explanation": parsed.get("explanation", ""),
-        "execution_order": parsed.get("execution_order", ""),
-        "multiple_commands": parsed.get("multiple_commands", False),
-        "requires_datapack": parsed.get("requires_datapack", False),
-        "requires_command_block": parsed.get("requires_command_block", False),
-        "tips": parsed.get("tips", []),
-        "common_mistakes": parsed.get("common_mistakes", [])
-    })
+        "commands": validated.get("commands", []),
+        "explanation": validated.get("explanation", ""),
+        "execution_order": validated.get("execution_order", ""),
+        "multiple_commands": validated.get("multiple_commands", False),
+        "requires_datapack": validated.get("requires_datapack", False),
+        "requires_command_block": validated.get("requires_command_block", False),
+        "tips": validated.get("tips", []),
+        "common_mistakes": validated.get("common_mistakes", []),
+        "generation_time": round(elapsed, 2)
+    }
+
+    return jsonify(response_data)
+
+# ── Hata Yakalayıcılar ───────────────────────────────────────
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": "Endpoint bulunamadı. Kullanılabilir endpoint'ler: /, /ping, /generate, /version-info/<version>"
+    }), 404
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify({
+        "success": False,
+        "error": "Bu endpoint bu HTTP metodunu desteklemiyor."
+    }), 405
+
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"Sunucu hatası: {str(error)}")
+    return jsonify({
+        "success": False,
+        "error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin."
+    }), 500
+
+# ── Static Dosyalar (Sadece Gerekli Olanlar) ─────────────────
+
+@app.route('/icon.png')
+def icon():
+    return send_from_directory('.', 'icon.png')
+
+@app.route('/kanal.png')
+def kanal():
+    return send_from_directory('.', 'kanal.png')
+
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('.', 'manifest.json')
+
+@app.route('/sw.js')
+def sw():
+    return send_from_directory('.', 'sw.js')
+
+# ── Ana Çalıştırma ───────────────────────────────────────────
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+
+    logger.info(f"MC Komut Üretici başlatılıyor...")
+    logger.info(f"Model: {MODEL}")
+    logger.info(f"API Key: {'Yapılandırıldı' if API_KEY else 'EKSİK!'}")
+    logger.info(f"Port: {port}")
+    logger.info(f"Debug: {debug_mode}")
+
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)
