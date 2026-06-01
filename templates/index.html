@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>MC Komut Üretici — AI Destekli Minecraft Komut Generator | 1.8 - 1.21.11</title>
-<meta name="description" content="Minecraft komut üretici - 1.8'den 1.21.11'e tüm sürümler. AI destekli give, summon, execute, tellraw, fill komutları. Legacy NBT, Modern namespace ve Components syntax. Ücretsiz, Türkçe."/>
+<meta name="description" content="Minecraft komut üretici ve rehberi - 1.8'den 1.21.11'e tüm sürümler. AI destekli give, summon, execute, tellraw, fill, effect, scoreboard, data, function komutları. Legacy NBT, Modern namespace ve Components syntax. Minecraft komut sözlüğü, hızlı rehber ve örnekler. Ücretsiz Türkçe."/>
 <meta name="keywords" content="minecraft komut üretici, mc command generator, minecraft ai komut, 1.21 components, minecraft türkçe, minecraft give komutu, minecraft summon komutu, minecraft execute komutu, minecraft tellraw komutu, minecraft fill komutu, minecraft title komutu, minecraft effect komutu, minecraft tp komutu, minecraft kill komutu, minecraft scoreboard komutu, minecraft data komutu, minecraft function komutu, minecraft datapack, minecraft command block, minecraft redstone komutları, minecraft op item, minecraft custom item, minecraft boss summon, minecraft yıldırım komutu, minecraft hızlı komut, minecraft kolay komut, minecraft 1.21 komutları, minecraft 1.20 komutları, minecraft 1.19 komutları, minecraft 1.18 komutları, minecraft 1.17 komutları, minecraft 1.16 komutları, minecraft 1.15 komutları, minecraft 1.14 komutları, minecraft 1.13 komutları, minecraft 1.12 komutları, minecraft 1.11 komutları, minecraft 1.10 komutları, minecraft 1.9 komutları, minecraft 1.8 komutları, minecraft nbt komutları, minecraft components syntax, minecraft item modifier, minecraft attribute modifier, minecraft enchantment komutu, minecraft potion komutu, minecraft armor stand komutu, minecraft particle komutu, minecraft playsound komutu, minecraft schedule komutu, minecraft tag komutu, minecraft team komutu, minecraft worldborder komutu, minecraft gamerule komutu, minecraft difficulty komutu, minecraft weather komutu, minecraft time komutu, minecraft spawnpoint komutu, minecraft setworldspawn komutu, minecraft spreadplayers komutu, minecraft teleport komutu, minecraft clone komutu, minecraft setblock komutu, minecraft blockdata komutu, minecraft entitydata komutu, minecraft replaceitem komutu, minecraft clear komutu, minecraft give enchanted book, minecraft custom name item, minecraft lore item, minecraft unbreakable item, minecraft hide flags, minecraft can place on, minecraft can destroy"/>
 <meta name="theme-color" content="#0d1117"/>
 <meta name="author" content="MC Komutları"/>
@@ -20,7 +20,7 @@
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://mc-cmd.vercel.app/"/>
 <meta property="og:title" content="MC Komut Üretici — AI Destekli Minecraft Komut Generator"/>
-<meta property="og:description" content="1.8'den 1.21.11'e tüm sürümler. Legacy NBT, Modern namespace ve Components syntax. Ücretsiz Türkçe komut üretici."/>
+<meta property="og:description" content="Minecraft komut üretici ve komut sözlüğü. 1.8'den 1.21.11'e tüm sürümler. Legacy NBT, Modern namespace ve Components syntax. AI destekli komut oluşturma, örnekler ve rehber. Ücretsiz Türkçe."/>
 <meta property="og:image" content="https://mc-cmd.vercel.app/og-image.png"/>
 <meta property="og:site_name" content="MC Komut Üretici"/>
 <meta property="og:locale" content="tr_TR"/>
@@ -28,7 +28,7 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:url" content="https://mc-cmd.vercel.app/"/>
 <meta name="twitter:title" content="MC Komut Üretici — AI Destekli Minecraft Komut Generator"/>
-<meta name="twitter:description" content="1.8'den 1.21.11'e tüm sürümler. Legacy NBT, Modern namespace ve Components syntax."/>
+<meta name="twitter:description" content="Minecraft komut üretici ve komut sözlüğü. 1.8'den 1.21.11'e tüm sürümler. Legacy NBT, Modern namespace ve Components syntax. AI destekli ücretsiz Türkçe araç."/>
 <meta name="twitter:image" content="https://mc-cmd.vercel.app/og-image.png"/>
 
 <link rel="canonical" href="https://mc-cmd.vercel.app/"/>
@@ -43,7 +43,7 @@
   "@type": "WebApplication",
   "name": "MC Komut Üretici",
   "url": "https://mc-cmd.vercel.app/",
-  "description": "AI destekli Minecraft komut üretici. 1.8'den 1.21.11'e tüm sürümler desteklenir.",
+  "description": "AI destekli Minecraft komut üretici ve komut sözlüğü. 1.8'den 1.21.11'e tüm sürümler desteklenir. Give, summon, execute, tellraw, fill ve daha fazlası.",
   "applicationCategory": "GameApplication",
   "operatingSystem": "Any",
   "inLanguage": "tr-TR",
@@ -317,6 +317,30 @@ footer a{color:var(--accent);text-decoration:none}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{animation:fadeUp .35s ease forwards}
+
+/* ========== REFERENCE GRID / KOMUT SÖZLÜĞÜ ========== */
+.ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.ref-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.ref-grid{grid-template-columns:1fr}}
+.ref-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:border-color .25s,transform .2s,box-shadow .25s;position:relative;overflow:hidden}
+.ref-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .25s}
+.ref-card:hover{border-color:rgba(0,212,180,0.2);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,212,180,0.08)}
+.ref-card:hover::before{opacity:1}
+.ref-cmd{font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:-0.3px}
+.ref-desc{font-size:0.78rem;color:var(--tx2);line-height:1.7;margin-bottom:12px}
+.ref-meta{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--tx3);letter-spacing:1px;text-transform:uppercase;padding-top:10px;border-top:1px solid var(--border)}
+
+/* ========== SEO ENHANCED STRUCTURED DATA STYLES ========== */
+.command-dictionary{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-top:40px}
+.command-dictionary h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--tx);margin-bottom:20px;text-align:center}
+.cmd-dict-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:700px){.cmd-dict-grid{grid-template-columns:1fr}}
+.cmd-dict-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;transition:all .2s}
+.cmd-dict-item:hover{border-color:rgba(0,212,180,0.15);background:rgba(0,212,180,0.03)}
+.cmd-dict-name{font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.cmd-dict-desc{font-size:0.75rem;color:var(--tx2);line-height:1.6}
+.cmd-dict-ver{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--tx3);margin-top:8px;letter-spacing:0.5px}
+
 </style>
 </head>
 <body>
@@ -973,290 +997,143 @@ footer a{color:var(--accent);text-decoration:none}
 </div>
 </section>
 
-<section class="seo-section" aria-label="Arama Anahtar Kelimeleri">
-<h2>Minecraft Komut Arama Terimleri</h2>
-<p style="text-align:center;color:var(--tx2);font-size:0.8rem;margin-bottom:24px">Sitemizde arayabileceğiniz popüler Minecraft komut terimleri ve konuları:</p>
-<div class="seo-keywords" style="justify-content:center">
-<span class="seo-keyword">minecraft komut üretici</span>
-<span class="seo-keyword">minecraft komut generator</span>
-<span class="seo-keyword">minecraft ai komut</span>
-<span class="seo-keyword">minecraft türkçe komut</span>
-<span class="seo-keyword">minecraft 1.21 komutları</span>
-<span class="seo-keyword">minecraft 1.20 komutları</span>
-<span class="seo-keyword">minecraft 1.19 komutları</span>
-<span class="seo-keyword">minecraft 1.18 komutları</span>
-<span class="seo-keyword">minecraft 1.17 komutları</span>
-<span class="seo-keyword">minecraft 1.16 komutları</span>
-<span class="seo-keyword">minecraft 1.15 komutları</span>
-<span class="seo-keyword">minecraft 1.14 komutları</span>
-<span class="seo-keyword">minecraft 1.13 komutları</span>
-<span class="seo-keyword">minecraft 1.12 komutları</span>
-<span class="seo-keyword">minecraft 1.11 komutları</span>
-<span class="seo-keyword">minecraft 1.10 komutları</span>
-<span class="seo-keyword">minecraft 1.9 komutları</span>
-<span class="seo-keyword">minecraft 1.8 komutları</span>
-<span class="seo-keyword">minecraft give komutu</span>
-<span class="seo-keyword">minecraft summon komutu</span>
-<span class="seo-keyword">minecraft execute komutu</span>
-<span class="seo-keyword">minecraft tellraw komutu</span>
-<span class="seo-keyword">minecraft title komutu</span>
-<span class="seo-keyword">minecraft fill komutu</span>
-<span class="seo-keyword">minecraft effect komutu</span>
-<span class="seo-keyword">minecraft tp komutu</span>
-<span class="seo-keyword">minecraft teleport komutu</span>
-<span class="seo-keyword">minecraft scoreboard komutu</span>
-<span class="seo-keyword">minecraft data komutu</span>
-<span class="seo-keyword">minecraft function komutu</span>
-<span class="seo-keyword">minecraft datapack komutu</span>
-<span class="seo-keyword">minecraft gamerule komutu</span>
-<span class="seo-keyword">minecraft difficulty komutu</span>
-<span class="seo-keyword">minecraft weather komutu</span>
-<span class="seo-keyword">minecraft time komutu</span>
-<span class="seo-keyword">minecraft kill komutu</span>
-<span class="seo-keyword">minecraft clear komutu</span>
-<span class="seo-keyword">minecraft clone komutu</span>
-<span class="seo-keyword">minecraft setblock komutu</span>
-<span class="seo-keyword">minecraft particle komutu</span>
-<span class="seo-keyword">minecraft playsound komutu</span>
-<span class="seo-keyword">minecraft schedule komutu</span>
-<span class="seo-keyword">minecraft tag komutu</span>
-<span class="seo-keyword">minecraft team komutu</span>
-<span class="seo-keyword">minecraft worldborder komutu</span>
-<span class="seo-keyword">minecraft spawnpoint komutu</span>
-<span class="seo-keyword">minecraft setworldspawn komutu</span>
-<span class="seo-keyword">minecraft spreadplayers komutu</span>
-<span class="seo-keyword">minecraft advancement komutu</span>
-<span class="seo-keyword">minecraft loot komutu</span>
-<span class="seo-keyword">minecraft attribute komutu</span>
-<span class="seo-keyword">minecraft item komutu</span>
-<span class="seo-keyword">minecraft experience komutu</span>
-<span class="seo-keyword">minecraft enchant komutu</span>
-<span class="seo-keyword">minecraft kick komutu</span>
-<span class="seo-keyword">minecraft ban komutu</span>
-<span class="seo-keyword">minecraft pardon komutu</span>
-<span class="seo-keyword">minecraft op komutu</span>
-<span class="seo-keyword">minecraft deop komutu</span>
-<span class="seo-keyword">minecraft whitelist komutu</span>
-<span class="seo-keyword">minecraft save komutu</span>
-<span class="seo-keyword">minecraft stop komutu</span>
-<span class="seo-keyword">minecraft reload komutu</span>
-<span class="seo-keyword">minecraft debug komutu</span>
-<span class="seo-keyword">minecraft seed komutu</span>
-<span class="seo-keyword">minecraft defaultgamemode komutu</span>
-<span class="seo-keyword">minecraft gamemode komutu</span>
-<span class="seo-keyword">minecraft list komutu</span>
-<span class="seo-keyword">minecraft me komutu</span>
-<span class="seo-keyword">minecraft msg komutu</span>
-<span class="seo-keyword">minecraft say komutu</span>
-<span class="seo-keyword">minecraft w komutu</span>
-<span class="seo-keyword">minecraft nbt komutları</span>
-<span class="seo-keyword">minecraft components syntax</span>
-<span class="seo-keyword">minecraft item modifier</span>
-<span class="seo-keyword">minecraft attribute modifier</span>
-<span class="seo-keyword">minecraft enchantment komutu</span>
-<span class="seo-keyword">minecraft potion komutu</span>
-<span class="seo-keyword">minecraft armor stand komutu</span>
-<span class="seo-keyword">minecraft custom item</span>
-<span class="seo-keyword">minecraft op item</span>
-<span class="seo-keyword">minecraft boss summon</span>
-<span class="seo-keyword">minecraft yıldırım komutu</span>
-<span class="seo-keyword">minecraft hızlı komut</span>
-<span class="seo-keyword">minecraft kolay komut</span>
-<span class="seo-keyword">minecraft komut bloğu</span>
-<span class="seo-keyword">minecraft redstone komutları</span>
-<span class="seo-keyword">minecraft command block zinciri</span>
-<span class="seo-keyword">minecraft otomatik komut</span>
-<span class="seo-keyword">minecraft koşullu komut</span>
-<span class="seo-keyword">minecraft döngü komutu</span>
-<span class="seo-keyword">minecraft sürekli komut</span>
-<span class="seo-keyword">minecraft canlı komut</span>
-<span class="seo-keyword">minecraft güncel komutlar</span>
-<span class="seo-keyword">minecraft yeni komutlar</span>
-<span class="seo-keyword">minecraft eski komutlar</span>
-<span class="seo-keyword">minecraft legacy komutlar</span>
-<span class="seo-keyword">minecraft modern komutlar</span>
-<span class="seo-keyword">minecraft java komutları</span>
-<span class="seo-keyword">minecraft bedrock komutları</span>
-<span class="seo-keyword">minecraft pe komutları</span>
-<span class="seo-keyword">minecraft pocket edition komutları</span>
-<span class="seo-keyword">minecraft konsol komutları</span>
-<span class="seo-keyword">minecraft server komutları</span>
-<span class="seo-keyword">minecraft admin komutları</span>
-<span class="seo-keyword">minecraft yetkili komutları</span>
-<span class="seo-keyword">minecraft yaratıcı mod komutları</span>
-<span class="seo-keyword">minecraft survival komutları</span>
-<span class="seo-keyword">minecraft adventure komutları</span>
-<span class="seo-keyword">minecraft spectator komutları</span>
-<span class="seo-keyword">minecraft hardcore komutları</span>
-<span class="seo-keyword">minecraft pvp komutları</span>
-<span class="seo-keyword">minecraft skyblock komutları</span>
-<span class="seo-keyword">minecraft factions komutları</span>
-<span class="seo-keyword">minecraft prison komutları</span>
-<span class="seo-keyword">minecraft creative komutları</span>
-<span class="seo-keyword">minecraft build komutları</span>
-<span class="seo-keyword">minecraft map komutları</span>
-<span class="seo-keyword">minecraft mini game komutları</span>
-<span class="seo-keyword">minecraft parkour komutları</span>
-<span class="seo-keyword">minecraft survival games komutları</span>
-<span class="seo-keyword">minecraft bed wars komutları</span>
-<span class="seo-keyword">minecraft sky wars komutları</span>
-<span class="seo-keyword">minecraft egg wars komutları</span>
-<span class="seo-keyword">minecraft murder mystery komutları</span>
-<span class="seo-keyword">minecraft hide and seek komutları</span>
-<span class="seo-keyword">minecraft spleef komutları</span>
-<span class="seo-keyword">minecraft tnt run komutları</span>
-<span class="seo-keyword">minecraft uhc komutları</span>
-<span class="seo-keyword">minecraft hunger games komutları</span>
-<span class="seo-keyword">minecraft battle royale komutları</span>
-<span class="seo-keyword">minecraft rpg komutları</span>
-<span class="seo-keyword">minecraft quest komutları</span>
-<span class="seo-keyword">minecraft görev komutları</span>
-<span class="seo-keyword">minecraft mağaza komutları</span>
-<span class="seo-keyword">minecraft ekonomi komutları</span>
-<span class="seo-keyword">minecraft para komutları</span>
-<span class="seo-keyword">minecraft takas komutları</span>
-<span class="seo-keyword">minecraft market komutları</span>
-<span class="seo-keyword">minecraft kilit komutları</span>
-<span class="seo-keyword">minecraft koruma komutları</span>
-<span class="seo-keyword">minecraft bölge komutları</span>
-<span class="seo-keyword">minecraft claim komutları</span>
-<span class="seo-keyword">minecraft warp komutları</span>
-<span class="seo-keyword">minecraft home komutları</span>
-<span class="seo-keyword">minecraft spawn komutları</span>
-<span class="seo-keyword">minecraft kit komutları</span>
-<span class="seo-keyword">minecraft starter kit komutları</span>
-<span class="seo-keyword">minecraft vip komutları</span>
-<span class="seo-keyword">minecraft yetki komutları</span>
-<span class="seo-keyword">minecraft rütbe komutları</span>
-<span class="seo-keyword">minecraft seviye komutları</span>
-<span class="seo-keyword">minecraft xp komutları</span>
-<span class="seo-keyword">minecraft deneyim komutları</span>
-<span class="seo-keyword">minecraft seviye atlama komutları</span>
-<span class="seo-keyword">minecraft zırh komutları</span>
-<span class="seo-keyword">minecraft silah komutları</span>
-<span class="seo-keyword">minecraft araç komutları</span>
-<span class="seo-keyword">minecraft alet komutları</span>
-<span class="seo-keyword">minecraft yiyecek komutları</span>
-<span class="seo-keyword">minecraft iksir komutları</span>
-<span class="seo-keyword">minecraft büyü komutları</span>
-<span class="seo-keyword">minecraft büyü kitabı komutları</span>
-<span class="seo-keyword">minecraft enchanted book komutları</span>
-<span class="seo-keyword">minecraft kılıç komutları</span>
-<span class="seo-keyword">minecraft ok komutları</span>
-<span class="seo-keyword">minecraft zırh komutları</span>
-<span class="seo-keyword">minecraft kalkan komutları</span>
-<span class="seo-keyword">minecraft balta komutları</span>
-<span class="seo-keyword">minecraft kazma komutları</span>
-<span class="seo-keyword">minecraft kürek komutları</span>
-<span class="seo-keyword">minecraft orak komutları</span>
-<span class="seo-keyword">minecraft çapa komutları</span>
-<span class="seo-keyword">minecraft balık tutma komutları</span>
-<span class="seo-keyword">minecraft yay komutları</span>
-<span class="seo-keyword">minecraft arbalet komutları</span>
-<span class="seo-keyword">minecraft üçlü arbalet komutları</span>
-<span class="seo-keyword">minecraft elitra komutları</span>
-<span class="seo-keyword">minecraft fırlatma komutları</span>
-<span class="seo-keyword">minecraft ateş komutu</span>
-<span class="seo-keyword">minecraft su komutu</span>
-<span class="seo-keyword">minecraft lav komutu</span>
-<span class="seo-keyword">minecraft toprak komutu</span>
-<span class="seo-keyword">minecraft taş komutu</span>
-<span class="seo-keyword">minecraft odun komutu</span>
-<span class="seo-keyword">minecraft yaprak komutu</span>
-<span class="seo-keyword">minecraft çiçek komutu</span>
-<span class="seo-keyword">minecraft mantar komutu</span>
-<span class="seo-keyword">minecraft meyve komutu</span>
-<span class="seo-keyword">minecraft tohum komutu</span>
-<span class="seo-keyword">minecraft fidan komutu</span>
-<span class="seo-keyword">minecraft hayvan komutu</span>
-<span class="seo-keyword">minecraft evcil hayvan komutu</span>
-<span class="seo-keyword">minecraft at komutu</span>
-<span class="seo-keyword">minecraft köpek komutu</span>
-<span class="seo-keyword">minecraft kedi komutu</span>
-<span class="seo-keyword">minecraft kuş komutu</span>
-<span class="seo-keyword">minecraft balık komutu</span>
-<span class="seo-keyword">minecraft köylü komutu</span>
-<span class="seo-keyword">minecraft golem komutu</span>
-<span class="seo-keyword">minecraft ejderha komutu</span>
-<span class="seo-keyword">minecraft wither komutu</span>
-<span class="seo-keyword">minecraft ender dragon komutu</span>
-<span class="seo-keyword">minecraft warden komutu</span>
-<span class="seo-keyword">minecraft guardian komutu</span>
-<span class="seo-keyword">minecraft elder guardian komutu</span>
-<span class="seo-keyword">minecraft shulker komutu</span>
-<span class="seo-keyword">minecraft phantom komutu</span>
-<span class="seo-keyword">minecraft pillager komutu</span>
-<span class="seo-keyword">minecraft ravager komutu</span>
-<span class="seo-keyword">minecraft evoker komutu</span>
-<span class="seo-keyword">minecraft vindicator komutu</span>
-<span class="seo-keyword">minecraft illusioner komutu</span>
-<span class="seo-keyword">minecraft vex komutu</span>
-<span class="seo-keyword">minecraft witch komutu</span>
-<span class="seo-keyword">minecraft slime komutu</span>
-<span class="seo-keyword">minecraft magma cube komutu</span>
-<span class="seo-keyword">minecraft ghast komutu</span>
-<span class="seo-keyword">minecraft blaze komutu</span>
-<span class="seo-keyword">minecraft wither skeleton komutu</span>
-<span class="seo-keyword">minecraft skeleton komutu</span>
-<span class="seo-keyword">minecraft spider komutu</span>
-<span class="seo-keyword">minecraft cave spider komutu</span>
-<span class="seo-keyword">minecraft silverfish komutu</span>
-<span class="seo-keyword">minecraft endermite komutu</span>
-<span class="seo-keyword">minecraft enderman komutu</span>
-<span class="seo-keyword">minecraft creeper komutu</span>
-<span class="seo-keyword">minecraft zombie komutu</span>
-<span class="seo-keyword">minecraft skeleton komutu</span>
-<span class="seo-keyword">minecraft drowned komutu</span>
-<span class="seo-keyword">minecraft husk komutu</span>
-<span class="seo-keyword">minecraft stray komutu</span>
-<span class="seo-keyword">minecraft piglin komutu</span>
-<span class="seo-keyword">minecraft zombified piglin komutu</span>
-<span class="seo-keyword">minecraft hoglin komutu</span>
-<span class="seo-keyword">minecraft zoglin komutu</span>
-<span class="seo-keyword">minecraft strider komutu</span>
-<span class="seo-keyword">minecraft pig komutu</span>
-<span class="seo-keyword">minecraft cow komutu</span>
-<span class="seo-keyword">minecraft sheep komutu</span>
-<span class="seo-keyword">minecraft chicken komutu</span>
-<span class="seo-keyword">minecraft rabbit komutu</span>
-<span class="seo-keyword">minecraft fox komutu</span>
-<span class="seo-keyword">minecraft wolf komutu</span>
-<span class="seo-keyword">minecraft ocelot komutu</span>
-<span class="seo-keyword">minecraft parrot komutu</span>
-<span class="seo-keyword">minecraft turtle komutu</span>
-<span class="seo-keyword">minecraft dolphin komutu</span>
-<span class="seo-keyword">minecraft squid komutu</span>
-<span class="seo-keyword">minecraft glow squid komutu</span>
-<span class="seo-keyword">minecraft axolotl komutu</span>
-<span class="seo-keyword">minecraft bat komutu</span>
-<span class="seo-keyword">minecraft bee komutu</span>
-<span class="seo-keyword">minecraft panda komutu</span>
-<span class="seo-keyword">minecraft polar bear komutu</span>
-<span class="seo-keyword">minecraft llama komutu</span>
-<span class="seo-keyword">minecraft trader llama komutu</span>
-<span class="seo-keyword">minecraft wandering trader komutu</span>
-<span class="seo-keyword">minecraft villager komutu</span>
-<span class="seo-keyword">minecraft iron golem komutu</span>
-<span class="seo-keyword">minecraft snow golem komutu</span>
-<span class="seo-keyword">minecraft mooshroom komutu</span>
-<span class="seo-keyword">minecraft horse komutu</span>
-<span class="seo-keyword">minecraft donkey komutu</span>
-<span class="seo-keyword">minecraft mule komutu</span>
-<span class="seo-keyword">minecraft skeleton horse komutu</span>
-<span class="seo-keyword">minecraft zombie horse komutu</span>
-<span class="seo-keyword">minecraft camel komutu</span>
-<span class="seo-keyword">minecraft sniffler komutu</span>
-<span class="seo-keyword">minecraft frog komutu</span>
-<span class="seo-keyword">minecraft tadpole komutu</span>
-<span class="seo-keyword">minecraft allay komutu</span>
-<span class="seo-keyword">minecraft breeze komutu</span>
-<span class="seo-keyword">minecraft bogged komutu</span>
-<span class="seo-keyword">minecraft creaking komutu</span>
+<section class="seo-section" aria-label="Minecraft Komut Rehberi">
+<h2>Minecraft Komut Sözlüğü — Hızlı Rehber</h2>
+<p style="text-align:center;color:var(--tx2);font-size:0.85rem;margin-bottom:32px;max-width:720px;margin-left:auto;margin-right:auto">En çok kullanılan Minecraft komutlarının kısa açıklamaları. Hangi komut ne işe yarar, hangi sürümlerde çalışır — tek bakışta öğren.</p>
+
+<div class="ref-grid">
+<div class="ref-card">
+<div class="ref-cmd">/execute</div>
+<div class="ref-desc">Belirli şartlar veya oyuncular adına komut çalıştırmayı sağlayan gelişmiş Minecraft komutu. Koşullar, koordinatlar ve hedef seçicilerle birlikte çalışır.</div>
+<div class="ref-meta">Java 1.13+ · Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/summon</div>
+<div class="ref-desc">Haritanın istenen yerine anında yaratık, eşya veya güvenli entity çağırmayı sağlar. NBT tagleri ile özelleştirilebilir.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/give</div>
+<div class="ref-desc">Oyunculara özel özellikli item vermek için kullanılır. Enchant, isim, lore ve attribute modifier eklenebilir.</div>
+<div class="ref-meta">Tüm Sürümler · Components (1.20.5+)</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/setblock</div>
+<div class="ref-desc">Dünyadaki belirli bir koordinattaki bloğu anında başka bir blokla değiştirir. Yapı inşasında ve mekanizmalarda sık kullanılır.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/fill</div>
+<div class="ref-desc">İki koordinat arasındaki tüm alanı seçilen blokla doldurur. Küp, duvar, zemin veya hollow yapılar oluşturmak için idealdir.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/effect</div>
+<div class="ref-desc">Oyunculara veya moblara geçici veya kalıcı efekt (buff/debuff) verir. Hız, güç, yenilenme gibi efektler uygulanabilir.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/scoreboard</div>
+<div class="ref-desc">Özel skor tahtaları oluşturarak oyun içi sayaç, koşullu tetikleyici ve skor tablosu sistemleri kurmanı sağlar.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/data</div>
+<div class="ref-desc">Blok, entity ve depolama birimlerinin NBT verilerini okur, birleştirir veya değiştirir. Gelişmiş otomasyon için temel komuttur.</div>
+<div class="ref-meta">Java 1.13+</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/function</div>
+<div class="ref-desc">Datapack içindeki .mcfunction dosyalarını çalıştırır. Karmaşık komut sistemlerini tek bir komutla tetiklemeyi sağlar.</div>
+<div class="ref-meta">Java 1.12+ · Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/tellraw</div>
+<div class="ref-desc">JSON formatında renkli, tıklanabilir ve hover efektli özel mesajlar gönderir. Sunucu duyuruları ve menüler için uygundur.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/tp</div>
+<div class="ref-desc">Kendini veya başka bir oyuncuyu belirli bir konuma, başka bir oyuncunun yanına veya koordinatlara anında ışınlar.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+<div class="ref-card">
+<div class="ref-cmd">/gamerule</div>
+<div class="ref-desc">Oyun dünyasının kurallarını değiştirir. keepInventory, doDaylightCycle, doMobSpawning gibi kritik ayarları kontrol eder.</div>
+<div class="ref-meta">Tüm Sürümler · Java &amp; Bedrock</div>
+</div>
+</div>
+
+<div class="command-dictionary">
+<h3>Minecraft Komut Türleri ve Kullanım Alanları</h3>
+<div class="cmd-dict-grid">
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/kill</div>
+<div class="cmd-dict-desc">Belirli entity'leri veya tüm canlıları anında öldürür. Mob farm temizliği veya oyun yönetimi için kullanılır.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/clear</div>
+<div class="cmd-dict-desc">Oyuncu envanterinden belirli itemları veya tüm eşyaları temizler. Market ve oyun modu sistemlerinde kullanılır.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/weather</div>
+<div class="cmd-dict-desc">Oyun dünyasının hava durumunu değiştirir. Yağmur, fırtına veya güneşli hava ayarlanabilir.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/time</div>
+<div class="cmd-dict-desc">Oyun içi zamanı ayarlar. Gündüz, gece, öğlen veya özel tick değerleri verilebilir.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/gamemode</div>
+<div class="cmd-dict-desc">Oyuncunun oyun modunu survival, creative, adventure veya spectator olarak değiştirir.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/difficulty</div>
+<div class="cmd-dict-desc">Dünya zorluk seviyesini peaceful, easy, normal veya hard olarak ayarlar.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/spawnpoint</div>
+<div class="cmd-dict-desc">Oyuncunun öldüğünde yeniden doğacağı noktayı belirler. Mini oyun haritaları için kritik öneme sahiptir.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/worldborder</div>
+<div class="cmd-dict-desc">Dünya sınırını ayarlar ve yönetir. Harita boyutunu sınırlamak veya PvP alanları oluşturmak için kullanılır.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/particle</div>
+<div class="cmd-dict-desc">Belirli koordinatlarda parçacık efektleri oluşturur. Süsleme, yetenek gösterileri ve atmosfer yaratımı için idealdir.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/playsound</div>
+<div class="cmd-dict-desc">Belirli bir sesi belirli oyunculara veya tüm oyunculara çalar. Harita atmosferi ve olay seslendirmesi için kullanılır.</div>
+<div class="cmd-dict-ver">Tüm Sürümler</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/schedule</div>
+<div class="cmd-dict-desc">Bir fonksiyonun belirli bir süre sonra çalışmasını planlar. Gecikmeli olaylar ve zamanlayıcılar için kullanılır.</div>
+<div class="cmd-dict-ver">Java 1.14+</div>
+</div>
+<div class="cmd-dict-item">
+<div class="cmd-dict-name">/attribute</div>
+<div class="cmd-dict-desc">Entity özelliklerini (can, hız, hasar, zırh) sorgular ve değiştirir. Özel boss mobları oluşturmak için kullanılır.</div>
+<div class="cmd-dict-ver">Java 1.16+</div>
+</div>
+</div>
 </div>
 </section>
 
 <footer>
-<p>MC Komut Üretici - <a href="https://www.youtube.com/@MCKomutları" target="_blank">YouTube Kanalı</a> - 1.8 - 1.21.11</p>
+<p>MC Komut Üretici — <a href="https://www.youtube.com/@MCKomutları" target="_blank" rel="noopener">YouTube Kanalı</a> — Minecraft 1.8 - 1.21.11 Komut Rehberi</p>
+<p style="margin-top:6px;font-size:0.6rem;color:var(--tx3)">Minecraft komut üretici, komut sözlüğü, give komutu, summon komutu, execute komutu, tellraw komutu, fill komutu ve daha fazlası. AI destekli ücretsiz Türkçe Minecraft komut aracı.</p>
 </footer>
 
 </div>
