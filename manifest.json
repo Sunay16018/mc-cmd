@@ -12,13 +12,13 @@
   "categories": ["entertainment", "games", "utilities"],
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "https://github.com/Sunay16018/mc-cmd/blob/d1d5225d82b9fdd1ecb0d7a640b5c97a4574f2e6/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/logo.png",
+      "src": "https://github.com/Sunay16018/mc-cmd/blob/d1d5225d82b9fdd1ecb0d7a640b5c97a4574f2e6/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
