@@ -15,6 +15,15 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from flask import send_from_directory
+import os
+
+@app.route('/googlea34f4f888ccac059.html')
+def google_verification():
+    # Dosyayı projenin ana dizininden bulup direkt Google'a gönderir
+    return send_from_directory(os.getcwd(), 'googlea34f4f888ccac059.html')
+    
+
 # ── Logging Ayarı ────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
