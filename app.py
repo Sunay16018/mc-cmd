@@ -544,7 +544,8 @@ def get_system(version):
 
 def call_api(msgs):
     """Cerebras API'ye istek gonder. Retry ve hata yonetimi icerir."""
-    if not API_KEY:
+    api_key = get_current_api_key()
+    if not api_key:
         raise ValueError("CEREBRAS_API_KEY ortam degiskeni ayarlanmamis!")
 
     session = get_retry_session()
@@ -554,7 +555,7 @@ def call_api(msgs):
         resp = session.post(
             API_URL,
             headers={
-                "Authorization": "Bearer " + API_KEY,
+                "Authorization": "Bearer " + api_key,
                 "Content-Type": "application/json"
             },
             json={
@@ -723,7 +724,7 @@ def ping():
         "ok": True,
         "model": MODEL,
         "api": "Cerebras",
-        "api_key_configured": bool(API_KEY),
+        "api_key_configured": bool(API_KEYS),
         "timestamp": time.time()
     })
 
@@ -744,11 +745,11 @@ def generate():
     start_time = time.time()
 
     # API key kontrolü
-    if not API_KEY:
+    if not API_KEYS:
         logger.error("API anahtarı ayarlanmamış")
         return jsonify({
             "success": False,
-            "error": "API anahtarı ayarlanmamış. Lütfen CEREBRAS_API_KEY ortam değişkenini ayarlayın."
+            "error": "API anahtarı ayarlanmamış. Lütfen CEREBRAS_API_KEY_1..6 ortam değişkenlerini ayarlayın."
         }), 503
 
     # İstek verisini al
@@ -1648,7 +1649,7 @@ if __name__ == "__main__":
 
     logger.info(f"MC Komut Üretici başlatılıyor...")
     logger.info(f"Model: {MODEL}")
-    logger.info(f"API Key: {'Yapılandırıldı' if API_KEY else 'EKSİK!'}")
+    logger.info(f"API Key: {'Yapılandırıldı' if API_KEYS else 'EKSİK!'}")
     logger.info(f"Port: {port}")
     logger.info(f"Debug: {debug_mode}")
 
