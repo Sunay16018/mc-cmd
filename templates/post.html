@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title id="pageTitle">Gönderi Detayı — MC Komut Üretici</title>
+<meta name="description" id="pageDesc" content="Minecraft komut topluluğu gönderi detayı."/>
+<meta property="og:title" id="ogTitle" content="MC Komut Topluluğu"/>
+<meta property="og:description" id="ogDesc" content="Minecraft komut paylaşımı"/>
+<meta property="og:url" id="ogUrl" content=""/>
+<meta property="og:type" content="article"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" id="twTitle" content="MC Komut Topluluğu"/>
+<meta name="twitter:description" id="twDesc" content="Minecraft komut paylaşımı"/>
+<meta name="theme-color" content="#0d1117"/>
+<link rel="icon" type="image/png" href="/icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080c10;--bg1:#0d1117;--bg2:#111720;--bg3:#141a24;
+  --border:rgba(255,255,255,0.07);--border-hover:rgba(0,212,180,0.3);
+  --accent:#00d4b4;--accent2:#7c3aed;--accent3:#f59e0b;
+  --red:#ef4444;--green:#10b981;--blue:#3b82f6;
+  --tx:#e2e8f0;--tx2:#94a3b8;--tx3:#475569;--tx4:#1e2d40;
+  --r:12px;--r2:8px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.6}
+
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:48px 48px}
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 15% 15%,rgba(0,212,180,0.05) 0%,transparent 60%),
+             radial-gradient(ellipse 50% 40% at 85% 85%,rgba(124,58,237,0.05) 0%,transparent 60%)}
+.wrap{position:relative;z-index:10}
+
+header{position:sticky;top:0;z-index:100;background:rgba(8,12,16,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);}
+.hdr{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-mark{width:36px;height:36px;padding:0;background:transparent;border-radius:10px;flex-shrink:0}
+.logo-mark img{width:100%;height:100%;border-radius:10px;object-fit:cover;display:block}
+.logo-name{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--tx);letter-spacing:-0.5px}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.nav-link{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--tx2);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:20px;transition:all .2s}
+.nav-link:hover{border-color:var(--accent);color:var(--accent)}
+.nav-link.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,180,0.06)}
+
+.main{max-width:800px;margin:0 auto;padding:0 24px 80px}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:8px;padding:16px 0;font-size:0.7rem;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+.breadcrumb a{color:var(--tx2);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--accent)}
+
+/* Post Detail */
+.post-detail{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+.post-header{padding:24px 24px 16px;display:flex;align-items:flex-start;gap:14px}
+.post-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;text-transform:uppercase}
+.post-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.post-meta{flex:1;min-width:0}
+.post-title{font-size:1.2rem;font-weight:700;color:var(--tx);margin-bottom:6px;word-break:break-word}
+.post-info{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.post-author{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--accent)}
+.post-date{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--tx3)}
+.post-version{font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:4px;background:rgba(0,212,180,0.08);color:var(--accent)}
+
+.post-content{padding:0 24px 20px;font-size:0.9rem;color:var(--tx2);line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.post-content img{max-width:100%;max-height:400px;border-radius:var(--r2);margin:10px 0;display:block;cursor:zoom-in;transition:transform .2s}
+.post-content img:hover{transform:scale(1.02)}
+.post-content a{color:var(--accent);text-decoration:none;word-break:break-all}
+.post-content a:hover{text-decoration:underline}
+
+.post-code{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin:12px 24px 18px;font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#4ade80;overflow-x:auto;white-space:pre-wrap;word-break:break-all;cursor:pointer;transition:all .2s}
+.post-code:hover{border-color:rgba(0,212,180,0.3);background:rgba(0,212,180,0.02)}
+.post-code::before{content:'Komutları kopyalamak için tıkla';display:block;font-size:0.62rem;color:var(--tx3);margin-bottom:6px;font-family:'Space Grotesk',sans-serif}
+
+.post-actions{display:flex;align-items:center;gap:10px;padding:12px 24px;border-top:1px solid var(--border)}
+.action-btn{font-family:'JetBrains Mono',monospace;font-size:0.68rem;padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--tx2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.action-btn.liked{border-color:var(--green);color:var(--green);background:rgba(16,185,129,0.06)}
+.action-btn.report:hover{border-color:var(--red);color:var(--red)}
+.action-btn.secondary{border-color:var(--border);color:var(--tx3)}
+.action-btn.secondary:hover{border-color:var(--blue);color:var(--blue)}
+
+/* Share URL */
+.share-box{padding:12px 24px;background:rgba(0,212,180,0.03);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.share-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3);letter-spacing:1px}
+.share-url{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.share-copy{padding:7px 14px;background:rgba(0,212,180,0.08);border:1px solid rgba(0,212,180,0.2);border-radius:var(--r2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;transition:all .2s}
+.share-copy:hover{background:rgba(0,212,180,0.15)}
+
+/* Comments Section */
+.comments-section{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:24px}
+.comments-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.comments-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.comments-count{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--tx3)}
+
+/* Comment Form */
+.comment-form{margin-bottom:24px}
+.comment-form textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-size:0.85rem;padding:12px 14px;outline:none;resize:vertical;min-height:80px}
+.comment-form textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,180,0.08)}
+.comment-form-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.comment-form input{flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-size:0.8rem;padding:8px 12px;outline:none}
+.comment-form input:focus{border-color:var(--accent)}
+.comment-submit{padding:8px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--r2);color:#fff;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+.comment-submit:hover{opacity:0.9}
+.comment-submit:disabled{opacity:0.5;cursor:not-allowed}
+
+/* Comments Closed */
+.comments-closed{text-align:center;padding:30px;background:rgba(239,68,68,0.03);border:1px solid rgba(239,68,68,0.1);border-radius:var(--r2);color:var(--red);font-size:0.85rem}
+
+/* Comment List */
+.comment-list{display:flex;flex-direction:column;gap:14px}
+.comment-item{padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2)}
+.comment-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.comment-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent3));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.comment-author{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--accent);font-weight:600}
+.comment-date{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--tx3);margin-left:auto}
+.comment-content{font-size:0.82rem;color:var(--tx2);line-height:1.7;word-break:break-word}
+.comment-content a{color:var(--accent);text-decoration:none}
+.comment-content a:hover{text-decoration:underline}
+
+/* Loading */
+.loading{text-align:center;padding:40px}
+.loading-text{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--tx3);margin-top:12px}
+
+/* Alert */
+.alert{padding:12px 16px;border-radius:var(--r2);margin-bottom:16px;font-size:0.85rem;display:none;align-items:center;gap:10px}
+.alert.show{display:flex}
+.alert-success{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:var(--green)}
+.alert-error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red)}
+
+/* Image Modal */
+.img-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.img-modal.show{display:flex}
+.img-modal img{max-width:90%;max-height:90%;object-fit:contain;border-radius:var(--r)}
+
+/* Auth Bar */
+.auth-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:16px}
+.auth-btn{font-family:'JetBrains Mono',monospace;font-size:0.65rem;padding:6px 14px;border-radius:var(--r2);border:1px solid var(--border);background:transparent;color:var(--tx2);cursor:pointer;transition:all .2s}
+.auth-btn:hover{border-color:var(--accent);color:var(--accent)}
+.user-pill{display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--accent)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:28px;width:100%;max-width:400px;position:relative}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--tx3);font-size:1.2rem;cursor:pointer}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:20px}
+.modal .fgroup{margin-bottom:14px}
+.modal input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-size:0.88rem;padding:10px 12px;outline:none}
+.modal input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,180,0.08)}
+.modal-submit{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--r2);color:#fff;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;transition:opacity .2s}
+.modal-submit:hover{opacity:0.9}
+.modal-switch{text-align:center;margin-top:14px;font-size:0.8rem;color:var(--tx2)}
+.modal-switch a{color:var(--accent);cursor:pointer}
+.modal-switch a:hover{text-decoration:underline}
+
+footer{text-align:center;padding:28px 24px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--tx3);margin-top:48px}
+footer a{color:var(--accent);text-decoration:none}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(0,212,180,0.2);border-radius:3px}
+::selection{background:rgba(0,212,180,0.2);color:var(--accent)}
+
+@media(max-width:600px){
+  .hdr{padding:12px 16px}
+  .main{padding:0 16px 60px}
+  .post-header{padding:18px 16px 12px}
+  .post-content{padding:0 16px 16px}
+  .post-code{margin:10px 16px 14px}
+  .post-actions{padding:10px 16px}
+  .share-box{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="wrap">
+
+<header>
+  <div class="hdr">
+    <a class="logo" href="/" onclick="if(window.location.pathname==='/')return false;">
+      <div class="logo-mark">
+        <img src="/icon.png" alt="MC"/>
+      </div>
+      <div>
+        <div class="logo-name">MC Komut Üretici</div>
+        <div class="logo-sub">AI Destekli - Tüm Sürümler</div>
+      </div>
+    </a>
+    <div class="hdr-right">
+      <a href="/" class="nav-link">Komut Üretici</a>
+      <a href="/community" class="nav-link active">Topluluk</a>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+<div class="breadcrumb">
+  <a href="/community">← Topluluk</a>
+  <span>/</span>
+  <span style="color:var(--tx3)">Gönderi Detayı</span>
+</div>
+
+<!-- Auth Bar -->
+<div class="auth-bar" id="authBar">
+  <button class="auth-btn" onclick="showModal('login')">Giriş Yap</button>
+  <button class="auth-btn" onclick="showModal('register')">Hesap Aç</button>
+</div>
+
+<!-- Alert -->
+<div class="alert" id="alertBox"></div>
+
+<!-- Post Detail -->
+<div id="postDetail">
+  <div class="loading">
+    <div class="spin" style="margin:0 auto;width:24px;height:24px;border-width:3px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite"></div>
+    <div class="loading-text">Gönderi yükleniyor...</div>
+  </div>
+</div>
+
+<!-- Comments -->
+<div class="comments-section" id="commentsSection" style="display:none">
+  <div class="comments-header">
+    <div class="comments-title">Yorumlar</div>
+    <div class="comments-count" id="commentsCount">0 yorum</div>
+  </div>
+
+  <div id="commentFormArea">
+    <div class="comment-form">
+      <textarea id="commentContent" placeholder="Yorumunuzu yazın... @kullaniciadi ile etiketleyebilirsiniz."></textarea>
+      <div class="comment-form-row">
+        <input type="text" id="commentAuthor" placeholder="Adınız (isteğe bağlı)" maxlength="20"/>
+        <button class="comment-submit" id="commentSubmit" onclick="submitComment()">Yorum Yap</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="commentsClosedMsg" class="comments-closed" style="display:none">
+    Bu gönderinin yorumları kapalı.
+  </div>
+
+  <div class="comment-list" id="commentList"></div>
+</div>
+
+</main>
+
+<!-- Image Modal -->
+<div class="img-modal" id="imgModal" onclick="closeImgModal()">
+  <img src="" alt="Büyük görsel" id="modalImg"/>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title" id="modalTitle">Giriş Yap</div>
+    <form id="authForm" onsubmit="handleAuth(event)">
+      <div class="fgroup">
+        <label class="flabel" style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Kullanıcı Adı</label>
+        <input type="text" id="authUsername" placeholder="kullaniciadi" required/>
+      </div>
+      <div class="fgroup">
+        <label class="flabel" style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Şifre</label>
+        <input type="password" id="authPassword" placeholder="******" required/>
+      </div>
+      <button type="submit" class="modal-submit" id="authSubmit">Giriş Yap</button>
+    </form>
+    <div class="modal-switch" id="modalSwitch">
+      Hesabın yok mu? <a onclick="switchAuthMode()">Kayıt ol</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+<p>MC Komut Üretici - <a href="https://www.youtube.com/@MCKomutları" target="_blank">YouTube Kanalı</a></p>
+</footer>
+
+</div>
+
+<script>
+const POST_ID = window.location.pathname.split('/').pop();
+let authMode = 'login';
+let currentUser = null;
+let postData = null;
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  checkAuth();
+  loadPost();
+});
+
+function checkAuth(){
+  const token = localStorage.getItem('mc_token');
+  const username = localStorage.getItem('mc_username');
+  if(token && username){
+    currentUser = {token, username};
+    renderAuthBar();
+  }
+}
+
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(currentUser){
+    bar.innerHTML = `
+      <div class="user-pill">
+        <span>@${esc(currentUser.username)}</span>
+        <button class="auth-btn" onclick="logout()" style="padding:3px 8px;font-size:0.55rem">Çıkış</button>
+      </div>
+    `;
+    document.getElementById('commentAuthor').value = currentUser.username;
+  }
+}
+
+function logout(){
+  localStorage.removeItem('mc_token');
+  localStorage.removeItem('mc_username');
+  currentUser = null;
+  location.reload();
+}
+
+// Modal
+function showModal(mode){
+  authMode = mode;
+  document.getElementById('modalTitle').textContent = mode==='login'?'Giriş Yap':'Hesap Aç';
+  document.getElementById('authSubmit').textContent = mode==='login'?'Giriş Yap':'Hesap Aç';
+  document.getElementById('modalSwitch').innerHTML = mode==='login'
+    ? 'Hesabın yok mu? <a onclick="switchAuthMode()">Kayıt ol</a>'
+    : 'Zaten hesabın var mı? <a onclick="switchAuthMode()">Giriş yap</a>';
+  document.getElementById('authModal').classList.add('show');
+}
+function closeModal(){ document.getElementById('authModal').classList.remove('show'); }
+function switchAuthMode(){
+  authMode = authMode==='login'?'register':'login';
+  showModal(authMode);
+}
+
+async function handleAuth(e){
+  e.preventDefault();
+  const btn = document.getElementById('authSubmit');
+  const username = document.getElementById('authUsername').value.trim();
+  const password = document.getElementById('authPassword').value;
+  btn.disabled = true;
+  btn.textContent = 'İşleniyor...';
+  try{
+    const res = await fetch('/api/auth/' + authMode, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    if(data.success){
+      localStorage.setItem('mc_token', data.token);
+      localStorage.setItem('mc_username', data.username);
+      currentUser = {token: data.token, username: data.username};
+      closeModal();
+      renderAuthBar();
+      showAlert(authMode==='login'?'Giriş başarılı!':'Kayıt başarılı!', 'success');
+    }else{
+      showAlert(data.error || 'İşlem başarısız.', 'error');
+    }
+  }catch(err){
+    showAlert('Bağlantı hatası.', 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = authMode==='login'?'Giriş Yap':'Hesap Aç';
+  }
+}
+
+function showAlert(msg, type){
+  const box = document.getElementById('alertBox');
+  box.className = 'alert show alert-'+type;
+  box.textContent = msg;
+  setTimeout(()=>box.classList.remove('show'), 5000);
+}
+
+function isImageUrl(url){
+  return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url) ||
+         /hizliresim\.com|i\.ibb\.co|i\.imgur\.com|cdn\.discordapp\.com|media\.discordapp\.net/i.test(url);
+}
+
+function processContent(text){
+  let codeBlocks = [];
+  let processed = text.replace(/```([\s\S]*?)```/g, (match, code) => {
+    codeBlocks.push(code.trim());
+    return `\x00CODE_${codeBlocks.length-1}\x00`;
+  });
+  processed = processed.replace(/(https?:\/\/[^\s]+)/g, (url) => {
+    if(isImageUrl(url)){
+      return `<img src="${esc(url)}" alt="Görsel" onclick="openImgModal('${esc(url)}')" loading="lazy"/>`;
+    }
+    return `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>`;
+  });
+  codeBlocks.forEach((code, i) => {
+    processed = processed.replace(
+      `\x00CODE_${i}\x00`,
+      `<div class="post-code" onclick="copyCode(this)">${esc(code)}</div>`
+    );
+  });
+  processed = processed.replace(/@([a-zA-Z0-9_ğüşıöçĞÜŞİÖÇ]+)/g, '<span style="color:var(--accent);font-weight:600">@$1</span>');
+  return processed;
+}
+
+async function loadPost(){
+  try{
+    const res = await fetch('/api/community/post/' + POST_ID);
+    const data = await res.json();
+
+    if(!data.success){
+      document.getElementById('postDetail').innerHTML = `
+        <div class="comments-section" style="text-align:center;padding:60px 24px">
+          <div style="font-size:2rem;margin-bottom:14px;opacity:.5">[!]</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px">Hata</div>
+          <div style="font-size:0.85rem;color:var(--tx2)">${esc(data.error)}</div>
+        </div>`;
+      return;
+    }
+
+    postData = data.post;
+    renderPost(postData);
+    renderComments(postData.comments || [], postData.comments_closed);
+    document.getElementById('commentsSection').style.display = 'block';
+
+    // Meta tag'leri güncelle (SEO)
+    const postTitle = postData.title || 'Gönderi Detayı';
+    const postAuthor = postData.author || 'Anonim';
+    const postVersion = postData.version || '1.21';
+    const metaDesc = postTitle + ' - @' + postAuthor + ' tarafından paylaşıldı. Minecraft ' + postVersion + ' komut topluluğu.';
+
+    document.title = postTitle + ' — MC Komut Topluluğu';
+    document.getElementById('pageTitle').textContent = postTitle + ' — MC Komut Topluluğu';
+    document.getElementById('pageDesc').content = metaDesc;
+    document.getElementById('ogTitle').content = postTitle;
+    document.getElementById('ogDesc').content = metaDesc;
+    document.getElementById('ogUrl').content = window.location.href;
+    document.getElementById('twTitle').content = postTitle;
+    document.getElementById('twDesc').content = metaDesc;
+  }catch(err){
+    document.getElementById('postDetail').innerHTML = `
+      <div class="comments-section" style="text-align:center;padding:60px 24px">
+        <div style="font-size:2rem;margin-bottom:14px;opacity:.5">[!]</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px">Bağlantı Hatası</div>
+        <div style="font-size:0.85rem;color:var(--tx2)">Sunucuya ulaşılamıyor.</div>
+      </div>`;
+  }
+}
+
+function renderPost(post){
+  const date = post.date ? new Date(post.date).toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : 'Bilinmiyor';
+  const initial = (post.author || 'A').charAt(0).toUpperCase();
+  const contentHtml = processContent(post.content || '');
+  const shareUrl = window.location.href;
+
+  document.getElementById('postDetail').innerHTML = `
+    <div class="post-detail">
+      <div class="post-header">
+        <div class="post-avatar">${initial}</div>
+        <div class="post-meta">
+          <div class="post-title">${esc(post.title)}</div>
+          <div class="post-info">
+            <span class="post-author">@${esc(post.author || 'Anonim')}</span>
+            <span class="post-date">${date}</span>
+            <span class="post-version">${esc(post.version || '1.21')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-content">${contentHtml}</div>
+      <div class="post-actions">
+        <button class="action-btn ${post.liked ? 'liked' : ''}" id="likeBtn" onclick="likePost()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span id="likeCount">${post.likes || 0}</span>
+        </button>
+        <button class="action-btn secondary" onclick="copyPostUrl()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          Linki Kopyala
+        </button>
+        <button class="action-btn report" onclick="reportPost()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+          Şikayet
+        </button>
+      </div>
+      <div class="share-box">
+        <span class="share-label">PAYLAŞ</span>
+        <div class="share-url" id="shareUrl">${esc(shareUrl)}</div>
+        <button class="share-copy" onclick="copyPostUrl()">Kopyala</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderComments(comments, closed){
+  document.getElementById('commentsCount').textContent = comments.length + ' yorum';
+
+  if(closed){
+    document.getElementById('commentFormArea').style.display = 'none';
+    document.getElementById('commentsClosedMsg').style.display = 'block';
+  }else{
+    document.getElementById('commentFormArea').style.display = 'block';
+    document.getElementById('commentsClosedMsg').style.display = 'none';
+  }
+
+  const list = document.getElementById('commentList');
+  if(!comments.length){
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:0.8rem">Henüz yorum yok. İlk yorumu sen yap!</div>';
+    return;
+  }
+
+  list.innerHTML = comments.map(c=>{
+    const date = c.date ? new Date(c.date).toLocaleDateString('tr-TR') : 'Bilinmiyor';
+    const initial = (c.author || 'A').charAt(0).toUpperCase();
+    let content = esc(c.content || '');
+    content = content.replace(/@([a-zA-Z0-9_ğüşıöçĞÜŞİÖÇ]+)/g, '<span style="color:var(--accent);font-weight:600">@$1</span>');
+    return `
+      <div class="comment-item">
+        <div class="comment-header">
+          <div class="comment-avatar">${initial}</div>
+          <span class="comment-author">@${esc(c.author || 'Anonim')}</span>
+          <span class="comment-date">${date}</span>
+        </div>
+        <div class="comment-content">${content}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function submitComment(){
+  const content = document.getElementById('commentContent').value.trim();
+  const author = document.getElementById('commentAuthor').value.trim();
+  const btn = document.getElementById('commentSubmit');
+
+  if(!content){
+    showAlert('Yorum içeriği boş olamaz.', 'error');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor...';
+
+  try{
+    const headers = {'Content-Type': 'application/json'};
+    if(currentUser && currentUser.token){
+      headers['Authorization'] = 'Bearer ' + currentUser.token;
+    }
+
+    const res = await fetch('/api/community/post/' + POST_ID + '/comment', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({content, author})
+    });
+    const data = await res.json();
+
+    if(data.success){
+      showAlert('Yorumunuz eklendi!', 'success');
+      document.getElementById('commentContent').value = '';
+      loadPost(); // Yenile
+    }else{
+      showAlert(data.error || 'Yorum eklenemedi.', 'error');
+    }
+  }catch(err){
+    showAlert('Bağlantı hatası.', 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Yorum Yap';
+  }
+}
+
+async function likePost(){
+  try{
+    const res = await fetch('/api/community/like/' + POST_ID, {method:'POST'});
+    const data = await res.json();
+    if(data.success){
+      const btn = document.getElementById('likeBtn');
+      btn.classList.toggle('liked', data.liked);
+      document.getElementById('likeCount').textContent = data.likes;
+    }
+  }catch(err){
+    showAlert('İşlem başarısız.', 'error');
+  }
+}
+
+async function reportPost(){
+  if(!confirm('Bu paylaşımı şikayet etmek istediğinize emin misiniz?')) return;
+  try{
+    const res = await fetch('/api/community/report/' + POST_ID, {method:'POST'});
+    const data = await res.json();
+    if(data.success){
+      showAlert(data.message, 'success');
+    }
+  }catch(err){
+    showAlert('İşlem başarısız.', 'error');
+  }
+}
+
+function copyPostUrl(){
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(()=>{
+    showAlert('Link kopyalandı!', 'success');
+  });
+}
+
+function copyCode(el){
+  const text = el.textContent.replace('Komutları kopyalamak için tıkla\n', '').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = el.innerHTML;
+    el.style.borderColor = 'var(--green)';
+    el.innerHTML = '<span style="color:var(--green)">Kopyalandı!</span>';
+    setTimeout(()=>{el.style.borderColor='';el.innerHTML=old;}, 2000);
+  });
+}
+
+function openImgModal(src){
+  document.getElementById('modalImg').src = src;
+  document.getElementById('imgModal').classList.add('show');
+}
+function closeImgModal(){
+  document.getElementById('imgModal').classList.remove('show');
+}
+
+function esc(t){
+  const d=document.createElement('div');
+  d.textContent=t;
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
