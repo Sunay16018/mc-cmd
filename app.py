@@ -886,11 +886,19 @@ def internal_error(error):
         "error": "Sunucu hatası oluştu. Detay: " + str(error)[:200]
     }), 500
 
-# ── Static Dosyalar (Sadece Gerekli Olanlar) ─────────────────
+# ── Static Dosyalar ───────────────────────────────────────────
 
 @app.route('/icon.png')
 def icon():
     return send_from_directory('.', 'icon.png')
+
+@app.route('/logo.png')
+def logo():
+    return send_from_directory('.', 'logo.png')
+
+@app.route('/screenshot2.png')
+def screenshot():
+    return send_from_directory('.', 'screenshot2.png')
 
 @app.route('/kanal.png')
 def kanal():
@@ -898,11 +906,22 @@ def kanal():
 
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory('.', 'manifest.json')
+    response = send_from_directory('.', 'manifest.json')
+    response.headers['Content-Type'] = 'application/manifest+json'
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
 
 @app.route('/sw.js')
 def sw():
-    return send_from_directory('.', 'sw.js')
+    response = send_from_directory('.', 'sw.js')
+    response.headers['Content-Type'] = 'application/javascript'
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
+
+@app.route('/icons/<path:filename>')
+def icons(filename):
+    return send_from_directory('icons', filename)
 
 # ── Ana Çalıştırma ───────────────────────────────────────────
 

@@ -16,16 +16,22 @@
   ],
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/icon.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
@@ -38,26 +44,27 @@
     }
   ],
   "shortcuts": [
-  {
-    "name": "Yeni Komut Üret",
-    "short_name": "Üret",
-    "url": "/?action=generate",
-    "icons": [
-      {
-        "src": "templates/512.png",
-        "sizes": "512x512"
-      }
-    ]
-  },
-  {
-    "name": "Topluluk",
-    "short_name": "Topluluk",
-    "url": "/community",
-    "icons": [
-      {
-        "src": "templates/512.png",
-        "sizes": "512x512"
-      }
-    ]
-  }
+    {
+      "name": "Yeni Komut Üret",
+      "short_name": "Üret",
+      "url": "/?action=generate",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Topluluk",
+      "short_name": "Topluluk",
+      "url": "/community",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
+}

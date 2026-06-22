@@ -6,6 +6,6 @@ services:
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: CEREBRAS_API_KEY
-        value: csk-6f822djhp6r9prehc96wx2mmkp995f6yk35necmtrchh44nv
+        sync: false
       - key: PYTHON_VERSION
         value: 3.11.0
