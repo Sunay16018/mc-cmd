@@ -9,7 +9,11 @@
   "orientation": "portrait",
   "scope": "/",
   "lang": "tr-TR",
-  "categories": ["entertainment", "games", "utilities"],
+  "categories": [
+    "entertainment",
+    "games",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/icon.png",
@@ -38,7 +42,12 @@
       "name": "Yeni Komut Üret",
       "short_name": "Üret",
       "url": "/?action=generate",
-      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
