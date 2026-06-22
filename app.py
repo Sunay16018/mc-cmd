@@ -27,7 +27,6 @@ app = Flask(__name__)
 CORS(app, resources={r"/generate": {"origins": "*"}, r"/ping": {"origins": "*"}})
 
 # ── Cerebras API Ayarları ────────────────────────────────────
-API_KEY = os.environ.get("CEREBRAS_API_KEY")
 API_URL = "https://api.cerebras.ai/v1/chat/completions"
 MODEL = "gpt-oss-120b"
 
@@ -35,9 +34,56 @@ MODEL = "gpt-oss-120b"
 MAX_TOKENS = 3000
 REQUEST_TIMEOUT = (15, 120)  # (connect, read)
 
+# ── Çoklu API Key Yönetimi ───────────────────────────────────
+def get_api_keys():
+    """CEREBRAS_API_KEY_1'den CEREBRAS_API_KEY_6'ya kadar olan key'leri sırayla alır."""
+    keys = []
+    for i in range(1, 7):
+        key = os.environ.get(f"CEREBRAS_API_KEY_{i}")
+        if key:
+            keys.append(key)
+    
+    # Eski tek key formatını da destekle (geriye uyumluluk)
+    legacy_key = os.environ.get("CEREBRAS_API_KEY")
+    if legacy_key and legacy_key not in keys:
+        keys.insert(0, legacy_key)
+    
+    return keys
+
+API_KEYS = get_api_keys()
+current_key_index = 0
+
 # ── API Key Kontrolü ─────────────────────────────────────────
-if not API_KEY:
-    logger.warning("CEREBRAS_API_KEY ortam değişkeni ayarlanmamış! API çağrıları başarısız olacak.")
+if not API_KEYS:
+    logger.warning("CEREBRAS_API_KEY_1..6 ortam değişkenleri ayarlanmamış! API çağrıları başarısız olacak.")
+else:
+    logger.info(f"{len(API_KEYS)} adet API key yüklendi.")
+
+# ── Yardımcı Fonksiyonlar ────────────────────────────────────
+def get_current_api_key():
+    """Şu anki aktif API key'i döndürür."""
+    global current_key_index
+    if not API_KEYS:
+        return None
+    return API_KEYS[current_key_index % len(API_KEYS)]
+
+def rotate_api_key():
+    """Bir sonraki API key'e geçer."""
+    global current_key_index
+    if len(API_KEYS) > 1:
+        current_key_index = (current_key_index + 1) % len(API_KEYS)
+        logger.info(f"API key rotasyonu: Key #{current_key_index + 1} aktif.")
+
+def get_all_api_keys_with_index():
+    """Tüm key'leri ve index'lerini döndürür (retry için)."""
+    if not API_KEYS:
+        return []
+    # Mevcut key'den başlayarak sıralı liste oluştur
+    result = []
+    for i in range(len(API_KEYS)):
+        idx = (current_key_index + i) % len(API_KEYS)
+        result.append((idx, API_KEYS[idx]))
+    return result
 
 # ── Retry Session ────────────────────────────────────────────
 def get_retry_session(
@@ -59,6 +105,88 @@ def get_retry_session(
     session.mount('https://', adapter)
     session.mount('http://', adapter)
     return session
+
+# ── Cerebras API Çağrısı (Çoklu Key Desteği) ─────────────────
+def call_cerebras_api(messages, stream=False):
+    """
+    Cerebras API'ye çağrı yapar. Başarısız olursa sıradaki key ile dener.
+    Tüm key'ler başarısız olursa exception fırlatır.
+    """
+    if not API_KEYS:
+        raise Exception("Hiç API key tanımlı değil!")
+    
+    headers_base = {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
+    
+    payload = {
+        "model": MODEL,
+        "messages": messages,
+        "max_tokens": MAX_TOKENS,
+        "stream": stream
+    }
+    
+    # Her key için deneme
+    keys_to_try = get_all_api_keys_with_index()
+    last_exception = None
+    
+    for key_idx, api_key in keys_to_try:
+        headers = {**headers_base, "Authorization": f"Bearer {api_key}"}
+        
+        try:
+            session = get_retry_session()
+            
+            logger.info(f"API çağrısı deneniyor (Key #{key_idx + 1})...")
+            
+            response = session.post(
+                API_URL,
+                headers=headers,
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+                stream=stream
+            )
+            
+            # Rate limit veya auth hatası kontrolü
+            if response.status_code in (401, 403, 429):
+                logger.warning(f"Key #{key_idx + 1} başarısız (HTTP {response.status_code}): {response.text[:200]}")
+                last_exception = Exception(f"Key #{key_idx + 1} HTTP {response.status_code}: {response.text[:200]}")
+                continue  # Sonraki key'e geç
+            
+            response.raise_for_status()
+            
+            # Başarılı! Mevcut key index'ini güncelle
+            global current_key_index
+            current_key_index = key_idx
+            logger.info(f"Key #{key_idx + 1} ile başarılı yanıt alındı.")
+            
+            return response
+            
+        except requests.exceptions.Timeout as e:
+            logger.warning(f"Key #{key_idx + 1} zaman aşımı: {str(e)}")
+            last_exception = e
+            continue
+            
+        except requests.exceptions.ConnectionError as e:
+            logger.warning(f"Key #{key_idx + 1} bağlantı hatası: {str(e)}")
+            last_exception = e
+            continue
+            
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code >= 500:
+                logger.warning(f"Key #{key_idx + 1} sunucu hatası: {e.response.status_code}")
+                last_exception = e
+                continue
+            raise  # 4xx hatalarında (client hatası) hemen fırlat
+            
+        except Exception as e:
+            logger.warning(f"Key #{key_idx + 1} beklenmeyen hata: {str(e)}")
+            last_exception = e
+            continue
+    
+    # Tüm key'ler başarısız
+    raise Exception(f"Tüm {len(API_KEYS)} API key başarısız oldu. Son hata: {str(last_exception)}")
+
 
 # ── Sürüm Listesi ────────────────────────────────────────────
 VERSIONS = [
